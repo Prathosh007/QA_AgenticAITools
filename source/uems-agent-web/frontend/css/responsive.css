@@ -1,0 +1,10 @@
+/* ── Responsive breakpoints ───────────────────────────────────── */
+
+@media (max-width: 680px) {
+  .hero-title { font-size: 28px; }
+  .hero-subtitle { font-size: 14px; }
+  .hero { padding: 40px 0 32px; }
+  .primary-cards { grid-template-columns: 1fr; }
+  .docs-grid { grid-template-columns: 1fr; }
+  .workflow-tabs { flex-direction: column; }
+}

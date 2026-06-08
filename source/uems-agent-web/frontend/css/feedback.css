@@ -1,0 +1,204 @@
+/* ── Feedback FAB ─────────────────────────────────────────────── */
+
+.feedback-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  height: 44px;
+  border-radius: 22px;
+  background: var(--accent-blue);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 0 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transition: gap 0.25s ease, padding 0.25s ease, box-shadow 0.2s;
+  z-index: 1000;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.feedback-fab:hover {
+  gap: 6px;
+  padding: 0 16px 0 12px;
+  box-shadow: 0 6px 24px rgba(88, 166, 255, 0.35);
+}
+
+.feedback-fab .material-symbols-rounded {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.feedback-fab-label {
+  font-size: 13px;
+  font-weight: 500;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width 0.25s ease, opacity 0.2s ease;
+}
+
+.feedback-fab:hover .feedback-fab-label {
+  max-width: 80px;
+  opacity: 1;
+}
+
+/* ── Feedback Modal ───────────────────────────────────────────── */
+
+.feedback-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  backdrop-filter: blur(4px);
+}
+
+.feedback-modal {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 440px;
+  max-width: 92vw;
+  padding: 28px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+
+.feedback-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.feedback-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.feedback-header h3 .material-symbols-rounded {
+  font-size: 20px;
+  color: var(--accent-blue);
+}
+
+.feedback-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.feedback-close:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+.feedback-close .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.feedback-hint {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.feedback-field {
+  margin-bottom: 16px;
+}
+
+.feedback-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.feedback-field select,
+.feedback-field textarea,
+.feedback-field input[type="text"] {
+  width: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  transition: border-color 0.15s;
+}
+
+.feedback-field select:focus,
+.feedback-field textarea:focus,
+.feedback-field input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+.feedback-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.feedback-field select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239da8b3' d='M3 4.5L6 8l3-3.5H3z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.feedback-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  background: var(--accent-blue);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.feedback-submit:hover {
+  background: #79c0ff;
+}
+
+.feedback-submit:active {
+  transform: scale(0.98);
+}
+
+.feedback-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.feedback-submit .material-symbols-rounded {
+  font-size: 18px;
+}

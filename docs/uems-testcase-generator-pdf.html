@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UEMS — Testcase Generator &amp; GOAT JSON Converter</title>
+<style>
+/* ═══════════════════════════════════════════════
+   SCREEN STYLES
+═══════════════════════════════════════════════ */
+:root {
+  --blue:      #0078d4;
+  --blue-dark: #0f2b5b;
+  --blue-mid:  #005a9e;
+  --blue-lt:   #e3f2fd;
+  --purple:    #5c2d91;
+  --purple-lt: #f3e5f5;
+  --green:     #107c10;
+  --green-lt:  #e6f4ea;
+  --teal:      #006b75;
+  --orange:    #c65000;
+  --orange-lt: #fff4e3;
+  --red:       #c0392b;
+  --red-lt:    #fde8e8;
+  --gray-50:   #f8fafd;
+  --gray-100:  #f0f4fb;
+  --gray-200:  #dde3ed;
+  --gray-500:  #6b7280;
+  --gray-700:  #374151;
+  --gray-900:  #1a1a2e;
+  --font: "Segoe UI", system-ui, sans-serif;
+  --mono: "Cascadia Code", "Fira Code", Consolas, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: #e8edf5;
+  color: var(--gray-900);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ── Print button (screen only) ── */
+.print-bar {
+  background: var(--blue-dark);
+  color: #fff;
+  padding: 12px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+.print-bar strong { font-size: 14px; }
+.print-bar small { opacity: .7; }
+.print-btn {
+  background: #fff;
+  color: var(--blue-dark);
+  border: none;
+  padding: 8px 22px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font);
+}
+.print-btn:hover { background: var(--blue-lt); }
+
+/* ── Pages ── */
+.page {
+  background: #fff;
+  max-width: 800px;
+  margin: 24px auto;
+  padding: 56px 64px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.10);
+  position: relative;
+}
+
+/* ── Cover Page ── */
+.cover {
+  min-height: 980px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 72px 64px 56px;
+}
+.cover-logo {
+  width: 48px; height: 48px;
+  background: var(--blue);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 56px;
+}
+.cover-body { flex: 1; }
+.cover-tag {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blue);
+  margin-bottom: 14px;
+}
+.cover h1 {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--blue-dark);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.cover h2 {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--purple);
+  margin-bottom: 32px;
+  border: none;
+  padding: 0;
+}
+.cover-desc {
+  font-size: 15px;
+  color: var(--gray-700);
+  max-width: 520px;
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+.cover-divider {
+  width: 64px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--blue), var(--purple));
+  border-radius: 4px;
+  margin-bottom: 40px;
+}
+.cover-toc { }
+.cover-toc h3 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray-500);
+  margin-bottom: 14px;
+}
+.toc-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.toc-num {
+  width: 28px;
+  font-size: 11px;
+  color: var(--blue);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.toc-title {
+  flex: 1;
+  color: var(--gray-700);
+  font-weight: 600;
+}
+.toc-part {
+  font-size: 11px;
+  color: var(--gray-500);
+  background: var(--gray-100);
+  padding: 1px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+}
+.cover-footer {
+  border-top: 1px solid var(--gray-200);
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--gray-500);
+}
+
+/* ── Section heading (part divider) ── */
+.part-divider {
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+  color: #fff;
+  padding: 32px 64px;
+  max-width: 800px;
+  margin: 24px auto 0;
+  box-shadow: 0 4px 24px rgba(0,0,0,.10);
+}
+.part-divider .part-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  opacity: .6;
+  margin-bottom: 6px;
+}
+.part-divider h2 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.part-divider p {
+  font-size: 14px;
+  opacity: .82;
+  max-width: 550px;
+}
+.part-divider.purple {
+  background: linear-gradient(135deg, #3b0f6b, var(--purple));
+}
+
+/* ── Section headings ── */
+h3.sec {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--blue-dark);
+  margin: 36px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--blue-lt);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+h4.sub {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--blue);
+  margin: 22px 0 10px;
+}
+
+/* ── Body text ── */
+p.body {
+  font-size: 13px;
+  color: var(--gray-700);
+  margin-bottom: 12px;
+  line-height: 1.75;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 12px 0;
+}
+.card p { font-size: 13px; color: var(--gray-700); }
+
+/* ── Stat strip ── */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+.stat-box {
+  border-radius: 8px;
+  padding: 14px 16px;
+  text-align: center;
+  border: 1px solid var(--gray-200);
+}
+.stat-box .si { font-size: 22px; margin-bottom: 4px; }
+.stat-box .sl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-500); margin-bottom: 3px; }
+.stat-box .sv { font-size: 12px; font-weight: 700; color: var(--gray-900); }
+.sb-1 { background: #e8f4ff; border-color: #b3d4f5; }
+.sb-2 { background: var(--purple-lt); border-color: #c9a8e8; }
+.sb-3 { background: var(--green-lt); border-color: #a5d6a7; }
+.sb-4 { background: var(--orange-lt); border-color: #ffcc80; }
+
+/* ── Callout ── */
+.callout {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  margin: 14px 0;
+  line-height: 1.6;
+}
+.callout .ci { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.c-info  { background: var(--blue-lt); border-left: 3px solid var(--blue); color: #0d47a1; }
+.c-warn  { background: var(--orange-lt); border-left: 3px solid #f9a825; color: #6d3a00; }
+.c-good  { background: var(--green-lt); border-left: 3px solid var(--green); color: #1b5e20; }
+.c-stop  { background: var(--red-lt); border-left: 3px solid var(--red); color: var(--red); }
+
+/* ── Tables ── */
+.tbl { width: 100%; border-collapse: collapse; font-size: 12px; margin: 12px 0; }
+.tbl th {
+  background: var(--blue);
+  color: #fff;
+  text-align: left;
+  padding: 9px 12px;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.tbl td { padding: 9px 12px; border-bottom: 1px solid var(--gray-200); vertical-align: top; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:nth-child(even) td { background: var(--gray-50); }
+
+/* ── Phase block ── */
+.phase {
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 14px 0;
+  border: 1px solid var(--gray-200);
+}
+.phase-hd {
+  padding: 11px 16px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ph-blue   { background: var(--blue); }
+.ph-purple { background: var(--purple); }
+.ph-green  { background: var(--green); }
+.ph-teal   { background: var(--teal); }
+.ph-orange { background: var(--orange); }
+.phase-bd { padding: 14px 16px; background: #fff; font-size: 12.5px; color: var(--gray-700); }
+.phase-bd p { margin-bottom: 8px; }
+.phase-bd ul { padding-left: 18px; }
+.phase-bd li { margin-bottom: 4px; }
+
+/* ── Step list ── */
+.steps { padding-left: 0; list-style: none; margin: 12px 0; }
+.steps li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  font-size: 12.5px;
+  color: var(--gray-700);
+}
+.steps .sn {
+  min-width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff;
+  flex-shrink: 0; margin-top: 1px;
+}
+.sn-blue   { background: var(--blue); }
+.sn-purple { background: var(--purple); }
+.sn-green  { background: var(--green); }
+
+/* ── Decision box ── */
+.decision {
+  background: #fffde7;
+  border: 2px dashed #f9a825;
+  border-radius: 8px;
+  padding: 12px 16px;
+  text-align: center;
+  margin: 14px 0;
+}
+.decision .dt { font-size: 13px; font-weight: 700; color: var(--orange); }
+.decision .dd { font-size: 11.5px; color: var(--gray-500); margin-top: 3px; }
+
+/* ── Two-col fork ── */
+.fork { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+.fork-yes { background: var(--green-lt); border: 1.5px solid #81c784; border-radius: 8px; padding: 12px 16px; text-align: center; }
+.fork-no  { background: var(--red-lt);   border: 1.5px solid #ef9a9a; border-radius: 8px; padding: 12px 16px; text-align: center; }
+.fork-yes .ft { font-weight: 700; color: var(--green); font-size: 13px; }
+.fork-no  .ft { font-weight: 700; color: var(--red);   font-size: 13px; }
+.fork-yes .fd, .fork-no .fd { font-size: 11.5px; color: var(--gray-700); margin-top: 4px; }
+
+/* ── Two-col layout ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0; }
+
+/* ── Badges ── */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.b-blue   { background: var(--blue-lt); color: #0d47a1; }
+.b-purple { background: var(--purple-lt); color: var(--purple); }
+.b-green  { background: var(--green-lt); color: #1b5e20; }
+.b-orange { background: var(--orange-lt); color: var(--orange); }
+
+/* ── Code ── */
+code {
+  background: #f0f4fb;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 11.5px;
+  font-family: var(--mono);
+  color: var(--blue-dark);
+}
+.code-block {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.7;
+  overflow-x: auto;
+  margin: 12px 0;
+  white-space: pre;
+}
+.kw { color: #89b4fa; }
+.st { color: #a6e3a1; }
+.cm { color: #6c7086; }
+
+/* ── Diagram ── */
+.diagram {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 12px 0;
+  color: var(--gray-900);
+}
+
+/* ── Arrow connector ── */
+.arrow { text-align: center; color: var(--gray-200); font-size: 20px; margin: 4px 0; }
+
+/* ── Output files strip ── */
+.file-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 14px 0;
+}
+.file-box {
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: var(--gray-50);
+}
+.file-box .fb-icon { font-size: 18px; margin-bottom: 6px; }
+.file-box .fb-title { font-size: 12px; font-weight: 700; color: var(--gray-900); margin-bottom: 3px; }
+.file-box .fb-path  { font-size: 10.5px; font-family: var(--mono); color: var(--blue); word-break: break-all; margin-bottom: 3px; }
+.file-box .fb-desc  { font-size: 11px; color: var(--gray-500); }
+
+/* ── FAQ ── */
+.faq-item {
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.faq-q {
+  background: var(--gray-50);
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.faq-q::before { content: "Q"; background: var(--blue); color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 4px; font-weight: 800; flex-shrink: 0; }
+.faq-a {
+  padding: 10px 16px;
+  font-size: 12.5px;
+  color: var(--gray-700);
+  line-height: 1.7;
+}
+
+/* ── Quick-start step cards ── */
+.qs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+.qs-card {
+  border-radius: 8px;
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+}
+.qs-hd {
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.qs-num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800;
+}
+.qs-bd {
+  padding: 10px 12px;
+  background: #fff;
+  font-size: 11.5px;
+  color: var(--gray-700);
+}
+
+/* ── GOAT op table ── */
+.op-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+.op-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  font-size: 11.5px;
+  background: var(--gray-50);
+}
+.op-chip code { background: var(--purple-lt); color: var(--purple); font-size: 10.5px; }
+.op-chip .op-desc { color: var(--gray-500); font-size: 11px; }
+
+/* ── Page number footer printed on each page ── */
+.pg-footer {
+  margin-top: 40px;
+  border-top: 1px solid var(--gray-200);
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: var(--gray-500);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PRINT STYLES
+═══════════════════════════════════════════════════════════ */
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+  }
+  @page :first { margin-top: 0; }
+
+  body { background: #fff; font-size: 12px; }
+
+  .print-bar { display: none !important; }
+
+  .page {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    page-break-after: always;
+  }
+  .page:last-child { page-break-after: avoid; }
+
+  .cover { min-height: auto; padding: 36px 0 28px; }
+
+  .part-divider {
+    max-width: 100%;
+    margin: 0;
+    page-break-after: avoid;
+    box-shadow: none;
+  }
+  .part-divider + .page { page-break-before: avoid; }
+
+  h3.sec { page-break-after: avoid; }
+  h4.sub { page-break-after: avoid; }
+
+  .phase { page-break-inside: avoid; }
+  .faq-item { page-break-inside: avoid; }
+  .callout { page-break-inside: avoid; }
+  .stat-strip { page-break-inside: avoid; }
+  .tbl { page-break-inside: auto; }
+  .tbl tr { page-break-inside: avoid; }
+
+  .code-block { background: #f5f5f5; color: #1e1e2e; page-break-inside: avoid; }
+  .diagram { page-break-inside: avoid; }
+
+  .print-bar { display: none; }
+  .pg-footer { position: running(footer); }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ PRINT BAR ════════════════════════ -->
+<div class="print-bar">
+  <div>
+    <strong>UEMS — Testcase Generator &amp; GOAT JSON Converter</strong>
+    <br><small>Open in browser → File → Print → Save as PDF (set margins to None/Minimum)</small>
+  </div>
+  <button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE 1 — COVER
+════════════════════════════════════════════════════════════ -->
+<div class="page cover">
+  <div class="cover-logo">🧪</div>
+  <div class="cover-body">
+    <div class="cover-tag">UEMS Endpoint Central Agent · QA Automation</div>
+    <h1>Testcase Generator</h1>
+    <h2>GOAT JSON Converter</h2>
+    <div class="cover-divider"></div>
+    <p class="cover-desc">
+      A complete reference for AI-driven QA automation — from generating structured manual test
+      cases grounded in real codebase context, to converting them into executable GOAT framework
+      JSON payloads, persisting them in a database, and publishing rich summary reports.
+    </p>
+    <div class="cover-toc">
+      <h3>Contents</h3>
+      <div class="toc-item"><span class="toc-num">01</span><span class="toc-title">What Is the Testcase Generator?</span><span class="toc-part">Part 1</span></div>
+      <div class="toc-item"><span class="toc-num">02</span><span class="toc-title">How the Codebase Is Connected</span><span class="toc-part">Part 1</span></div>
+      <div class="toc-item"><span class="toc-num">03</span><span class="toc-title">Two Generation Modes</span><span class="toc-part">Part 1</span></div>
+      <div class="toc-item"><span class="toc-num">04</span><span class="toc-title">End-to-End Workflow — All Phases</span><span class="toc-part">Part 1</span></div>
+      <div class="toc-item"><span class="toc-num">05</span><span class="toc-title">GOAT JSON Converter — Deep Dive</span><span class="toc-part">Part 2</span></div>
+      <div class="toc-item"><span class="toc-num">06</span><span class="toc-title">Available GOAT Operations</span><span class="toc-part">Part 2</span></div>
+      <div class="toc-item"><span class="toc-num">07</span><span class="toc-title">Gap Reports</span><span class="toc-part">Part 2</span></div>
+      <div class="toc-item"><span class="toc-num">08</span><span class="toc-title">Output Files Reference</span><span class="toc-part">Part 2</span></div>
+      <div class="toc-item"><span class="toc-num">09</span><span class="toc-title">Orchestrator &amp; Pipeline</span><span class="toc-part">Part 2</span></div>
+      <div class="toc-item"><span class="toc-num">10</span><span class="toc-title">Quick Start &amp; FAQ</span><span class="toc-part">Part 2</span></div>
+    </div>
+  </div>
+  <div class="cover-footer">
+    <span>UEMS Agent AI Toolkit</span>
+    <span>Version 1.0 · April 2026</span>
+    <span>Internal Documentation</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PART 1 DIVIDER
+════════════════════════════════════════════════════════════ -->
+<div class="part-divider">
+  <div class="part-label">Part 1 of 2</div>
+  <h2>📋 Testcase Generator</h2>
+  <p>AI-powered generation of structured manual test cases grounded in real codebase context, product behavior, and persistent database tracking.</p>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE 2 — OVERVIEW + MODES
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <h3 class="sec">01 · What Is the Testcase Generator?</h3>
+  <p class="body">
+    The <strong>UEMS Testcase Generator</strong> is an AI agent integrated into VS Code Copilot Chat.
+    It automates the entire QA workflow in a single run — from understanding what needs to be tested,
+    to producing test cases, converting them to automation payloads, and publishing a report.
+  </p>
+  <div class="callout c-info">
+    <span class="ci">💬</span>
+    <div><strong>You say:</strong> "Generate test cases for Computer Rename"<br>
+    <strong>It delivers:</strong> structured manual test cases + GOAT JSON payloads + summary report — all automated.</div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-box sb-1">
+      <div class="si">📋</div>
+      <div class="sl">Test Cases</div>
+      <div class="sv">Hierarchical manual TCs with product-level steps</div>
+    </div>
+    <div class="stat-box sb-2">
+      <div class="si">⚙️</div>
+      <div class="sl">GOAT JSON</div>
+      <div class="sv">Automation payloads ready for execution</div>
+    </div>
+    <div class="stat-box sb-3">
+      <div class="si">💾</div>
+      <div class="sl">Persistent DB</div>
+      <div class="sv">Never duplicates — reuses &amp; extends existing TCs</div>
+    </div>
+    <div class="stat-box sb-4">
+      <div class="si">⚠️</div>
+      <div class="sl">Gap Reports</div>
+      <div class="sv">Unmappable steps flagged, never silently skipped</div>
+    </div>
+  </div>
+
+  <h3 class="sec">02 · How the Codebase Is Connected</h3>
+  <p class="body">
+    UEMS agent code lives across <strong>~38 repositories</strong> (macOS, Linux, Windows).
+    A registry file called <code>repos.json</code> acts as a <strong>phone book</strong> — it stores
+    metadata about each repo, not actual source code.
+  </p>
+
+  <h4 class="sub">What's in repos.json?</h4>
+  <table class="tbl">
+    <tr><th style="width:22%">Field</th><th style="width:36%">Purpose</th><th>Example</th></tr>
+    <tr><td><code>gitUrl</code></td><td>Git clone URL for the repo</td><td><code>https://git.csez.…/patch-management.git</code></td></tr>
+    <tr><td><code>layer</code></td><td>Build dependency order (0 = no deps)</td><td><code>3</code></td></tr>
+    <tr><td><code>dependencies</code></td><td>Other repos this one depends on</td><td><code>["agent-utils", "cmickey_utils"]</code></td></tr>
+    <tr><td><code>platform</code></td><td>Target OS</td><td><code>mac</code>, <code>linux</code>, <code>windows</code></td></tr>
+    <tr><td><code>description</code></td><td>What the repo does (used by AI)</td><td><code>"Patch management functionality"</code></td></tr>
+  </table>
+
+  <h4 class="sub">How Are Relevant Repos Identified? (3 Layers)</h4>
+  <div class="callout c-warn">
+    <span class="ci">⚡</span>
+    <div><strong>Not all 38 repos are cloned.</strong> Only repos relevant to your task are pulled — through a 3-layer process.</div>
+  </div>
+
+  <ul class="steps">
+    <li>
+      <span class="sn sn-blue">1</span>
+      <div><strong>AI Reasoning</strong> — The agent reads your request, matches keywords against repo descriptions and <code>repo-map.md</code> guidelines. If unsure, it asks you. Result: primary repo(s) identified.</div>
+    </li>
+    <li>
+      <span class="sn sn-purple">2</span>
+      <div><strong>Dependency Chain</strong> — <code>repos.json</code> is walked recursively to discover all upstream repos the primary repo depends on. Nothing is missed, nothing extra is pulled.</div>
+    </li>
+    <li>
+      <span class="sn sn-green">3</span>
+      <div><strong>On-Demand Clone</strong> — The <code>setup-workspace</code> tool looks up each repo's <code>gitUrl</code> in <code>repos.json</code> and runs <code>git clone</code> (or <code>git fetch</code> if already present). Local code is then searched for real file paths, service names, and configs that go into test steps.</div>
+    </li>
+  </ul>
+
+  <h3 class="sec">03 · Two Generation Modes</h3>
+  <div class="two-col">
+    <div class="phase">
+      <div class="phase-hd ph-blue">📋 Functionality-Level Mode</div>
+      <div class="phase-bd">
+        <p>Generate test cases for a <strong>feature or module</strong> — from scratch or extending existing coverage.</p>
+        <ul>
+          <li>Reads <code>KNOWLEDGE.md</code> for product context</li>
+          <li>Searches codebase for real paths &amp; configs</li>
+          <li>Covers all scenario categories</li>
+        </ul>
+        <br>
+        <p><strong>Example:</strong><br><em>"Generate test cases for Computer Rename"</em></p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-hd ph-purple">🔃 Diff Comparison Mode</div>
+      <div class="phase-bd">
+        <p>Generate test cases based on <strong>what changed</strong> between two branches.</p>
+        <ul>
+          <li>Diffs source branch vs target branch</li>
+          <li>Classifies each change by functionality</li>
+          <li>Generates TCs only for affected areas</li>
+        </ul>
+        <br>
+        <p><strong>Example:</strong><br><em>"Diff test cases: feature_win_26.05 vs main"</em></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg-footer">
+    <span>UEMS Testcase Generator &amp; GOAT JSON Converter</span>
+    <span>Part 1 — Testcase Generator</span>
+    <span>April 2026</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE 3 — WORKFLOW PHASES 0–2
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <h3 class="sec">04 · End-to-End Workflow</h3>
+  <p class="body">Everything that happens from the moment you type your prompt to the final report.</p>
+
+  <!-- Phase 0 -->
+  <div class="phase">
+    <div class="phase-hd ph-teal">🏥 Phase 0 — Database Health Check</div>
+    <div class="phase-bd">
+      <p>Before any generation, the agent verifies the testcase database is reachable:</p>
+      <div class="code-block"><span class="kw">GET</span> <span class="st">http://localhost:3000/health</span>
+<span class="cm">// Online  → prints: ✅ DB online · Total TCs · GOAT converted · Gaps</span>
+<span class="cm">// Offline → stops and shows how to start the server</span></div>
+      <div class="callout c-stop">
+        <span class="ci">⛔</span>
+        <div>The generator <strong>will not proceed</strong> until the DB is reachable. This prevents duplicate test cases across runs.</div>
+      </div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+
+  <!-- Phase 1 -->
+  <div class="phase">
+    <div class="phase-hd ph-blue">📋 Phase 1 — Collect Inputs</div>
+    <div class="phase-bd">
+      <p>One dialog — all questions asked up front:</p>
+      <table class="tbl">
+        <tr><th style="width:6%">#</th><th style="width:30%">Question</th><th>What You Provide</th></tr>
+        <tr><td>1</td><td>Generation mode</td><td><span class="badge b-blue">Functionality-level</span> or <span class="badge b-purple">Diff comparison</span></td></tr>
+        <tr><td>2</td><td>Functionality name</td><td>e.g., Computer Rename, Patch Installation</td></tr>
+        <tr><td>3</td><td>Branches <span class="badge b-purple">Diff only</span></td><td>e.g., <code>feature_branch → main</code></td></tr>
+        <tr><td>4</td><td>Repository <span class="badge b-purple">Diff only</span></td><td>e.g., <code>uems_agent_framework</code></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+
+  <!-- Phase 2 -->
+  <div class="phase">
+    <div class="phase-hd ph-blue">🧪 Phase 2 — Generate Test Cases (testcase-generation skill)</div>
+    <div class="phase-bd">
+      <table class="tbl">
+        <tr><th style="width:6%">Step</th><th style="width:28%">Action</th><th>Detail</th></tr>
+        <tr>
+          <td>1</td><td><strong>Check existing DB</strong></td>
+          <td>Loads existing TCs for this functionality — existing IDs are noted to avoid duplication</td>
+        </tr>
+        <tr>
+          <td>2</td><td><strong>Gather context</strong></td>
+          <td><em>Func mode:</em> reads <code>KNOWLEDGE.md</code>, CSVs in <code>testcases/&lt;F&gt;/csv/</code>, searches codebase<br>
+              <em>Diff mode:</em> calls <code>uems_agent_diff_branches</code> for actual code changes</td>
+        </tr>
+        <tr>
+          <td>3</td><td><strong>Classify &amp; categorize</strong></td>
+          <td>Groups changes by functionality, sub-functionality, platform, complexity</td>
+        </tr>
+        <tr>
+          <td>4</td><td><strong>Generate test cases</strong></td>
+          <td>
+            <span class="badge b-green">Happy Path</span>
+            <span class="badge b-orange">Bug Scenario</span>
+            <span class="badge b-orange">Failure/Retry</span>
+            <span class="badge b-purple">Edge Case</span>
+            <span class="badge b-purple">Negative</span>
+            <span class="badge b-blue">Integration</span>
+          </td>
+        </tr>
+        <tr>
+          <td>5</td><td><strong>Write product steps</strong></td>
+          <td>Tester language — real file paths, service names, registry keys. No code references. GOAT hint per automatable step.</td>
+        </tr>
+        <tr>
+          <td>6</td><td><strong>Save CSV + Post to DB</strong></td>
+          <td><code>&lt;Functionality&gt;_testcases.csv</code> in workspace root · <code>POST /testcases</code> for each TC</td>
+        </tr>
+      </table>
+      <div class="callout c-good">
+        <span class="ci">✅</span>
+        <div><strong>Smart merge:</strong> When existing TCs are present, the system merges — new ones are added, outdated ones updated, obsolete ones deprecated. Never regenerates from scratch.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg-footer">
+    <span>UEMS Testcase Generator &amp; GOAT JSON Converter</span>
+    <span>Part 1 — Workflow</span>
+    <span>April 2026</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PART 2 DIVIDER
+════════════════════════════════════════════════════════════ -->
+<div class="part-divider purple">
+  <div class="part-label">Part 2 of 2</div>
+  <h2>⚙️ GOAT JSON Converter</h2>
+  <p>Automated conversion of manual test steps into executable GOAT framework JSON payloads — with strict schema validation and named gap reporting for every unmappable step.</p>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE 4 — GOAT CONVERTER DEEP DIVE
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <h3 class="sec">05 · GOAT JSON Converter — Deep Dive</h3>
+  <p class="body">
+    <strong>G.O.A.T</strong> = <em>Generic Orchestrated Automated Testing</em>. It's the testing framework
+    that executes JSON-defined operations on remote machines. The converter translates each manual test step
+    into a typed GOAT operation — or flags it as a gap if no matching operation exists.
+  </p>
+
+  <!-- Phase 3 -->
+  <div class="phase">
+    <div class="phase-hd ph-purple">⚙️ Phase 3 — GOAT JSON Conversion (testcase-json-converter skill)</div>
+    <div class="phase-bd">
+      <table class="tbl">
+        <tr><th style="width:6%">Step</th><th style="width:28%">Action</th><th>Detail</th></tr>
+        <tr>
+          <td>0</td><td><strong>Read GOAT_Operations_Context.md</strong></td>
+          <td>Sole source of truth for all operation types, actions, and parameters. Nothing is invented. If an operation isn't in this file, it goes to the gap report.</td>
+        </tr>
+        <tr>
+          <td>1</td><td><strong>Skip already converted</strong></td>
+          <td><code>GET /payloads/:id</code> → 200 = skip · 404 = convert. Only new TCs are processed.</td>
+        </tr>
+        <tr>
+          <td>2</td><td><strong>Map steps → GOAT ops</strong></td>
+          <td>Each step mapped to <code>operation_type</code> + <code>action</code> + parameters. Exact names checked against the operations file.</td>
+        </tr>
+        <tr>
+          <td>3</td><td><strong>Auto-detect component</strong></td>
+          <td>Component is inferred from step context:<br>
+            <code>$LocalOffice_WinAgent1</code> — agent process/service/registry<br>
+            <code>$DS_Machine_IP</code> — Distribution Server<br>
+            <code>$Server_Machine_IP</code> — UEMS Server</td>
+        </tr>
+        <tr>
+          <td>4</td><td><strong>Build JSON payload</strong></td>
+          <td>Assembles operations array with component, expected result, and <code>goatexecutewithpayload()</code> call</td>
+        </tr>
+        <tr>
+          <td>5</td><td><strong>Save or report gap</strong></td>
+          <td><span class="badge b-green">Mappable</span> → <code>POST /payloads</code> + save to <code>goat-payloads/</code><br>
+              <span class="badge b-orange">Unmappable</span> → <code>POST /gaps</code> + named gap report</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <h4 class="sub">JSON Payload Structure</h4>
+  <div class="code-block">{
+  <span class="st">"TC-RENAME-001"</span>: {
+    <span class="st">"testcase_id"</span>: <span class="st">"TC-RENAME-001"</span>,
+    <span class="st">"product_name"</span>: <span class="st">"UEMS Agent"</span>,
+    <span class="st">"reuse_installation"</span>: <span class="kw">false</span>,
+    <span class="st">"operations"</span>: [
+      {
+        <span class="st">"operation_type"</span>: <span class="st">"service_actions"</span>,
+        <span class="st">"parameters"</span>: { <span class="st">"action"</span>: <span class="st">"stop"</span>, <span class="st">"service_name"</span>: <span class="st">"ManageEngine UEMS - Agent"</span> }
+      },
+      {
+        <span class="st">"operation_type"</span>: <span class="st">"registry_operation"</span>,
+        <span class="st">"parameters"</span>: { <span class="st">"action"</span>: <span class="st">"set"</span>, <span class="st">"path"</span>: <span class="st">"HKLM\\SOFTWARE\\UEMS Agent\\ComputerName"</span>, <span class="st">"value"</span>: <span class="st">"NEW-PC-NAME"</span> }
+      },
+      {
+        <span class="st">"operation_type"</span>: <span class="st">"service_actions"</span>,
+        <span class="st">"parameters"</span>: { <span class="st">"action"</span>: <span class="st">"start"</span>, <span class="st">"service_name"</span>: <span class="st">"ManageEngine UEMS - Agent"</span> }
+      }
+    ],
+    <span class="st">"expected_result"</span>: <span class="st">"Agent re-registers with the new computer name in the server console"</span>
+  }
+}</div>
+
+  <h4 class="sub">Mappability Decision</h4>
+  <div class="decision">
+    <div class="dt">⚖️ Are All Steps Mappable to a GOAT Operation?</div>
+    <div class="dd">Each step checked against GOAT_Operations_Context.md — exact match only, no guessing</div>
+  </div>
+  <div class="fork">
+    <div class="fork-yes">
+      <div class="ft">✅ Yes — All Mapped</div>
+      <div class="fd">JSON payload saved to DB via <code>POST /payloads</code> and written to <code>goat-payloads/</code>. Viewer shows <span class="badge b-green">Converted</span>.</div>
+    </div>
+    <div class="fork-no">
+      <div class="ft">⚠️ No — Gap Found</div>
+      <div class="fd">Gap entry created via <code>POST /gaps</code> with missing util name and suggested operation. Viewer shows <span class="badge b-orange">Unconverted</span>.</div>
+    </div>
+  </div>
+
+  <div class="pg-footer">
+    <span>UEMS Testcase Generator &amp; GOAT JSON Converter</span>
+    <span>Part 2 — GOAT Converter</span>
+    <span>April 2026</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE 5 — GOAT OPERATIONS + GAP REPORTS + OUTPUTS
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <h3 class="sec">06 · Available GOAT Operations</h3>
+  <p class="body">All valid <code>operation_type</code> values come exclusively from <code>GOAT_Operations_Context.md</code>. Common types used in UEMS test cases:</p>
+
+  <div class="op-grid">
+    <div class="op-chip"><code>service_actions</code><span class="op-desc">Start / stop / status of Windows services</span></div>
+    <div class="op-chip"><code>registry_operation</code><span class="op-desc">Read / write / delete registry keys</span></div>
+    <div class="op-chip"><code>file_folder_operation</code><span class="op-desc">Check file/folder existence</span></div>
+    <div class="op-chip"><code>file_folder_modification</code><span class="op-desc">Read / write / edit config files</span></div>
+    <div class="op-chip"><code>run_command</code><span class="op-desc">Execute system shell commands</span></div>
+    <div class="op-chip"><code>run_bat</code><span class="op-desc">Execute .bat / .cmd scripts</span></div>
+    <div class="op-chip"><code>exe_install</code><span class="op-desc">Run installer executables</span></div>
+    <div class="op-chip"><code>task_manager</code><span class="op-desc">Verify process running or not</span></div>
+    <div class="op-chip"><code>communication_operation</code><span class="op-desc">HTTP request / response checks</span></div>
+    <div class="op-chip"><code>download_file</code><span class="op-desc">Download file to a path</span></div>
+    <div class="op-chip"><code>gui_operation</code><span class="op-desc">Web UI browser automation</span></div>
+    <div class="op-chip"><code>native_gui_operation</code><span class="op-desc">Native Windows GUI (automationId)</span></div>
+  </div>
+
+  <div class="callout c-warn">
+    <span class="ci">⛔</span>
+    <div><strong>Strict rule:</strong> The converter never invents an operation. If a step requires something not in <code>GOAT_Operations_Context.md</code>, it goes into the gap report — stating exactly which util is missing and what it should do.</div>
+  </div>
+
+  <h3 class="sec">07 · Gap Reports</h3>
+  <p class="body">
+    A gap report is generated whenever a test case has one or more steps that cannot be mapped to any
+    existing GOAT operation. The report is saved to <code>testcases/&lt;F&gt;/goat-payloads/gap-report.md</code>
+    and also posted to <code>POST /gaps</code>.
+  </p>
+  <table class="tbl">
+    <tr><th>Field</th><th>Value Example</th><th>Purpose</th></tr>
+    <tr><td><code>tc_id</code></td><td><code>TC-INSTALL-006</code></td><td>Which test case has the unmappable step</td></tr>
+    <tr><td><code>missing_util</code></td><td><code>windows_event_log_operation</code></td><td>Name of the GOAT operation that needs to be created</td></tr>
+    <tr><td><code>affected_step</code></td><td>"Check Event Log for ID 7036"</td><td>Exact step text that can't be automated</td></tr>
+    <tr><td><code>suggestion</code></td><td>"Read Windows Event Log by source and event ID"</td><td>Description of what the new operation should do</td></tr>
+  </table>
+  <div class="callout c-info">
+    <span class="ci">💡</span>
+    <div>The DB viewer tooltip shows un-converted TCs grouped by their gap reason when you hover over the <strong>Unconverted</strong> counter card. This helps prioritize which GOAT operations to build next.</div>
+  </div>
+
+  <h3 class="sec">08 · Output Files Reference</h3>
+  <div class="file-strip">
+    <div class="file-box">
+      <div class="fb-icon">📄</div>
+      <div class="fb-title">Test Cases CSV</div>
+      <div class="fb-path">&lt;Functionality&gt;_testcases.csv</div>
+      <div class="fb-desc">All generated TCs in spreadsheet format</div>
+    </div>
+    <div class="file-box">
+      <div class="fb-icon">💾</div>
+      <div class="fb-title">Testcase Database</div>
+      <div class="fb-path">http://localhost:3000</div>
+      <div class="fb-desc">REST API with full CRUD + viewer UI</div>
+    </div>
+    <div class="file-box">
+      <div class="fb-icon">⚙️</div>
+      <div class="fb-title">GOAT Payloads</div>
+      <div class="fb-path">testcases/&lt;F&gt;/goat-payloads/*.js</div>
+      <div class="fb-desc">One JSON file per converted TC</div>
+    </div>
+    <div class="file-box">
+      <div class="fb-icon">⚠️</div>
+      <div class="fb-title">Gap Report</div>
+      <div class="fb-path">testcases/&lt;F&gt;/goat-payloads/gap-report.md</div>
+      <div class="fb-desc">TCs with unmappable steps + suggestions</div>
+    </div>
+    <div class="file-box">
+      <div class="fb-icon">📝</div>
+      <div class="fb-title">Markdown Report</div>
+      <div class="fb-path">testcases/&lt;F&gt;/reports/summary.md</div>
+      <div class="fb-desc">Coverage table + gap table in Markdown</div>
+    </div>
+    <div class="file-box">
+      <div class="fb-icon">🌐</div>
+      <div class="fb-title">HTML Report</div>
+      <div class="fb-path">testcases/&lt;F&gt;/reports/summary.html</div>
+      <div class="fb-desc">Visual dashboard with badges &amp; tables</div>
+    </div>
+  </div>
+
+  <!-- Phase 4 inline -->
+  <h4 class="sub">Phase 4 — Summary Report</h4>
+  <div class="two-col">
+    <div class="card">
+      <p><strong>📝 Markdown</strong> includes: total TCs, new/updated/deprecated counts, coverage by sub-functionality, coverage by category, GOAT gap table, and all output file paths.</p>
+    </div>
+    <div class="card">
+      <p><strong>🌐 HTML</strong> includes: metric cards (total, converted, gaps, P1 count), color-coded tables, priority badges, sub-functionality breakdown, and gap report block.</p>
+    </div>
+  </div>
+
+  <div class="pg-footer">
+    <span>UEMS Testcase Generator &amp; GOAT JSON Converter</span>
+    <span>Part 2 — Operations &amp; Outputs</span>
+    <span>April 2026</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE 6 — ORCHESTRATOR + QUICK START + FAQ
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <h3 class="sec">09 · Orchestrator &amp; Pipeline</h3>
+  <p class="body">
+    The <strong>Orchestrator</strong> is the top-level AI project manager for the full SDLC.
+    The Testcase Generator is one of its specialist sub-agents — invoked at the QA stage.
+  </p>
+
+  <div class="diagram">You give a task (e.g., "Add computer rename feature")
+         │
+         ▼
+┌─────────────────────┐
+│     ORCHESTRATOR     │  ← project manager AI
+└──────────┬──────────┘
+           │
+  Gate 0 ── Asks: platform? repos?
+  Gate 1 ── Loads coding standards &amp; guidelines
+  Gate 2 ── Clones repos via repos.json → setup-workspace
+           │  AI classifies complexity → delegates:
+           │
+   ┌───────┬──────────┬──────────┬──────────┐
+   ▼       ▼          ▼          ▼          ▼
+Planner  Architect  Developer  Reviewer   QA Agent
+  │                                          │
+  ▼ (complex tasks)                          ▼
+breaks     designs    writes     reviews  → Testcase Generator
+task       solution   code       code       (this document)</div>
+
+  <div class="callout c-info">
+    <span class="ci">💡</span>
+    <div><strong>Two ways to invoke the Testcase Generator:</strong><br><br>
+    <strong>1. Via Orchestrator</strong> — Part of a full SDLC run. Orchestrator clones repos, runs gates, then delegates to the Testcase Generator at the QA phase.<br><br>
+    <strong>2. Standalone</strong> — Call it directly in Copilot Chat. It handles repo cloning and context gathering independently. The Orchestrator is not required.</div>
+  </div>
+
+  <h3 class="sec">10 · Quick Start</h3>
+  <div class="qs-grid">
+    <div class="qs-card">
+      <div class="qs-hd ph-teal"><span class="qs-num">1</span> Start DB</div>
+      <div class="qs-bd"><code>cd source/testcase-db</code><br><code>node server.js</code><br><br>Required before every run.</div>
+    </div>
+    <div class="qs-card">
+      <div class="qs-hd ph-blue"><span class="qs-num">2</span> Open Chat</div>
+      <div class="qs-bd">Press <code>Ctrl+Shift+I</code> in VS Code to open Copilot Chat sidebar.</div>
+    </div>
+    <div class="qs-card">
+      <div class="qs-hd ph-purple"><span class="qs-num">3</span> Type Prompt</div>
+      <div class="qs-bd"><em>"Generate test cases for Computer Rename"</em><br><br>or:<br><em>"Diff TCs: feature_win vs main in uems_agent_framework"</em></div>
+    </div>
+    <div class="qs-card">
+      <div class="qs-hd ph-green"><span class="qs-num">4</span> Done</div>
+      <div class="qs-bd">Answer the one-time dialog. Phases 0–4 run fully automated. Check reports and the DB viewer.</div>
+    </div>
+  </div>
+
+  <h3 class="sec">FAQ</h3>
+
+  <div class="faq-item">
+    <div class="faq-q">Does it pull all 38 repositories?</div>
+    <div class="faq-a"><strong>No.</strong> Only repos relevant to your task are cloned on-demand. The AI identifies primary repos from your prompt, then <code>repos.json</code> provides the Git URLs and dependency chain. A "Computer Rename" task only clones repos that contain rename logic plus their dependencies.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">What if the testcase DB is offline?</div>
+    <div class="faq-a">Phase 0 blocks and tells you exactly how to start it: <code>cd source/testcase-db &amp;&amp; node server.js</code>. This is mandatory — the DB tracks all existing TCs to prevent duplicates.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">What if a test step can't be automated with GOAT?</div>
+    <div class="faq-a">It is <strong>never silently skipped</strong>. A gap report entry is created with: the TC ID, the unmappable step text, the missing operation name, and a suggested operation description. Posted to <code>/gaps</code> and saved to <code>gap-report.md</code>.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">What happens if I run it again for the same functionality?</div>
+    <div class="faq-a">Smart merge applies: <strong>New scenarios</strong> → added with new IDs · <strong>Changed scenarios</strong> → updated in place · <strong>Obsolete scenarios</strong> → deprecated (not deleted) · <strong>Unchanged</strong> → left as-is. It never regenerates from scratch.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Why were the Unconverted TCs showing as a negative number in the viewer?</div>
+    <div class="faq-a">This was a race condition bug: <code>loadPayloads()</code> and <code>loadStats()</code> ran in parallel. When <code>loadPayloads()</code> finished first, the total count wasn't written to the DOM yet — so the formula <code>total - converted</code> evaluated as <code>0 - 37 = -37</code>. Fixed by moving <code>updateConversionCounts()</code> to after all parallel loads complete.</div>
+  </div>
+
+  <div class="pg-footer">
+    <span>UEMS Testcase Generator &amp; GOAT JSON Converter</span>
+    <span>Part 2 — Pipeline, Quick Start &amp; FAQ</span>
+    <span>April 2026</span>
+  </div>
+</div>
+
+</body>
+</html>

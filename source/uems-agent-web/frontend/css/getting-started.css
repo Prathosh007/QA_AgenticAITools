@@ -1,0 +1,165 @@
+/* ── Getting Started section ──────────────────────────────────── */
+
+.getting-started {
+  padding-bottom: 48px;
+}
+
+/* Workflow picker tabs */
+.workflow-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.workflow-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.workflow-tab .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.workflow-tab:hover {
+  border-color: var(--accent-blue);
+  color: var(--text-primary);
+}
+
+.workflow-tab.active {
+  border-color: var(--accent-blue);
+  background: rgba(88, 166, 255, 0.08);
+  color: var(--accent-blue);
+}
+
+/* Steps list (shared between both tab panels) */
+.workflow-steps {
+  display: none;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.workflow-steps.active {
+  display: flex;
+}
+
+.step {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  position: relative;
+}
+
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 17px;
+  top: 56px;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+
+.step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-blue);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.step-content h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  line-height: 36px;
+}
+
+.step-content p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.step-content strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.step-content a {
+  color: var(--accent-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 500;
+}
+
+.step-content a:hover {
+  color: #79c0ff;
+}
+
+.step-bullets {
+  margin: 8px 0 0 0;
+  padding-left: 18px;
+  list-style: none;
+}
+
+.step-bullets li {
+  position: relative;
+  padding-left: 6px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.step-bullets li::before {
+  content: '›';
+  position: absolute;
+  left: -14px;
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+.step-bullets li strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.step-bullets code {
+  background: var(--bg-secondary);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.step-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.step-hint a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

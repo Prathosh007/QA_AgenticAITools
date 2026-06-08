@@ -1,0 +1,94 @@
+"Automation 
+Status",TestCase Name in Qengine,Testcase ID,DRI,Functionality,Type,OS,Testcases,Steps to achieve,Remarks,Utils with name,Efforts and Days needed,Flow Digram
+,Agent_Preinstall (Cleanup),AI_MI_01,,Agent Installation - Manual,Functional,Windows,Pre-cleanup of existing agent,"1. Check if agent is installed on the machine.
+2. If installed, uninstall the agent.
+3. Verify agent is removed from Control Panel.
+4. Verify agent service is not present or not running.
+5. Verify no agent process is running in Task Manager.
+6. Verify agent-related registry entries are removed.",Machine should be in clean state before install,"Control Panel, Services, Task Manager, Registry",1 Day,
+,Agent_ManualInstall_Download,AI_MI_02,,Agent Installation - Manual,Functional,Windows,Download agent installer,"1. Open the server URL in browser through Qengine.
+2. Download the agent installer file.
+3. Verify download is completed successfully and file is not corrupted.",Browser automation through Qengine,Browser,0.5 Day,
+,Agent_ManualInstall_Copy,AI_MI_03,,Agent Installation - Manual,Functional,Windows,Copy installer to target machine,"1. Locate the downloaded installer file.
+2. Copy the installer to the target machine.
+3. Verify the file exists in the target location.",Through GOAT server upload files feature we can copy the downloaded file from one machine to other,File Explorer / Network share,0.5 Day,
+,Agent_ManualInstall_Install,AI_MI_04,,Agent Installation - Manual,Functional,Windows,Manual installation of agent,"1. Launch installer from target machine through cmd util.
+2. Enter captcha if prompted through gui utils.
+3. Click Next and proceed with installation.
+4. Wait for installation to complete.5. Verify success message is displayed.",Native GUI utils we can achieve this,"Installer UI, Command Prompt",1 Day,
+,Agent_ManualInstall_PostValidation,AI_MI_05,,Agent Installation - Manual,Functional,Windows,Post installation validation,"1. Verify agent is listed in SOM page with remark ""Agent Installed successfully"".
+2. Verify agent service is running.
+3. Verify agent entry exists in Control Panel.
+4. Verify agent process is running in Task Manager.",Agent should be active and healthy,"Browser, Services, Control Panel, Task Manager",1 Day,
+,Agent_Install_Fail_InvalidCaptcha,AI_MI_NEG_01,,Agent Installation - Manual,Negative,Windows,Invalid captcha handling,"1. Start install.
+2. Enter wrong captcha.
+3. Proceed.",Error should be shown,Native GUI uil,0.5 Day,
+,Agent_Install_Fail_CorruptInstaller,AI_MI_NEG_02,,Agent Installation - Manual,Negative,Windows,Corrupt installer file,"1. Use corrupt installer.
+2. Launch installer.",Installation should fail,File folder,0.5 Day,
+,Agent_Install_Fail_NoAdmin,AI_MI_NEG_03,,Agent Installation - Manual,Negative,Windows,Install without admin rights,"1. Login as standard user.
+2. Run installer.",Permission error expected,,0.5 Day,
+,Agent_Install_Fail_NetworkDrop,AI_MI_NEG_04,,Agent Installation - Manual,Negative,Windows,Network failure during download,"1. Start download.
+2. Disconnect network mid-way.",Download should fail gracefully,network util / service util,0.5 Day,
+,Agent_Install_Win7,AI_MI_OS_01,,Agent Installation - Manual,OS Validation,Windows 10,Install on Windows 10,"1. Perform manual install on Win7.
+2. Validate agent works.",Must succeed,Native GUI uil,1 Day,
+,Agent_Install_Win11,AI_MI_OS_02,,Agent Installation - Manual,OS Validation,Windows 11,Install on Windows 11,"1. Perform manual install on Win11 or 10.
+2. Validate agent works.",Must succeed,Native GUI uil,1 Day,
+,Agent_Install_WinServer,AI_MI_OS_03,,Agent Installation - Manual,OS Validation,Windows Server,Install on Windows Server,"1. Perform manual install on Windows Server.
+2. Validate agent works.",Must succeed,Native GUI uil,1 Day,
+,Agent_Preinstall (Cleanup),AI_MSI_01,,Agent Installation - MSI,Functional,Windows,Pre-cleanup before MSI install,"1. Check if agent is installed.
+2. Uninstall agent if present.
+3. Verify removal from Control Panel, Services, Task Manager, Registry.","Clean Agent in target machine through
+cleanup tool execution by cmd util","Control Panel, Services, Registry",1 Day,
+,Agent_MSI_Download_Zip,AI_MSI_02,,Agent Installation - MSI,Functional,Windows,Download MSI ZIP package,"1. Open server through Qengine
+2. Download agent installer zip in Agent installation tab
+3. Download ZIP package.
+4. Verify ZIP is downloaded successfully.",Browser automation through Qengine,Browser,0.5 Day,
+,Agent_MSI_Copy_Zip,AI_MSI_03,,Agent Installation - MSI,Functional,Windows,Copy ZIP to target machine,"1. Locate downloaded ZIP.
+2. Copy ZIP to target machine.
+3. Verify ZIP exists on target.",Through GOAT server upload files feature we can copy the downloaded file from one machine to other,File Explorer,0.5 Day,
+,Agent_MSI_Unzip,AI_MSI_04,,Agent Installation - MSI,Functional,Windows,Unzip MSI package,"1. Unzip the ZIP file on target machine.
+2. Verify MSI file is extracted successfully.",,File Explorer / Unzip,0.5 Day,
+,Agent_MSI_Install,AI_MSI_05,,Agent Installation - MSI,Functional,Windows,Install agent using MSI,"1. Launch MSI installer.
+2. Proceed through setup wizard.
+3. Complete installation.
+4. Verify success message.",Interactive flow,Native GUI uil,1 Day,
+,Agent_MSI_PostValidation,AI_MSI_06,,Agent Installation - MSI,Functional,Windows,Post MSI install validation,"1. Verify agent is listed in SOM with success remark.
+2. Verify agent service is running.
+3. Verify agent entry exists in Control Panel.
+4. Verify agent process is running.",Agent healthy,"Browser, Services, CP",1 Day,
+,Agent_MSI_NEG_CorruptZip,AI_MSI_NEG_01,,Agent Installation - MSI,Negative,Windows,Corrupt ZIP package,"1. Use corrupt ZIP.
+2. Try to unzip it.",Unzip should fail,Unzip tool,0.5 Day,
+,Agent_MSI_NEG_MissingMSI,AI_MSI_NEG_02,,Agent Installation - MSI,Negative,Windows,ZIP without MSI,"1. Unzip ZIP without MSI.
+2. Try to install.",Installation should not start,File Explorer,0.5 Day,
+,Agent_MSI_NEG_NoAdmin,AI_MSI_NEG_03,,Agent Installation - MSI,Negative,Windows,Install MSI without admin rights,"1. Login as standard user.
+2. Launch MSI.",Permission error expected,MSI Installer,0.5 Day,
+,Agent_MSI_NEG_InterruptInstall,AI_MSI_NEG_04,,Agent Installation - MSI,Negative,Windows,Interrupt MSI installation,"1. Start MSI install.
+2. Cancel mid-way.",Installation should rollback,MSI Installer,0.5 Day,
+,Agent_MSI_OS_Win10,AI_MSI_OS_01,,Agent Installation - MSI,OS Validation,Windows 7,Install MSI on Windows 7,"1. Perform MSI install on Win10.
+2. Validate agent works.",Should succeed,MSI Installer,1 Day,
+,Agent_MSI_OS_Win11,AI_MSI_OS_02,,Agent Installation - MSI,OS Validation,Windows 10/11,Install MSI on Windows 11,"1. Perform MSI install on Win11.
+2. Validate agent works.",Should succeed,MSI Installer,1 Day,
+,Agent_MSI_OS_WinServer,AI_MSI_OS_03,,Agent Installation - MSI,OS Validation,Windows Server,Install MSI on Windows Server,"1. Perform MSI install on Windows Server.
+2. Validate agent works.",Should succeed,MSI Installer,1 Day,
+,Agent_Silent_PreCleanup,AI_SIL_01,,Agent Installation - Silent,Functional,Windows,Pre-cleanup before silent install,"1. Check if agent is installed.
+2. Uninstall agent if present.
+3. Verify removal from Control Panel, Services, Task Manager, Registry.",Clean machine,"Control Panel, Services, Registry",1 Day,
+,Agent_Silent_Install,AI_SIL_02,,Agent Installation - Silent,Functional,Windows,Silent installation of agent,"1. Run installer with /silent argument.
+2. Wait for installation to complete.
+3. Verify no UI is displayed.",No user interaction,CMD,0.5 Day,
+,Agent_Silent_PostValidation,AI_SIL_03,,Agent Installation - Silent,Functional,Windows,Post silent install validation,"1. Verify agent is listed in SOM with success remark.
+2. Verify agent service is running.
+3. Verify agent entry exists in Control Panel.
+4. Verify agent process is running.",Agent healthy,"SOM, Services",1 Day,
+,Agent_Silent_NEG_NoAdmin,AI_SIL_NEG_01,,Agent Installation - Silent,Negative,Windows,Silent install without admin,"1. Login as standard user.
+2. Run silent install.",Permission error expected,CMD,0.5 Day,
+,Agent_Silent_NEG_WrongArg,AI_SIL_NEG_02,,Agent Installation - Silent,Negative,Windows,Silent install with wrong argument,"1. Run installer with invalid argument.
+2. Observe behavior.",Install should fail or show error,CMD,0.5 Day,
+,Agent_Silent_NEG_CorruptExe,AI_SIL_NEG_03,,Agent Installation - Silent,Negative,Windows,Silent install with corrupt exe,"1. Use corrupt installer.
+2. Run silent install.",Installation should fail,CMD,0.5 Day,
+,Agent_Silent_OS_Win10,AI_SIL_OS_01,,Agent Installation - Silent,OS Validation,Windows 7,Install MSI on Windows 7,"1. Run silent install on Win7.
+2. Validate agent works.",Should succeed,CMD,1 Day,
+,Agent_Silent_OS_Win11,AI_SIL_OS_02,,Agent Installation - Silent,OS Validation,Windows 10/11,Install MSI on Windows 11,"1. Run silent install on Win11.
+2. Validate agent works.",Should succeed,CMD,1 Day,
+,Agent_Silent_OS_WinServer,AI_SIL_OS_03,,Agent Installation - Silent,OS Validation,Windows Server,Silent install on Windows Server,"1. Run silent install on Windows Server.
+2. Validate agent works.",Should succeed,CMD,1 Day,

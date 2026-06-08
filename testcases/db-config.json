@@ -1,0 +1,5 @@
+{
+  "db_url": "http://prathosh-14802-t:3000",
+  "description": "Central testcase DB server. All team members point here. Run 'node server.js' on prathosh-14802-t to start.",
+  "viewer_url": "http://prathosh-14802-t:3000/view"
+}

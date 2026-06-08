@@ -1,0 +1,610 @@
+{
+  "name": "uems-agent-chat",
+  "displayName": "UEMS Agent Chat",
+  "description": "Chat agents for UEMS Native Agent development — architecture, planning, development, review, and documentation",
+  "version": "0.3.16",
+  "publisher": "uems-agent",
+  "icon": "assets/icon.png",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manageengine/uems-ai-toolkit"
+  },
+  "engines": {
+    "vscode": "^1.108.0"
+  },
+  "categories": [
+    "Chat",
+    "AI"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "uems-agent-chat.syncAgents",
+        "title": "Sync Agent Files",
+        "category": "UEMS Agent Chat"
+      },
+      {
+        "command": "uems-agent-chat.openChat",
+        "title": "Open Chat",
+        "category": "UEMS Agent Chat"
+      },
+      {
+        "command": "uems-agent-chat.checkPrerequisites",
+        "title": "Check Prerequisites",
+        "category": "UEMS Agent Chat"
+      },
+      {
+        "command": "uems-agent-chat.setupWorkspace",
+        "title": "Setup Workspace",
+        "category": "UEMS Agent Chat"
+      }
+    ],
+    "configuration": {
+      "title": "UEMS Agent Chat",
+      "properties": {
+        "uems-agent-chat.syncIntervalHours": {
+          "type": "number",
+          "default": 24,
+          "minimum": 0.5,
+          "maximum": 168,
+          "description": "How often (in hours) to sync agent files from the remote repository. Set to 0.5 for 30 minutes."
+        },
+        "uems-agent-chat.autoSync": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically sync agent files on activation and periodically."
+        },
+        "uems-agent-chat.autoUpdate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically check for and install extension updates from the remote repository."
+        },
+        "uems-agent-chat.devMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Development mode: use the local uems-ai-toolkit workspace folder for agents and guidelines instead of syncing from master. Enable this when developing on a feature branch."
+        },
+        "uems-agent-chat.devRepoPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the local uems-ai-toolkit repo root (used when devMode is true). Auto-detected from workspace folders if empty."
+        },
+        "uems-agent-chat.httpBridge.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Start an HTTP server that exposes the UEMS agent orchestrator for external frontends."
+        },
+        "uems-agent-chat.httpBridge.port": {
+          "type": "number",
+          "default": 3111,
+          "minimum": 1024,
+          "maximum": 65535,
+          "description": "Port for the HTTP bridge server."
+        }
+      }
+    },
+    "chatParticipants": [
+      {
+        "id": "uems-agent-chat.explorer",
+        "fullName": "UEMS Agent Explorer",
+        "name": "UEMS-Agent",
+        "isSticky": true,
+        "description": "Explore UEMS native agent repositories — codebase, dependencies, architecture, and conventions",
+        "commands": [],
+        "disambiguation": [
+          {
+            "category": "general",
+            "description": "Explore UEMS native agent codebase, repo structure, dependencies, and conventions",
+            "examples": [
+              "What repos does patch-management depend on?",
+              "Find the networking wrapper in agent-utils",
+              "List all components in configuration-framework"
+            ]
+          }
+        ]
+      }
+    ],
+    "chatSkills": [
+      {
+        "path": "./assets/skills/behavioral-change-analysis/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/checkpoint-management/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/environment-setup-protocol/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/guideline-loading-protocol/SKILL.md"
+      },
+
+      {
+        "path": "./assets/skills/platform-confirmation-protocol/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/regression-coverage-analysis/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/review-standards-reference/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/tag-resolution-protocol/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/diff-triage-batching/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/symbol-tracing/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/tool-preference-rules/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/unit-test-runner/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/testcase-generation/SKILL.md"
+      },
+      {
+        "path": "./assets/skills/testcase-json-converter/SKILL.md"
+      }
+    ],
+    "chatAgents": [
+      {
+        "path": "./assets/agents/uems-agent-architect.agent.md"
+      },
+      {
+        "path": "./assets/agents/uems-agent-delta-reviewer.agent.md"
+      },
+      {
+        "path": "./assets/agents/uems-agent-developer.agent.md"
+      },
+      {
+        "path": "./assets/agents/uems-agent-document-generator.agent.md"
+      },
+      {
+        "path": "./assets/agents/uems-agent-explorer.agent.md"
+      },
+      {
+        "path": "./assets/agents/uems-agent-orchestrator.agent.md"
+      },
+      {
+        "path": "./assets/agents/uems-agent-planner.agent.md"
+      },
+      {
+        "path": "./assets/agents/uems-agent-qa.agent.md"
+      },
+      {
+        "path": "./assets/agents/uems-agent-reviewer.agent.md"
+      },
+      {
+        "path": "./assets/agents/uems-agent-testcase-generator.agent.md"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "uems-agent-onboarding",
+        "title": "Get Started with UEMS Agents",
+        "description": "Verify prerequisites and start exploring UEMS native agent repositories with AI.",
+        "steps": [
+          {
+            "id": "check-prerequisites",
+            "title": "Check Prerequisites",
+            "description": "Verify that Git and GitHub Copilot Chat are available on your system.\n\n[Check Prerequisites](command:uems-agent-chat.checkPrerequisites)",
+            "media": {
+              "markdown": "assets/walkthroughs/prerequisites.md"
+            },
+            "completionEvents": [
+              "onCommand:uems-agent-chat.checkPrerequisites"
+            ]
+          },
+          {
+            "id": "setup-workspace",
+            "title": "Setup Workspace",
+            "description": "Clone the UEMS agent repositories for your platform so agents can search and navigate code.\n\n[macOS](command:uems-agent-chat.setupWorkspace?%7B%22platform%22%3A%22mac%22%7D) · [Linux](command:uems-agent-chat.setupWorkspace?%7B%22platform%22%3A%22linux%22%7D) · [Windows](command:uems-agent-chat.setupWorkspace?%7B%22platform%22%3A%22windows%22%7D)",
+            "media": {
+              "markdown": "assets/walkthroughs/setup-workspace.md"
+            },
+            "completionEvents": [
+              "onCommand:uems-agent-chat.setupWorkspace"
+            ]
+          },
+          {
+            "id": "start-exploring",
+            "title": "Start Exploring",
+            "description": "Open Copilot Chat with the UEMS Agent Explorer to search code, trace dependencies, and understand the architecture.\n\n[Open UEMS Agent Explorer](command:uems-agent-chat.openChat)",
+            "media": {
+              "markdown": "assets/walkthroughs/start-exploring.md"
+            },
+            "completionEvents": [
+              "onCommand:uems-agent-chat.openChat"
+            ]
+          }
+        ]
+      }
+    ],
+    "languageModelTools": [
+      {
+        "name": "uems_agent_search_repos",
+        "displayName": "UEMS Agent: Search Repos",
+        "toolReferenceName": "uems_agent_search_repos",
+        "modelDescription": "Search for code patterns across UEMS agent repositories. Returns file paths, line numbers, and matching text. Supports multiple search terms separated by spaces, pipes (|), or ampersands (&) — each term is matched independently (OR logic). Set isRegex=true only for advanced regex patterns (character classes, quantifiers, lookaheads). Use this to find where a class, function, macro, string, or pattern is defined or used across repos.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Search pattern. Multiple terms can be separated by spaces, pipes (|), or ampersands (&) to match any of them (OR logic). Examples: 'WriteEvent ERRMSG' finds both, 'NSXPCConnection' finds exact match, 'init.*Logger' with isRegex=true for regex."
+            },
+            "repos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Optional list of repo names to search (e.g. ['agent-utils', 'patch-management']). Searches all workspace repos if omitted."
+            },
+            "filePattern": {
+              "type": "string",
+              "description": "Optional glob pattern to filter files (e.g. '*.swift', '*.{h,m}')."
+            },
+            "maxResults": {
+              "type": "number",
+              "description": "Maximum results to return. Default: 200."
+            },
+            "isRegex": {
+              "type": "boolean",
+              "description": "Set to true only for advanced regex syntax (character classes, quantifiers, lookaheads). NOT needed for multi-term searches — spaces, pipes, and ampersands are automatically handled as OR separators. Default: false."
+            }
+          },
+          "required": [
+            "query"
+          ]
+        }
+      },
+      {
+        "name": "uems_agent_list_components",
+        "displayName": "UEMS Agent: List Components",
+        "toolReferenceName": "uems_agent_list_components",
+        "modelDescription": "List native code components (classes, protocols, structs, enums, functions, XPC services, Go interfaces) defined in a UEMS agent repository. Supports Swift, Objective-C, C, Go, and C++. Use this to discover what components exist in a repo.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "repo": {
+              "type": "string",
+              "description": "Repository name to scan (e.g. 'agent-utils')."
+            },
+            "types": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "class",
+                  "protocol",
+                  "struct",
+                  "enum",
+                  "xpc-service",
+                  "function",
+                  "interface",
+                  "com-interface"
+                ]
+              },
+              "description": "Component types to list. Default: ['class', 'protocol', 'struct']."
+            },
+            "platform": {
+              "type": "string",
+              "enum": [
+                "mac",
+                "linux",
+                "windows",
+                "cross-platform"
+              ],
+              "description": "Target platform — determines file extensions and patterns. Use 'cross-platform' to scan all native languages (Go, C, Swift, ObjC). Default: 'mac'."
+            }
+          },
+          "required": [
+            "repo"
+          ]
+        }
+      },
+      {
+        "name": "uems_agent_find_wrapper",
+        "displayName": "UEMS Agent: Find Agent-Utils Wrapper",
+        "toolReferenceName": "uems_agent_find_wrapper",
+        "modelDescription": "Find Agent-Utils wrappers for a given capability such as networking, file operations, process launching, logging, secure storage, XPC, or crypto. Use this before writing code that touches system APIs to check if a wrapper already exists.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "capability": {
+              "type": "string",
+              "description": "The capability to search for — e.g. 'networking', 'file', 'process', 'logging', 'secure-storage', 'xpc', 'crypto'."
+            },
+            "repo": {
+              "type": "string",
+              "description": "Repo name to search for wrappers in. Default: 'agent-utils'."
+            },
+            "platform": {
+              "type": "string",
+              "enum": [
+                "mac",
+                "linux",
+                "windows",
+                "cross-platform"
+              ],
+              "description": "Target platform — determines search keywords and file extensions. Default: 'mac'."
+            }
+          },
+          "required": [
+            "capability"
+          ]
+        }
+      },
+      {
+        "name": "uems_agent_dependency_graph",
+        "displayName": "UEMS Agent: Dependency Graph",
+        "toolReferenceName": "uems_agent_dependency_graph",
+        "modelDescription": "Get the dependency graph for a specific UEMS repo or the full platform. Shows upstream dependencies and downstream dependents organized by layer (0-4). Use this to understand cross-repo impact before making changes.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "repo": {
+              "type": "string",
+              "description": "Repo name to get dependencies for. If omitted, returns the full platform graph."
+            },
+            "platform": {
+              "type": "string",
+              "enum": [
+                "mac",
+                "linux",
+                "windows",
+                "cross-platform"
+              ],
+              "description": "Target platform. Default: 'mac'."
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "up",
+                "down",
+                "both"
+              ],
+              "description": "'up' for upstream deps, 'down' for downstream dependents, 'both' for full graph. Default: 'both'."
+            }
+          }
+        }
+      },
+      {
+        "name": "uems_agent_validate_tag",
+        "displayName": "UEMS Agent: Validate Tag",
+        "toolReferenceName": "uems_agent_validate_tag",
+        "modelDescription": "Validate a git tag format against UEMS convention (PRODUCTNAME_YY.MM.BUILD) and check if it exists in a repo. Returns format validity, existence status, and similar tag suggestions if the tag is not found.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "repo": {
+              "type": "string",
+              "description": "Repository name to check the tag in."
+            },
+            "tag": {
+              "type": "string",
+              "description": "The tag to validate (e.g. 'AGENT_UTILS_26.05.01')."
+            }
+          },
+          "required": [
+            "repo",
+            "tag"
+          ]
+        }
+      },
+      {
+        "name": "uems_agent_create_branch",
+        "displayName": "UEMS Agent: Create Branch",
+        "toolReferenceName": "uems_agent_create_branch",
+        "modelDescription": "Create a git branch from a tag or base branch across one or more UEMS repos. Validates branch naming convention (feature/, bugfix/, hotfix/, release/) and tag format before creating. Use this during environment setup to create working branches.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "repos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of repo names to create the branch in."
+            },
+            "branchName": {
+              "type": "string",
+              "description": "Branch name following convention: feature/<topic>, bugfix/<topic>, hotfix/<topic>, release/<version>."
+            },
+            "fromRef": {
+              "type": "string",
+              "description": "Tag or branch to create from (e.g. 'UEMS_MAC_AGENT_UTILS_26.05.01' or 'master')."
+            }
+          },
+          "required": [
+            "repos",
+            "branchName",
+            "fromRef"
+          ]
+        }
+      },
+      {
+        "name": "uems_agent_setup_workspace",
+        "displayName": "UEMS Agent: Setup Workspace",
+        "toolReferenceName": "uems_agent_setup_workspace",
+        "modelDescription": "Clone or fetch multiple UEMS agent repositories and verify workspace readiness. Optionally checkout a specific branch in all repos. Reports clone/fetch status, current branch, and clean/dirty state for each repo.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "repos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Specific repo names to set up. If omitted, sets up all repos for the platform."
+            },
+            "platform": {
+              "type": "string",
+              "enum": [
+                "mac",
+                "linux",
+                "windows",
+                "cross-platform"
+              ],
+              "description": "Target platform. Default: 'mac'."
+            },
+            "targetDir": {
+              "type": "string",
+              "description": "Base directory to clone repos into. Defaults to first workspace folder."
+            },
+            "branch": {
+              "type": "string",
+              "description": "Branch to checkout after clone/fetch. Skipped for repos where the branch doesn't exist. If omitted, repos stay on their current branch."
+            }
+          }
+        }
+      },
+      {
+        "name": "uems_agent_load_guidelines",
+        "displayName": "UEMS Agent: Load Guidelines",
+        "toolReferenceName": "uems_agent_load_guidelines",
+        "modelDescription": "Load UEMS engineering guidelines, security standards, coding conventions, doc-standards, and review-standards from the synced store. Returns file contents organized by category. Use this instead of cloning the uems-ai-toolkit repo — guidelines are synced automatically by the extension.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "platform": {
+              "type": "string",
+              "enum": [
+                "mac",
+                "linux",
+                "windows"
+              ],
+              "description": "Target platform for platform-specific guidelines. Default: 'mac'."
+            },
+            "category": {
+              "type": "string",
+              "enum": [
+                "all",
+                "common",
+                "platform",
+                "doc-standards",
+                "review-standards"
+              ],
+              "description": "Which guidelines to load — 'common' for shared standards, 'platform' for platform-specific, 'doc-standards' for documentation standards, 'review-standards' for delta review report template and standards, 'all' for everything. Default: 'all'."
+            },
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Optional list of specific filenames to load (e.g. ['grounding-rules.md', 'repo-map.md']). If omitted, loads all files in the category."
+            }
+          }
+        }
+      },
+      {
+        "name": "uems_agent_load_skills",
+        "displayName": "UEMS Agent: Load Skills",
+        "toolReferenceName": "uems_agent_load_skills",
+        "modelDescription": "Load reusable skill procedures (SKILL.md files) from the synced skills store. Skills are focused, agent-specific procedures for tasks like checkpoint management, symbol tracing, and platform confirmation. Pass specific skill names via 'files' to load only what you need, or omit to load all skills.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Skill names to load (e.g. ['tool-preference-rules', 'checkpoint-management']). Each name is a skill directory containing a SKILL.md file. If omitted, loads all available skills."
+            }
+          }
+        }
+      },
+      {
+        "name": "uems_agent_diff_branches",
+        "displayName": "UEMS Agent: Diff Branches",
+        "toolReferenceName": "uems_agent_diff_branches",
+        "modelDescription": "Get the unified diff and per-file stats between two git branches across one or more UEMS repos. Returns changed file list, insertion/deletion counts, and the diff output. Use this for delta code reviews.",
+        "canBeReferencedInPrompt": true,
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "repos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Optional list of repo names. If omitted, diffs all workspace repos."
+            },
+            "sourceBranch": {
+              "type": "string",
+              "description": "The source branch containing the changes (e.g. 'feature/new-feature')."
+            },
+            "targetBranch": {
+              "type": "string",
+              "description": "The target/base branch to compare against (e.g. 'master')."
+            },
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Optional list of file paths to scope the diff to. Use this to batch large diffs by requesting specific files per call."
+            }
+          },
+          "required": [
+            "sourceBranch",
+            "targetBranch"
+          ]
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "copy-assets": "node scripts/copy-assets.js",
+    "vscode:prepublish": "npm run copy-assets && npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "build:vsix": "npm run copy-assets && npx @vscode/vsce package -o releases/uems-agent-chat.vsix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.108.0",
+    "@typescript-eslint/eslint-plugin": "^8.26.0",
+    "@typescript-eslint/parser": "^8.26.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.19.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.57.0"
+  },
+  "vsce": {
+    "dependencies": true,
+    "yarn": false
+  },
+  "extensionDependencies": [
+    "GitHub.copilot-chat"
+  ],
+  "enabledApiProposals": [
+    "chatParticipantAdditions",
+    "chatEditing"
+  ]
+}

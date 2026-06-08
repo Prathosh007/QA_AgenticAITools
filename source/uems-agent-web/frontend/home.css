@@ -1,0 +1,12 @@
+/* ── UEMS AI Toolkit — Landing Page styles ───────────────────── */
+/* Each concern lives in its own file under css/.                 */
+/* This aggregator keeps the HTML <link> tag intact.              */
+
+@import url('css/base.css');
+@import url('css/layout.css');
+@import url('css/cards.css');
+@import url('css/getting-started.css');
+@import url('css/feedback.css');
+@import url('css/docs-viewer.css');
+@import url('css/responsive.css');
+@import url('css/auth.css');

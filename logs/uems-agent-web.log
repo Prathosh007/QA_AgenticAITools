@@ -1,0 +1,857 @@
+{"time":"2026-06-03T18:10:50.7344705+05:30","level":"INFO","msg":"system prompt loaded","path":"..\\..\\agents\\orchestrator\\agents\\uems-agent-testcase-generator.agent.md","bytes":28023}
+{"time":"2026-06-03T18:10:50.7400892+05:30","level":"INFO","msg":"server starting","mode":"standalone","addr":":443","repos":"D:\\AgentQA_Tools\\Code base","guidelines":"../../guidelines","prompts":"../../agents/orchestrator/agents"}
+{"time":"2026-06-03T18:10:50.7412682+05:30","level":"INFO","msg":"TLS enabled (self-signed)","addr":":443"}
+2026/06/03 18:10:53 "GET https://localhost/health HTTP/1.1" from [::1]:62251 - 200 15B in 0s
+2026/06/03 18:10:53 "GET https://localhost/health HTTP/1.1" from [::1]:62252 - 200 15B in 0s
+{"time":"2026-06-03T18:10:56.5559832+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:58549: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:11:03.1617374+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:56968: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:11:03.1687796+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:64627: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:11:05.4487563+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:65076: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:11:05.464202+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:60699: remote error: tls: unknown certificate"}
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/ HTTP/2.0" from 10.69.70.27:56147 - 200 12442B in 84.7939ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/style.css HTTP/2.0" from 10.69.70.27:56147 - 200 45102B in 2.8843ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/app.js HTTP/2.0" from 10.69.70.27:56147 - 200 11188B in 2.0098ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/icon.png HTTP/2.0" from 10.69.70.27:56147 - 200 32842B in 5.6082ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/markdown.js HTTP/2.0" from 10.69.70.27:56147 - 200 1468B in 2.4979ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/state.js HTTP/2.0" from 10.69.70.27:56147 - 200 1107B in 2.4952ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/theme.js HTTP/2.0" from 10.69.70.27:56147 - 200 1276B in 2.4952ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/store.js HTTP/2.0" from 10.69.70.27:56147 - 200 2376B in 2.4952ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/auth.js HTTP/2.0" from 10.69.70.27:56147 - 200 6359B in 1.7993ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/sidebar.js HTTP/2.0" from 10.69.70.27:56147 - 200 4547B in 2.4831ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/messages.js HTTP/2.0" from 10.69.70.27:56147 - 200 10632B in 1.2915ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/suggestions.js HTTP/2.0" from 10.69.70.27:56147 - 200 7938B in 2.4831ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/export.js HTTP/2.0" from 10.69.70.27:56147 - 200 1794B in 544µs
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/chat-standalone.js HTTP/2.0" from 10.69.70.27:56147 - 200 8501B in 1.0819ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/chat-bridge.js HTTP/2.0" from 10.69.70.27:56147 - 200 10209B in 1.0819ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/file-upload.js HTTP/2.0" from 10.69.70.27:56147 - 200 5850B in 1.1294ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:56147 - 200 3570B in 1.1294ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/agent-selector.js HTTP/2.0" from 10.69.70.27:56147 - 200 3886B in 1.1294ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/model-selector.js HTTP/2.0" from 10.69.70.27:56147 - 200 7053B in 1.1294ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/utils.js HTTP/2.0" from 10.69.70.27:56147 - 200 4287B in 5.7622ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/context.js HTTP/2.0" from 10.69.70.27:56147 - 200 2325B in 2.6289ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/api.js HTTP/2.0" from 10.69.70.27:56147 - 200 7020B in 3.4437ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/js/tool-ui.js HTTP/2.0" from 10.69.70.27:56147 - 200 7747B in 3.4437ms
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/api/mode HTTP/2.0" from 10.69.70.27:56147 - 200 42B in 714.3µs
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/api/config HTTP/2.0" from 10.69.70.27:56147 - 200 219B in 0s
+2026/06/03 18:11:05 "GET https://prathosh-14802-t/explorer/icon.png HTTP/2.0" from 10.69.70.27:56147 - 200 32842B in 1.3054ms
+2026/06/03 18:11:08 "GET https://prathosh-14802-t/auth/status HTTP/2.0" from 10.69.70.27:56147 - 200 1385B in 2.496246s
+2026/06/03 18:11:09 "GET https://prathosh-14802-t/api/models HTTP/2.0" from 10.69.70.27:56147 - 200 830B in 649.7304ms
+{"time":"2026-06-03T18:11:16.5143365+05:30","level":"INFO","msg":"tool definitions loaded from MCP","count":12}
+2026/06/03 18:11:16 "GET https://prathosh-14802-t/api/tools HTTP/2.0" from 10.69.70.27:56147 - 200 8835B in 6.2526ms
+2026/06/03 18:11:22 "POST https://prathosh-14802-t/copilot/chat/completions HTTP/2.0" from 10.69.70.27:56147 - 200 11178B in 6.1051501s
+{"time":"2026-06-03T18:11:22.6474274+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_load_skills"}
+{"time":"2026-06-03T18:11:22.651177+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_load_skills","output_bytes":30531,"duration_ms":3}
+2026/06/03 18:11:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 32509B in 3.7496ms
+{"time":"2026-06-03T18:11:22.6632641+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:11:22.6787206+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":2600,"duration_ms":15}
+2026/06/03 18:11:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 3004B in 15.9612ms
+2026/06/03 18:11:29 "POST https://prathosh-14802-t/copilot/chat/completions HTTP/2.0" from 10.69.70.27:56147 - 200 19085B in 7.2795214s
+{"time":"2026-06-03T18:11:29.9816396+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_read_workspace"}
+{"time":"2026-06-03T18:11:29.9890537+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_read_workspace","output_bytes":14773,"duration_ms":7}
+2026/06/03 18:11:29 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 16360B in 7.4141ms
+{"time":"2026-06-03T18:11:30.005593+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:11:30.015848+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":2,"duration_ms":10}
+2026/06/03 18:11:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 16B in 10.255ms
+{"time":"2026-06-03T18:11:30.0247163+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_search_repos"}
+{"time":"2026-06-03T18:11:30.6477211+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_search_repos","output_bytes":4715,"duration_ms":623}
+2026/06/03 18:11:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 5055B in 623.3948ms
+2026/06/03 18:11:36 "POST https://prathosh-14802-t/copilot/chat/completions HTTP/2.0" from 10.69.70.27:56147 - 200 10740B in 5.4538818s
+{"time":"2026-06-03T18:11:36.136016+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_search_repos"}
+{"time":"2026-06-03T18:11:36.4739858+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_search_repos","output_bytes":5732,"duration_ms":337}
+2026/06/03 18:11:36 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 6484B in 338.6013ms
+{"time":"2026-06-03T18:11:36.4934605+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_read_workspace"}
+{"time":"2026-06-03T18:11:36.4945003+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_read_workspace","output_bytes":129,"duration_ms":1}
+2026/06/03 18:11:36 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 157B in 1.0398ms
+{"time":"2026-06-03T18:11:36.5007339+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_list_workspace"}
+{"time":"2026-06-03T18:11:36.5012432+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_list_workspace","output_bytes":120,"duration_ms":0}
+2026/06/03 18:11:36 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 146B in 509.3µs
+2026/06/03 18:11:41 "POST https://prathosh-14802-t/copilot/chat/completions HTTP/2.0" from 10.69.70.27:56147 - 200 12767B in 5.0735613s
+{"time":"2026-06-03T18:11:41.5897319+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_search_repos"}
+{"time":"2026-06-03T18:11:41.6903883+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_search_repos","output_bytes":5281,"duration_ms":100}
+2026/06/03 18:11:41 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 5883B in 100.6564ms
+{"time":"2026-06-03T18:11:41.6984443+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_search_repos"}
+{"time":"2026-06-03T18:11:42.0878427+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_search_repos","output_bytes":4557,"duration_ms":389}
+2026/06/03 18:11:42 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 5024B in 389.3984ms
+2026/06/03 18:11:47 "POST https://prathosh-14802-t/copilot/chat/completions HTTP/2.0" from 10.69.70.27:56147 - 200 11319B in 5.7846353s
+{"time":"2026-06-03T18:11:47.8982201+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_search_repos"}
+{"time":"2026-06-03T18:11:47.9818251+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_search_repos","output_bytes":5136,"duration_ms":83}
+2026/06/03 18:11:47 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 5679B in 83.605ms
+{"time":"2026-06-03T18:11:47.995545+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_read_workspace"}
+{"time":"2026-06-03T18:11:47.9997303+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_read_workspace","output_bytes":78938,"duration_ms":4}
+2026/06/03 18:11:48 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:56147 - 200 83997B in 4.8498ms
+2026/06/03 18:13:29 "POST https://prathosh-14802-t/copilot/chat/completions HTTP/2.0" from 10.69.70.27:56147 - 200 500375B in 1m41.9542374s
+{"time":"2026-06-03T18:13:30.0066886+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:63382: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:13:30.0188321+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:13:30.0430447+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":955,"duration_ms":23}
+2026/06/03 18:13:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 1039B in 24.2126ms
+{"time":"2026-06-03T18:13:30.0582653+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:13:30.0622172+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":886,"duration_ms":3}
+2026/06/03 18:13:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 978B in 4.7062ms
+{"time":"2026-06-03T18:13:30.0720682+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:13:30.0750244+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":774,"duration_ms":2}
+2026/06/03 18:13:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 866B in 3.5373ms
+{"time":"2026-06-03T18:13:30.0821898+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:13:30.085997+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":832,"duration_ms":3}
+2026/06/03 18:13:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 924B in 3.8072ms
+{"time":"2026-06-03T18:13:30.0949757+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:13:30.0981472+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":808,"duration_ms":3}
+2026/06/03 18:13:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 880B in 3.1715ms
+{"time":"2026-06-03T18:13:30.104865+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:13:30.1081068+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":789,"duration_ms":3}
+2026/06/03 18:13:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 861B in 3.7529ms
+{"time":"2026-06-03T18:13:30.1180773+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:13:30.1208115+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":773,"duration_ms":2}
+2026/06/03 18:13:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 845B in 2.7342ms
+{"time":"2026-06-03T18:13:30.1303861+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:13:30.1335278+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":744,"duration_ms":3}
+2026/06/03 18:13:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 814B in 3.1417ms
+{"time":"2026-06-03T18:13:30.1460516+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:13:30.1493732+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":754,"duration_ms":3}
+2026/06/03 18:13:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 826B in 5.7856ms
+{"time":"2026-06-03T18:13:30.1616796+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:13:30.1646436+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":732,"duration_ms":2}
+2026/06/03 18:13:30 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 804B in 2.964ms
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/copilot/chat/completions HTTP/2.0" from 10.69.70.27:53537 - 200 383770B in 52.3142062s
+{"time":"2026-06-03T18:14:22.4968805+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.5196292+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":919,"duration_ms":22}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 991B in 24.7218ms
+{"time":"2026-06-03T18:14:22.5296619+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.5322134+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":723,"duration_ms":2}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 793B in 3.5593ms
+{"time":"2026-06-03T18:14:22.5474189+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.5499588+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":805,"duration_ms":2}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 875B in 2.5399ms
+{"time":"2026-06-03T18:14:22.5592126+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.5624337+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":736,"duration_ms":3}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 804B in 3.2211ms
+{"time":"2026-06-03T18:14:22.5750953+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.5785851+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":697,"duration_ms":2}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 767B in 3.4898ms
+{"time":"2026-06-03T18:14:22.5883679+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.5923339+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":827,"duration_ms":3}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 907B in 3.966ms
+{"time":"2026-06-03T18:14:22.6032257+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.6068819+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":759,"duration_ms":3}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 827B in 3.6562ms
+{"time":"2026-06-03T18:14:22.6198902+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.6242616+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":755,"duration_ms":4}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 823B in 5.0909ms
+{"time":"2026-06-03T18:14:22.6359274+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.6397146+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":861,"duration_ms":3}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 931B in 4.3029ms
+{"time":"2026-06-03T18:14:22.6527101+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.6563769+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":766,"duration_ms":3}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 838B in 14.205ms
+{"time":"2026-06-03T18:14:22.6704529+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.6740443+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":806,"duration_ms":3}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 878B in 4.2259ms
+{"time":"2026-06-03T18:14:22.6848249+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.6880445+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":815,"duration_ms":3}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 885B in 3.2196ms
+{"time":"2026-06-03T18:14:22.7020904+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.7088285+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":724,"duration_ms":3}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 794B in 7.5487ms
+{"time":"2026-06-03T18:14:22.7240582+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.7273452+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":753,"duration_ms":3}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 828B in 5.2632ms
+{"time":"2026-06-03T18:14:22.7367008+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:22.7420864+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":832,"duration_ms":4}
+2026/06/03 18:14:22 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 904B in 6.9918ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/ HTTP/2.0" from 10.69.70.27:53537 - 200 15539B in 10.9748ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/home.css HTTP/2.0" from 10.69.70.27:53537 - 200 531B in 1.3251ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/js/tabs.js HTTP/2.0" from 10.69.70.27:53537 - 200 899B in 766.7µs
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/js/docs.js HTTP/2.0" from 10.69.70.27:53537 - 200 4681B in 2.2873ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/css/base.css HTTP/2.0" from 10.69.70.27:53537 - 200 1101B in 1.3935ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/css/layout.css HTTP/2.0" from 10.69.70.27:53537 - 200 1616B in 1.3367ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/css/getting-started.css HTTP/2.0" from 10.69.70.27:53537 - 200 3101B in 1.9574ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/css/cards.css HTTP/2.0" from 10.69.70.27:53537 - 200 3981B in 1.9574ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/css/feedback.css HTTP/2.0" from 10.69.70.27:53537 - 200 4478B in 2.8298ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/css/auth.css HTTP/2.0" from 10.69.70.27:53537 - 200 3276B in 1.3571ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/css/responsive.css HTTP/2.0" from 10.69.70.27:53537 - 200 435B in 1.3571ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/css/docs-viewer.css HTTP/2.0" from 10.69.70.27:53537 - 200 4947B in 1.9618ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/icon.png HTTP/2.0" from 10.69.70.27:53537 - 200 32842B in 1.1683ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:53537 - 200 3570B in 611.1µs
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/js/zoho-auth.js HTTP/2.0" from 10.69.70.27:53537 - 200 5387B in 2.004ms
+2026/06/03 18:14:43 "GET https://prathosh-14802-t/auth/zoho/status HTTP/2.0" from 10.69.70.27:53537 - 200 40B in 0s
+2026/06/03 18:14:45 "GET https://prathosh-14802-t/tc/view HTTP/2.0" from 10.69.70.27:53537 - 200 37125B in 28.1656ms
+2026/06/03 18:14:45 "GET https://prathosh-14802-t/tc/health HTTP/2.0" from 10.69.70.27:53537 - 200 15B in 1.4303ms
+2026/06/03 18:14:45 "GET https://prathosh-14802-t/tc/stats HTTP/2.0" from 10.69.70.27:53537 - 200 2640B in 4.7321ms
+2026/06/03 18:14:45 "GET https://prathosh-14802-t/tc/gaps HTTP/2.0" from 10.69.70.27:53537 - 200 48292B in 9.5475ms
+2026/06/03 18:14:45 "GET https://prathosh-14802-t/favicon.ico HTTP/2.0" from 10.69.70.27:53537 - 404 19B in 0s
+2026/06/03 18:14:45 "GET https://prathosh-14802-t/tc/payloads HTTP/2.0" from 10.69.70.27:53537 - 200 337353B in 87.3673ms
+2026/06/03 18:14:45 "GET https://prathosh-14802-t/tc/testcases?status=active HTTP/2.0" from 10.69.70.27:53537 - 200 211516B in 43.8294ms
+2026/06/03 18:14:50 "POST https://prathosh-14802-t/copilot/chat/completions HTTP/2.0" from 10.69.70.27:53537 - 200 184634B in 27.5045717s
+{"time":"2026-06-03T18:14:50.2867011+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:50.2898416+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":1382,"duration_ms":3}
+2026/06/03 18:14:50 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 1680B in 10.2299ms
+{"time":"2026-06-03T18:14:50.3033638+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:50.3065719+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":1208,"duration_ms":3}
+2026/06/03 18:14:50 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 1462B in 3.7248ms
+{"time":"2026-06-03T18:14:50.3115546+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:50.3203201+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":1089,"duration_ms":2}
+2026/06/03 18:14:50 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 1311B in 8.7655ms
+{"time":"2026-06-03T18:14:50.33677+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:50.3389588+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":246,"duration_ms":2}
+2026/06/03 18:14:50 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 278B in 2.1888ms
+{"time":"2026-06-03T18:14:50.3551053+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:50.357418+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":235,"duration_ms":2}
+2026/06/03 18:14:50 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 267B in 8.0498ms
+{"time":"2026-06-03T18:14:50.3754694+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:50.3783064+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":251,"duration_ms":2}
+2026/06/03 18:14:50 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 283B in 2.837ms
+{"time":"2026-06-03T18:14:50.3925007+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:50.4056054+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":223,"duration_ms":13}
+2026/06/03 18:14:50 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 255B in 13.1047ms
+{"time":"2026-06-03T18:14:50.4304937+05:30","level":"INFO","msg":"tool invoked","tool":"uems_agent_testcase_db"}
+{"time":"2026-06-03T18:14:50.4336063+05:30","level":"INFO","msg":"tool completed","tool":"uems_agent_testcase_db","output_bytes":227,"duration_ms":3}
+2026/06/03 18:14:50 "POST https://prathosh-14802-t/api/tool HTTP/2.0" from 10.69.70.27:53537 - 200 259B in 3.1126ms
+2026/06/03 18:15:18 "POST https://prathosh-14802-t/copilot/chat/completions HTTP/2.0" from 10.69.70.27:53537 - 200 81030B in 27.9657775s
+2026/06/03 18:15:20 "POST https://prathosh-14802-t/copilot/chat/completions HTTP/2.0" from 10.69.70.27:53537 - 200 1663B in 2.2246447s
+2026/06/03 18:15:52 "GET https://prathosh-14802-t/tc/view HTTP/2.0" from 10.69.70.27:53537 - 200 37125B in 21.3136ms
+2026/06/03 18:15:52 "GET https://prathosh-14802-t/tc/health HTTP/2.0" from 10.69.70.27:53537 - 200 15B in 1.4629ms
+2026/06/03 18:15:52 "GET https://prathosh-14802-t/tc/stats HTTP/2.0" from 10.69.70.27:53537 - 200 2640B in 3.8521ms
+2026/06/03 18:15:52 "GET https://prathosh-14802-t/tc/gaps HTTP/2.0" from 10.69.70.27:53537 - 200 49451B in 24.6732ms
+2026/06/03 18:15:52 "GET https://prathosh-14802-t/tc/payloads HTTP/2.0" from 10.69.70.27:53537 - 200 341035B in 39.6566ms
+2026/06/03 18:15:52 "GET https://prathosh-14802-t/tc/testcases?status=active HTTP/2.0" from 10.69.70.27:53537 - 200 211516B in 6.7039ms
+{"time":"2026-06-03T18:17:43.8088354+05:30","level":"INFO","msg":"http: TLS handshake error from 10.73.28.60:51717: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:17:43.9138717+05:30","level":"INFO","msg":"http: TLS handshake error from 10.73.28.60:57124: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:17:43.9149816+05:30","level":"INFO","msg":"http: TLS handshake error from 10.73.28.60:51202: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:17:45.9847936+05:30","level":"INFO","msg":"http: TLS handshake error from 10.73.28.60:51384: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:17:45.9853866+05:30","level":"INFO","msg":"http: TLS handshake error from 10.73.28.60:60220: remote error: tls: unknown certificate"}
+2026/06/03 18:17:46 "GET https://prathosh-14802-t/uems-testcase-generator-flow.html HTTP/2.0" from 10.73.28.60:57277 - 200 36040B in 2.4548ms
+2026/06/03 18:17:46 "GET https://prathosh-14802-t/favicon.ico HTTP/2.0" from 10.73.28.60:57277 - 404 19B in 0s
+2026/06/03 18:18:00 "GET https://prathosh-14802-t/uems-testcase-generator-flow.html HTTP/2.0" from 10.69.70.27:53537 - 200 36040B in 1.6263ms
+{"time":"2026-06-03T18:28:46.7849412+05:30","level":"INFO","msg":"http: TLS handshake error from 10.73.28.60:51517: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:28:46.8886755+05:30","level":"INFO","msg":"http: TLS handshake error from 10.73.28.60:60631: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:28:46.8939377+05:30","level":"INFO","msg":"http: TLS handshake error from 10.73.28.60:59067: remote error: tls: unknown certificate"}
+2026/06/03 18:28:46 "GET https://prathosh-14802-t/uems-testcase-generator-flow.html HTTP/2.0" from 10.73.28.60:52696 - 200 36040B in 1.181ms
+{"time":"2026-06-03T18:38:27.685468+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:54909: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T18:38:27.7486903+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:58148: remote error: tls: unknown certificate"}
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/ HTTP/2.0" from 10.69.70.27:62868 - 200 12442B in 2.2596ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/app.js HTTP/2.0" from 10.69.70.27:62868 - 200 11188B in 1.9853ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/style.css HTTP/2.0" from 10.69.70.27:62868 - 200 45102B in 2.7045ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/icon.png HTTP/2.0" from 10.69.70.27:62868 - 200 32842B in 1.5146ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/state.js HTTP/2.0" from 10.69.70.27:62868 - 200 1107B in 706.8µs
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/markdown.js HTTP/2.0" from 10.69.70.27:62868 - 200 1468B in 706.8µs
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/store.js HTTP/2.0" from 10.69.70.27:62868 - 200 2376B in 706.8µs
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/theme.js HTTP/2.0" from 10.69.70.27:62868 - 200 1276B in 1.2184ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/export.js HTTP/2.0" from 10.69.70.27:62868 - 200 1794B in 648.7µs
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/auth.js HTTP/2.0" from 10.69.70.27:62868 - 200 6359B in 2.9942ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:62868 - 200 3570B in 699.2µs
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/messages.js HTTP/2.0" from 10.69.70.27:62868 - 200 10632B in 3.6934ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/sidebar.js HTTP/2.0" from 10.69.70.27:62868 - 200 4547B in 3.6934ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/agent-selector.js HTTP/2.0" from 10.69.70.27:62868 - 200 3886B in 0s
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/suggestions.js HTTP/2.0" from 10.69.70.27:62868 - 200 7938B in 3.0235ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/chat-bridge.js HTTP/2.0" from 10.69.70.27:62868 - 200 10209B in 2.4453ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/file-upload.js HTTP/2.0" from 10.69.70.27:62868 - 200 5850B in 1.351ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/model-selector.js HTTP/2.0" from 10.69.70.27:62868 - 200 7053B in 651.8µs
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/chat-standalone.js HTTP/2.0" from 10.69.70.27:62868 - 200 8501B in 3.0283ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/utils.js HTTP/2.0" from 10.69.70.27:62868 - 200 4287B in 4.9827ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/context.js HTTP/2.0" from 10.69.70.27:62868 - 200 2325B in 1.1637ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/tool-ui.js HTTP/2.0" from 10.69.70.27:62868 - 200 7747B in 1.7715ms
+2026/06/03 18:38:27 "GET https://prathosh-14802-t/explorer/js/api.js HTTP/2.0" from 10.69.70.27:62868 - 200 7020B in 2.3836ms
+2026/06/03 18:38:28 "GET https://prathosh-14802-t/api/mode HTTP/2.0" from 10.69.70.27:62868 - 200 42B in 0s
+2026/06/03 18:38:28 "GET https://prathosh-14802-t/api/config HTTP/2.0" from 10.69.70.27:62868 - 200 219B in 0s
+2026/06/03 18:38:29 "GET https://prathosh-14802-t/auth/status HTTP/2.0" from 10.69.70.27:62868 - 200 1385B in 1.6365556s
+2026/06/03 18:38:30 "GET https://prathosh-14802-t/api/models HTTP/2.0" from 10.69.70.27:62868 - 200 830B in 385.8054ms
+2026/06/03 18:38:32 "GET https://prathosh-14802-t/ HTTP/2.0" from 10.69.70.27:62868 - 200 15539B in 2.097ms
+2026/06/03 18:38:32 "GET https://prathosh-14802-t/home.css HTTP/2.0" from 10.69.70.27:62868 - 200 531B in 581µs
+2026/06/03 18:38:32 "GET https://prathosh-14802-t/js/tabs.js HTTP/2.0" from 10.69.70.27:62868 - 200 899B in 581µs
+2026/06/03 18:38:32 "GET https://prathosh-14802-t/js/docs.js HTTP/2.0" from 10.69.70.27:62868 - 200 4681B in 1.9701ms
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/css/layout.css HTTP/2.0" from 10.69.70.27:62868 - 200 1616B in 523.3µs
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/css/base.css HTTP/2.0" from 10.69.70.27:62868 - 200 1101B in 523.3µs
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/icon.png HTTP/2.0" from 10.69.70.27:62868 - 200 32842B in 1.9626ms
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/css/cards.css HTTP/2.0" from 10.69.70.27:62868 - 200 3981B in 737.4µs
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/css/getting-started.css HTTP/2.0" from 10.69.70.27:62868 - 200 3101B in 737.4µs
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/css/responsive.css HTTP/2.0" from 10.69.70.27:62868 - 200 435B in 737.4µs
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/css/auth.css HTTP/2.0" from 10.69.70.27:62868 - 200 3276B in 737.4µs
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/css/feedback.css HTTP/2.0" from 10.69.70.27:62868 - 200 4478B in 1.4728ms
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/css/docs-viewer.css HTTP/2.0" from 10.69.70.27:62868 - 200 4947B in 1.4728ms
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:62868 - 200 3570B in 518.4µs
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/js/zoho-auth.js HTTP/2.0" from 10.69.70.27:62868 - 200 5387B in 1.2115ms
+2026/06/03 18:38:33 "GET https://prathosh-14802-t/auth/zoho/status HTTP/2.0" from 10.69.70.27:62868 - 200 40B in 0s
+{"time":"2026-06-03T19:32:03.4864006+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:57088: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T19:32:03.6232238+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:65199: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T19:32:03.6380833+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:55034: remote error: tls: unknown certificate"}
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/docs/source/uems-agent-chat HTTP/2.0" from 10.69.70.27:61202 - 200 15539B in 1.5722ms
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/home.css HTTP/2.0" from 10.69.70.27:61202 - 200 531B in 670.5µs
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/js/tabs.js HTTP/2.0" from 10.69.70.27:61202 - 200 899B in 658.8µs
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/js/docs.js HTTP/2.0" from 10.69.70.27:61202 - 200 4681B in 1.3274ms
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/css/base.css HTTP/2.0" from 10.69.70.27:61202 - 200 1101B in 682.9µs
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/css/layout.css HTTP/2.0" from 10.69.70.27:61202 - 200 1616B in 682.9µs
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/css/cards.css HTTP/2.0" from 10.69.70.27:61202 - 200 3981B in 674µs
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/css/getting-started.css HTTP/2.0" from 10.69.70.27:61202 - 200 3101B in 692.1µs
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/css/responsive.css HTTP/2.0" from 10.69.70.27:61202 - 200 435B in 1.3324ms
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/css/auth.css HTTP/2.0" from 10.69.70.27:61202 - 200 3276B in 1.2997ms
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/css/feedback.css HTTP/2.0" from 10.69.70.27:61202 - 200 4478B in 1.8593ms
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/css/docs-viewer.css HTTP/2.0" from 10.69.70.27:61202 - 200 4947B in 1.8593ms
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/icon.png HTTP/2.0" from 10.69.70.27:61202 - 200 32842B in 1.8268ms
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/api/docs/source/uems-agent-chat HTTP/2.0" from 10.69.70.27:61202 - 200 17766B in 2.5647ms
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:61202 - 200 3570B in 2.2596ms
+2026/06/03 19:32:03 "GET https://prathosh-14802-t/js/zoho-auth.js HTTP/2.0" from 10.69.70.27:61202 - 200 5387B in 1.2554ms
+2026/06/03 19:32:04 "GET https://prathosh-14802-t/auth/zoho/status HTTP/2.0" from 10.69.70.27:61202 - 200 40B in 0s
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/docs/getting-started.md HTTP/2.0" from 10.69.70.27:61202 - 200 15539B in 1.3903ms
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/home.css HTTP/2.0" from 10.69.70.27:61202 - 200 531B in 650.2µs
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/js/tabs.js HTTP/2.0" from 10.69.70.27:61202 - 200 899B in 733.3µs
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/js/docs.js HTTP/2.0" from 10.69.70.27:61202 - 200 4681B in 1.9095ms
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/css/base.css HTTP/2.0" from 10.69.70.27:61202 - 200 1101B in 723.5µs
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/css/cards.css HTTP/2.0" from 10.69.70.27:61202 - 200 3981B in 659.2µs
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/css/layout.css HTTP/2.0" from 10.69.70.27:61202 - 200 1616B in 659.2µs
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/css/getting-started.css HTTP/2.0" from 10.69.70.27:61202 - 200 3101B in 739.6µs
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/css/docs-viewer.css HTTP/2.0" from 10.69.70.27:61202 - 200 4947B in 1.7118ms
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/css/feedback.css HTTP/2.0" from 10.69.70.27:61202 - 200 4478B in 2.2743ms
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/css/responsive.css HTTP/2.0" from 10.69.70.27:61202 - 200 435B in 1.1352ms
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/css/auth.css HTTP/2.0" from 10.69.70.27:61202 - 200 3276B in 1.8882ms
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/icon.png HTTP/2.0" from 10.69.70.27:61202 - 200 32842B in 1.8857ms
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/api/docs/getting-started.md HTTP/2.0" from 10.69.70.27:61202 - 404 27B in 0s
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:61202 - 200 3570B in 1.1589ms
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/js/zoho-auth.js HTTP/2.0" from 10.69.70.27:61202 - 200 5387B in 1.1589ms
+2026/06/03 19:32:30 "GET https://prathosh-14802-t/auth/zoho/status HTTP/2.0" from 10.69.70.27:61202 - 200 40B in 0s
+2026/06/03 19:32:32 "GET https://prathosh-14802-t/docs/source/uems-agent-chat HTTP/2.0" from 10.69.70.27:61202 - 200 15539B in 1.4309ms
+2026/06/03 19:32:32 "GET https://prathosh-14802-t/home.css HTTP/2.0" from 10.69.70.27:61202 - 200 531B in 748µs
+2026/06/03 19:32:32 "GET https://prathosh-14802-t/js/tabs.js HTTP/2.0" from 10.69.70.27:61202 - 200 899B in 817.4µs
+2026/06/03 19:32:32 "GET https://prathosh-14802-t/js/docs.js HTTP/2.0" from 10.69.70.27:61202 - 200 4681B in 1.5577ms
+2026/06/03 19:32:32 "GET https://prathosh-14802-t/api/docs/source/uems-agent-chat HTTP/2.0" from 10.69.70.27:61202 - 200 17766B in 1.8425ms
+2026/06/03 19:32:32 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:61202 - 200 3570B in 627.2µs
+2026/06/03 19:32:32 "GET https://prathosh-14802-t/js/zoho-auth.js HTTP/2.0" from 10.69.70.27:61202 - 200 5387B in 1.2786ms
+2026/06/03 19:32:32 "GET https://prathosh-14802-t/auth/zoho/status HTTP/2.0" from 10.69.70.27:61202 - 200 40B in 0s
+2026/06/03 19:34:04 "GET https://prathosh-14802-t/ HTTP/2.0" from 10.69.70.27:61202 - 200 15539B in 1.4123ms
+2026/06/03 19:34:04 "GET https://prathosh-14802-t/home.css HTTP/2.0" from 10.69.70.27:61202 - 200 531B in 714.8µs
+2026/06/03 19:34:04 "GET https://prathosh-14802-t/js/tabs.js HTTP/2.0" from 10.69.70.27:61202 - 200 899B in 1.1988ms
+2026/06/03 19:34:04 "GET https://prathosh-14802-t/js/docs.js HTTP/2.0" from 10.69.70.27:61202 - 200 4681B in 3.5216ms
+2026/06/03 19:34:04 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:61202 - 200 3570B in 721.5µs
+2026/06/03 19:34:04 "GET https://prathosh-14802-t/js/zoho-auth.js HTTP/2.0" from 10.69.70.27:61202 - 200 5387B in 2.1859ms
+2026/06/03 19:34:04 "GET https://prathosh-14802-t/auth/zoho/status HTTP/2.0" from 10.69.70.27:61202 - 200 40B in 0s
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/ HTTP/2.0" from 10.69.70.27:61202 - 200 12442B in 1.4472ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/app.js HTTP/2.0" from 10.69.70.27:61202 - 200 11188B in 1.3049ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/style.css HTTP/2.0" from 10.69.70.27:61202 - 200 45102B in 1.3049ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/icon.png HTTP/2.0" from 10.69.70.27:61202 - 200 32842B in 13.3467ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/markdown.js HTTP/2.0" from 10.69.70.27:61202 - 200 1468B in 665.6µs
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/store.js HTTP/2.0" from 10.69.70.27:61202 - 200 2376B in 1.2656ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/state.js HTTP/2.0" from 10.69.70.27:61202 - 200 1107B in 1.2656ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/theme.js HTTP/2.0" from 10.69.70.27:61202 - 200 1276B in 1.2656ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/messages.js HTTP/2.0" from 10.69.70.27:61202 - 200 10632B in 1.9172ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/sidebar.js HTTP/2.0" from 10.69.70.27:61202 - 200 4547B in 1.3227ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/auth.js HTTP/2.0" from 10.69.70.27:61202 - 200 6359B in 1.9742ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/chat-bridge.js HTTP/2.0" from 10.69.70.27:61202 - 200 10209B in 1.324ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/suggestions.js HTTP/2.0" from 10.69.70.27:61202 - 200 7938B in 1.324ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:61202 - 200 3570B in 1.3205ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/chat-standalone.js HTTP/2.0" from 10.69.70.27:61202 - 200 8501B in 1.9704ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/agent-selector.js HTTP/2.0" from 10.69.70.27:61202 - 200 3886B in 646.4µs
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/model-selector.js HTTP/2.0" from 10.69.70.27:61202 - 200 7053B in 1.3205ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/export.js HTTP/2.0" from 10.69.70.27:61202 - 200 1794B in 1.3205ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/utils.js HTTP/2.0" from 10.69.70.27:61202 - 200 4287B in 646.4µs
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/file-upload.js HTTP/2.0" from 10.69.70.27:61202 - 200 5850B in 1.8833ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/context.js HTTP/2.0" from 10.69.70.27:61202 - 200 2325B in 965.7µs
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/api.js HTTP/2.0" from 10.69.70.27:61202 - 200 7020B in 965.7µs
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/explorer/js/tool-ui.js HTTP/2.0" from 10.69.70.27:61202 - 200 7747B in 1.6077ms
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/api/mode HTTP/2.0" from 10.69.70.27:61202 - 200 42B in 0s
+2026/06/03 19:35:20 "GET https://prathosh-14802-t/api/config HTTP/2.0" from 10.69.70.27:61202 - 200 219B in 0s
+2026/06/03 19:35:23 "GET https://prathosh-14802-t/auth/status HTTP/2.0" from 10.69.70.27:61202 - 200 1385B in 2.4189678s
+2026/06/03 19:35:23 "GET https://prathosh-14802-t/api/models HTTP/2.0" from 10.69.70.27:61202 - 200 830B in 379.6889ms
+{"time":"2026-06-03T19:35:30.3234285+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:53493: remote error: tls: unknown certificate"}
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/ HTTP/2.0" from 10.69.70.27:62351 - 200 12442B in 1.4359ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/style.css HTTP/2.0" from 10.69.70.27:62351 - 200 45102B in 2.7499ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/app.js HTTP/2.0" from 10.69.70.27:62351 - 200 11188B in 2.5983ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/icon.png HTTP/2.0" from 10.69.70.27:62351 - 200 32842B in 1.9003ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/markdown.js HTTP/2.0" from 10.69.70.27:62351 - 200 1468B in 725.5µs
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/state.js HTTP/2.0" from 10.69.70.27:62351 - 200 1107B in 1.4283ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/theme.js HTTP/2.0" from 10.69.70.27:62351 - 200 1276B in 702.8µs
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/store.js HTTP/2.0" from 10.69.70.27:62351 - 200 2376B in 702.8µs
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/auth.js HTTP/2.0" from 10.69.70.27:62351 - 200 6359B in 1.4087ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/sidebar.js HTTP/2.0" from 10.69.70.27:62351 - 200 4547B in 2.0857ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/messages.js HTTP/2.0" from 10.69.70.27:62351 - 200 10632B in 2.0857ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/export.js HTTP/2.0" from 10.69.70.27:62351 - 200 1794B in 718.3µs
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/suggestions.js HTTP/2.0" from 10.69.70.27:62351 - 200 7938B in 2.0857ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:62351 - 200 3570B in 718.3µs
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/chat-bridge.js HTTP/2.0" from 10.69.70.27:62351 - 200 10209B in 1.9434ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/chat-standalone.js HTTP/2.0" from 10.69.70.27:62351 - 200 8501B in 3.3638ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/agent-selector.js HTTP/2.0" from 10.69.70.27:62351 - 200 3886B in 1.2781ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/file-upload.js HTTP/2.0" from 10.69.70.27:62351 - 200 5850B in 3.1906ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/model-selector.js HTTP/2.0" from 10.69.70.27:62351 - 200 7053B in 5.2944ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/utils.js HTTP/2.0" from 10.69.70.27:62351 - 200 4287B in 4.5761ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/tool-ui.js HTTP/2.0" from 10.69.70.27:62351 - 200 7747B in 1.4027ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/context.js HTTP/2.0" from 10.69.70.27:62351 - 200 2325B in 678.9µs
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/explorer/js/api.js HTTP/2.0" from 10.69.70.27:62351 - 200 7020B in 1.3288ms
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/api/mode HTTP/2.0" from 10.69.70.27:62351 - 200 42B in 0s
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/api/config HTTP/2.0" from 10.69.70.27:62351 - 200 219B in 0s
+2026/06/03 19:35:30 "GET https://prathosh-14802-t/auth/status HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 0s
+2026/06/03 19:35:31 "GET https://prathosh-14802-t/explorer/icon.png HTTP/2.0" from 10.69.70.27:62351 - 200 32842B in 1.9868ms
+2026/06/03 19:35:34 "POST https://prathosh-14802-t/auth/initiate HTTP/2.0" from 10.69.70.27:62351 - 200 248B in 354.8478ms
+2026/06/03 19:35:40 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 259.4275ms
+2026/06/03 19:35:46 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 290.0467ms
+2026/06/03 19:35:51 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 277.0838ms
+2026/06/03 19:35:57 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 241.327ms
+2026/06/03 19:36:01 "GET https://prathosh-14802-t/ HTTP/2.0" from 10.69.70.27:61202 - 200 15539B in 1.5062ms
+2026/06/03 19:36:01 "GET https://prathosh-14802-t/home.css HTTP/2.0" from 10.69.70.27:61202 - 200 531B in 656.3µs
+2026/06/03 19:36:01 "GET https://prathosh-14802-t/js/tabs.js HTTP/2.0" from 10.69.70.27:61202 - 200 899B in 1.5323ms
+2026/06/03 19:36:01 "GET https://prathosh-14802-t/js/docs.js HTTP/2.0" from 10.69.70.27:61202 - 200 4681B in 1.5323ms
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/css/base.css HTTP/2.0" from 10.69.70.27:61202 - 200 1101B in 746.1µs
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/css/layout.css HTTP/2.0" from 10.69.70.27:61202 - 200 1616B in 1.2266ms
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/css/cards.css HTTP/2.0" from 10.69.70.27:61202 - 200 3981B in 1.2266ms
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/css/getting-started.css HTTP/2.0" from 10.69.70.27:61202 - 200 3101B in 1.8683ms
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/css/feedback.css HTTP/2.0" from 10.69.70.27:61202 - 200 4478B in 2.4607ms
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/css/responsive.css HTTP/2.0" from 10.69.70.27:61202 - 200 435B in 1.7665ms
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/css/auth.css HTTP/2.0" from 10.69.70.27:61202 - 200 3276B in 1.2341ms
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/css/docs-viewer.css HTTP/2.0" from 10.69.70.27:61202 - 200 4947B in 2.4111ms
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/icon.png HTTP/2.0" from 10.69.70.27:61202 - 200 32842B in 1.465ms
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:61202 - 200 3570B in 519.6µs
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/js/zoho-auth.js HTTP/2.0" from 10.69.70.27:61202 - 200 5387B in 1.1887ms
+2026/06/03 19:36:02 "GET https://prathosh-14802-t/auth/zoho/status HTTP/2.0" from 10.69.70.27:61202 - 200 40B in 0s
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/ HTTP/2.0" from 10.69.70.27:61202 - 200 12442B in 1.3832ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/app.js HTTP/2.0" from 10.69.70.27:61202 - 200 11188B in 1.2238ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/style.css HTTP/2.0" from 10.69.70.27:61202 - 200 45102B in 2.0227ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/icon.png HTTP/2.0" from 10.69.70.27:61202 - 200 32842B in 1.4452ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/markdown.js HTTP/2.0" from 10.69.70.27:61202 - 200 1468B in 1.0817ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/state.js HTTP/2.0" from 10.69.70.27:61202 - 200 1107B in 710.1µs
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/store.js HTTP/2.0" from 10.69.70.27:61202 - 200 2376B in 710.1µs
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/theme.js HTTP/2.0" from 10.69.70.27:61202 - 200 1276B in 1.3234ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/auth.js HTTP/2.0" from 10.69.70.27:61202 - 200 6359B in 1.1591ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/sidebar.js HTTP/2.0" from 10.69.70.27:61202 - 200 4547B in 1.1665ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/messages.js HTTP/2.0" from 10.69.70.27:61202 - 200 10632B in 604.7µs
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/chat-bridge.js HTTP/2.0" from 10.69.70.27:61202 - 200 10209B in 1.1892ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/export.js HTTP/2.0" from 10.69.70.27:61202 - 200 1794B in 1.1892ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/suggestions.js HTTP/2.0" from 10.69.70.27:61202 - 200 7938B in 1.1892ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/chat-standalone.js HTTP/2.0" from 10.69.70.27:61202 - 200 8501B in 1.1892ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:61202 - 200 3570B in 519.1µs
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/agent-selector.js HTTP/2.0" from 10.69.70.27:61202 - 200 3886B in 519.1µs
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/model-selector.js HTTP/2.0" from 10.69.70.27:61202 - 200 7053B in 519.1µs
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/file-upload.js HTTP/2.0" from 10.69.70.27:61202 - 200 5850B in 519.1µs
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/utils.js HTTP/2.0" from 10.69.70.27:61202 - 200 4287B in 1.1292ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/tool-ui.js HTTP/2.0" from 10.69.70.27:61202 - 200 7747B in 1.2946ms
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/api.js HTTP/2.0" from 10.69.70.27:61202 - 200 7020B in 767.5µs
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/explorer/js/context.js HTTP/2.0" from 10.69.70.27:61202 - 200 2325B in 607.7µs
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/api/mode HTTP/2.0" from 10.69.70.27:61202 - 200 42B in 0s
+2026/06/03 19:36:03 "GET https://prathosh-14802-t/api/config HTTP/2.0" from 10.69.70.27:61202 - 200 219B in 0s
+2026/06/03 19:36:03 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 262.9304ms
+2026/06/03 19:36:04 "GET https://prathosh-14802-t/auth/status HTTP/2.0" from 10.69.70.27:61202 - 200 1385B in 824.552ms
+2026/06/03 19:36:04 "GET https://prathosh-14802-t/api/models HTTP/2.0" from 10.69.70.27:61202 - 200 830B in 383.1798ms
+2026/06/03 19:36:09 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 265.2048ms
+2026/06/03 19:36:15 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 269.84ms
+2026/06/03 19:36:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 629.8181ms
+2026/06/03 19:36:27 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 270.1544ms
+2026/06/03 19:36:33 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 277.6132ms
+2026/06/03 19:36:39 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 256.1365ms
+2026/06/03 19:36:45 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 385.4494ms
+2026/06/03 19:36:51 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 335.0823ms
+2026/06/03 19:36:57 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 266.8925ms
+2026/06/03 19:37:03 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 254.5039ms
+2026/06/03 19:37:09 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 262.2886ms
+2026/06/03 19:37:15 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 253.2838ms
+2026/06/03 19:37:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 471.1549ms
+2026/06/03 19:37:27 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 310.5309ms
+2026/06/03 19:37:33 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 272.4563ms
+2026/06/03 19:37:39 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 266.9992ms
+2026/06/03 19:37:45 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 267.4371ms
+2026/06/03 19:37:51 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 252.68ms
+2026/06/03 19:37:57 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 283.1731ms
+2026/06/03 19:38:03 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 430.7477ms
+2026/06/03 19:38:09 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 267.6538ms
+2026/06/03 19:38:15 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 274.1758ms
+2026/06/03 19:38:21 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 333.1698ms
+2026/06/03 19:38:27 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 270.8794ms
+2026/06/03 19:38:33 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 284.4184ms
+2026/06/03 19:38:39 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 273.8156ms
+2026/06/03 19:38:45 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 259.4101ms
+2026/06/03 19:38:51 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 262.786ms
+2026/06/03 19:38:57 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 258.872ms
+2026/06/03 19:39:03 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 271.1702ms
+2026/06/03 19:39:09 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 254.2922ms
+2026/06/03 19:39:15 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 258.857ms
+2026/06/03 19:39:21 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 356.2438ms
+2026/06/03 19:39:27 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 297.6674ms
+2026/06/03 19:39:33 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 273.1941ms
+2026/06/03 19:39:39 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 283.6935ms
+2026/06/03 19:39:45 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 241.8771ms
+2026/06/03 19:39:51 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 273.0962ms
+2026/06/03 19:39:57 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 268.847ms
+2026/06/03 19:40:03 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 258.7873ms
+2026/06/03 19:40:09 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 323.7901ms
+2026/06/03 19:40:15 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 264.5031ms
+2026/06/03 19:40:21 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 306.9821ms
+2026/06/03 19:40:27 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 236.7575ms
+2026/06/03 19:40:33 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 250.918ms
+2026/06/03 19:40:39 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 264.336ms
+2026/06/03 19:40:45 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62351 - 200 21B in 278.6233ms
+{"time":"2026-06-03T19:41:16.2506071+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:52044: remote error: tls: unknown certificate"}
+2026/06/03 19:41:16 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62011 - 200 21B in 337.9788ms
+2026/06/03 19:41:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62011 - 200 21B in 251.2045ms
+2026/06/03 19:41:28 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:62011 - 200 21B in 290.9493ms
+{"time":"2026-06-03T19:41:34.5622705+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:49916: remote error: tls: unknown certificate"}
+2026/06/03 19:41:34 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 252.83ms
+2026/06/03 19:41:40 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 267.3468ms
+2026/06/03 19:41:46 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 259.594ms
+2026/06/03 19:41:52 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 259.6632ms
+2026/06/03 19:41:58 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 262.6119ms
+2026/06/03 19:42:04 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 256.7151ms
+2026/06/03 19:42:10 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 265.2602ms
+2026/06/03 19:42:16 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 259.2565ms
+2026/06/03 19:42:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 261.0964ms
+2026/06/03 19:42:28 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 254.7027ms
+2026/06/03 19:42:34 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 264.6269ms
+2026/06/03 19:42:40 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 282.241ms
+2026/06/03 19:42:46 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 239.8667ms
+2026/06/03 19:42:52 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65182 - 200 21B in 246.5186ms
+{"time":"2026-06-03T19:42:58.5569746+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:50512: remote error: tls: unknown certificate"}
+2026/06/03 19:42:58 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 263.2006ms
+2026/06/03 19:43:04 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 271.2012ms
+2026/06/03 19:43:10 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 269.0921ms
+2026/06/03 19:43:16 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 262.7543ms
+2026/06/03 19:43:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 277.3374ms
+2026/06/03 19:43:28 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 269.6977ms
+2026/06/03 19:43:34 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 284.3893ms
+2026/06/03 19:43:40 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 261.7456ms
+2026/06/03 19:43:46 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 266.0124ms
+2026/06/03 19:43:52 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 253.9884ms
+2026/06/03 19:43:58 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 248.7274ms
+2026/06/03 19:44:04 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 269.9668ms
+2026/06/03 19:44:10 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 263.3287ms
+2026/06/03 19:44:16 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 247.7346ms
+2026/06/03 19:44:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 260.6341ms
+2026/06/03 19:44:28 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 271.4686ms
+2026/06/03 19:44:34 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 281.6275ms
+2026/06/03 19:44:40 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 309.5343ms
+2026/06/03 19:44:46 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 266.8935ms
+2026/06/03 19:44:52 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 372.076ms
+2026/06/03 19:44:58 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 263.7611ms
+2026/06/03 19:45:04 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 278.3203ms
+2026/06/03 19:45:10 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 256.2152ms
+2026/06/03 19:45:16 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 249.8172ms
+2026/06/03 19:45:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 253.2423ms
+2026/06/03 19:45:28 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 288.8158ms
+2026/06/03 19:45:34 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 253.0898ms
+2026/06/03 19:45:40 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 255.6895ms
+2026/06/03 19:45:46 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 262.8152ms
+2026/06/03 19:45:52 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 260.1705ms
+2026/06/03 19:45:58 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 268.0291ms
+2026/06/03 19:46:04 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 271.3077ms
+2026/06/03 19:46:10 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 258.7859ms
+2026/06/03 19:46:16 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 253.8266ms
+2026/06/03 19:46:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 268.827ms
+2026/06/03 19:46:28 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 240.4183ms
+2026/06/03 19:46:34 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 267.7649ms
+2026/06/03 19:46:40 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 273.0436ms
+2026/06/03 19:46:46 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 239.8945ms
+2026/06/03 19:46:52 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 273.6222ms
+2026/06/03 19:46:58 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 294.0832ms
+2026/06/03 19:47:04 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 272.6536ms
+2026/06/03 19:47:10 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 256.4159ms
+2026/06/03 19:47:16 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 284.4675ms
+2026/06/03 19:47:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 257.1489ms
+2026/06/03 19:47:28 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 276.1398ms
+2026/06/03 19:47:34 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 271.5994ms
+2026/06/03 19:47:40 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 253.6791ms
+2026/06/03 19:47:46 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 259.088ms
+2026/06/03 19:47:52 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 254.3978ms
+2026/06/03 19:47:58 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 259.6709ms
+2026/06/03 19:48:04 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 253.769ms
+2026/06/03 19:48:10 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 286.3923ms
+2026/06/03 19:48:16 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 247.7426ms
+2026/06/03 19:48:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 351.163ms
+2026/06/03 19:48:28 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 263.6102ms
+2026/06/03 19:48:34 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 284.1673ms
+2026/06/03 19:48:40 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 293.3368ms
+2026/06/03 19:48:46 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 273.4181ms
+2026/06/03 19:48:52 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 302.7928ms
+2026/06/03 19:48:58 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 285.7242ms
+2026/06/03 19:49:04 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 250.6333ms
+2026/06/03 19:49:10 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 249.0014ms
+2026/06/03 19:49:16 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 272.3678ms
+2026/06/03 19:49:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 284.1193ms
+2026/06/03 19:49:28 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 270.3617ms
+2026/06/03 19:49:34 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 264.7407ms
+2026/06/03 19:49:40 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 247.4895ms
+2026/06/03 19:49:46 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 267.7533ms
+2026/06/03 19:49:52 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 276.1141ms
+2026/06/03 19:49:58 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 285.2321ms
+2026/06/03 19:50:04 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 258.4566ms
+2026/06/03 19:50:10 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 254.3546ms
+2026/06/03 19:50:16 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 278.5328ms
+2026/06/03 19:50:22 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 258.5471ms
+2026/06/03 19:50:28 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 200 21B in 271.8942ms
+2026/06/03 19:50:34 "POST https://prathosh-14802-t/auth/poll HTTP/2.0" from 10.69.70.27:65170 - 400 27B in 13.3171ms
+{"time":"2026-06-03T20:08:12.1406198+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:59050: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T20:08:12.1604479+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:62738: remote error: tls: unknown certificate"}
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/ HTTP/2.0" from 10.69.70.27:62862 - 200 15539B in 3.0584ms
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/js/tabs.js HTTP/2.0" from 10.69.70.27:62862 - 200 899B in 645.1µs
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/home.css HTTP/2.0" from 10.69.70.27:62862 - 200 531B in 1.3688ms
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/js/docs.js HTTP/2.0" from 10.69.70.27:62862 - 200 4681B in 1.3688ms
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/css/base.css HTTP/2.0" from 10.69.70.27:62862 - 200 1101B in 593.3µs
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/css/layout.css HTTP/2.0" from 10.69.70.27:62862 - 200 1616B in 593.3µs
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/css/cards.css HTTP/2.0" from 10.69.70.27:62862 - 200 3981B in 639µs
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/css/getting-started.css HTTP/2.0" from 10.69.70.27:62862 - 200 3101B in 639µs
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/css/auth.css HTTP/2.0" from 10.69.70.27:62862 - 200 3276B in 0s
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/css/responsive.css HTTP/2.0" from 10.69.70.27:62862 - 200 435B in 542.2µs
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/css/docs-viewer.css HTTP/2.0" from 10.69.70.27:62862 - 200 4947B in 1.1812ms
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/css/feedback.css HTTP/2.0" from 10.69.70.27:62862 - 200 4478B in 542.2µs
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:62862 - 200 3570B in 625.5µs
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/js/zoho-auth.js HTTP/2.0" from 10.69.70.27:62862 - 200 5387B in 2.5787ms
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/icon.png HTTP/2.0" from 10.69.70.27:62862 - 200 32842B in 2.5787ms
+2026/06/03 20:08:12 "GET https://prathosh-14802-t/auth/zoho/status HTTP/2.0" from 10.69.70.27:62862 - 200 40B in 0s
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/docs/source/uems-agent-chat HTTP/2.0" from 10.69.70.27:62862 - 200 15539B in 1.387ms
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/home.css HTTP/2.0" from 10.69.70.27:62862 - 200 531B in 712.5µs
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/js/tabs.js HTTP/2.0" from 10.69.70.27:62862 - 200 899B in 770.9µs
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/icon.png HTTP/2.0" from 10.69.70.27:62862 - 200 32842B in 2.0509ms
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/js/docs.js HTTP/2.0" from 10.69.70.27:62862 - 200 4681B in 1.2106ms
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/css/layout.css HTTP/2.0" from 10.69.70.27:62862 - 200 1616B in 519.8µs
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/css/base.css HTTP/2.0" from 10.69.70.27:62862 - 200 1101B in 519.8µs
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/css/getting-started.css HTTP/2.0" from 10.69.70.27:62862 - 200 3101B in 519.8µs
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/css/responsive.css HTTP/2.0" from 10.69.70.27:62862 - 200 435B in 1.1755ms
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/css/docs-viewer.css HTTP/2.0" from 10.69.70.27:62862 - 200 4947B in 1.1755ms
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/css/cards.css HTTP/2.0" from 10.69.70.27:62862 - 200 3981B in 655.7µs
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/css/auth.css HTTP/2.0" from 10.69.70.27:62862 - 200 3276B in 655.7µs
+2026/06/03 20:08:14 "GET https://prathosh-14802-t/css/feedback.css HTTP/2.0" from 10.69.70.27:62862 - 200 4478B in 655.7µs
+2026/06/03 20:08:15 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:62862 - 200 3570B in 601.4µs
+2026/06/03 20:08:15 "GET https://prathosh-14802-t/js/zoho-auth.js HTTP/2.0" from 10.69.70.27:62862 - 200 5387B in 1.8102ms
+2026/06/03 20:08:15 "GET https://prathosh-14802-t/api/docs/source/uems-agent-chat HTTP/2.0" from 10.69.70.27:62862 - 200 17766B in 2.9593ms
+2026/06/03 20:08:15 "GET https://prathosh-14802-t/auth/zoho/status HTTP/2.0" from 10.69.70.27:62862 - 200 40B in 0s
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/ HTTP/2.0" from 10.69.70.27:62862 - 200 12442B in 742.8µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/app.js HTTP/2.0" from 10.69.70.27:62862 - 200 11188B in 598.8µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/style.css HTTP/2.0" from 10.69.70.27:62862 - 200 45102B in 14.7223ms
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/icon.png HTTP/2.0" from 10.69.70.27:62862 - 200 32842B in 5.2017ms
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/markdown.js HTTP/2.0" from 10.69.70.27:62862 - 200 1468B in 644.6µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/store.js HTTP/2.0" from 10.69.70.27:62862 - 200 2376B in 644.6µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/theme.js HTTP/2.0" from 10.69.70.27:62862 - 200 1276B in 644.6µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/state.js HTTP/2.0" from 10.69.70.27:62862 - 200 1107B in 644.6µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/auth.js HTTP/2.0" from 10.69.70.27:62862 - 200 6359B in 0s
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/sidebar.js HTTP/2.0" from 10.69.70.27:62862 - 200 4547B in 0s
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/suggestions.js HTTP/2.0" from 10.69.70.27:62862 - 200 7938B in 627.3µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/chat-standalone.js HTTP/2.0" from 10.69.70.27:62862 - 200 8501B in 627.3µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/chat-bridge.js HTTP/2.0" from 10.69.70.27:62862 - 200 10209B in 627.3µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/messages.js HTTP/2.0" from 10.69.70.27:62862 - 200 10632B in 627.3µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:62862 - 200 3570B in 561.4µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/export.js HTTP/2.0" from 10.69.70.27:62862 - 200 1794B in 561.4µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/model-selector.js HTTP/2.0" from 10.69.70.27:62862 - 200 7053B in 561.4µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/file-upload.js HTTP/2.0" from 10.69.70.27:62862 - 200 5850B in 1.0866ms
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/agent-selector.js HTTP/2.0" from 10.69.70.27:62862 - 200 3886B in 525.2µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/utils.js HTTP/2.0" from 10.69.70.27:62862 - 200 4287B in 7.3758ms
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/context.js HTTP/2.0" from 10.69.70.27:62862 - 200 2325B in 631.5µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/api.js HTTP/2.0" from 10.69.70.27:62862 - 200 7020B in 631.5µs
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/explorer/js/tool-ui.js HTTP/2.0" from 10.69.70.27:62862 - 200 7747B in 0s
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/api/mode HTTP/2.0" from 10.69.70.27:62862 - 200 42B in 15.4476ms
+2026/06/03 20:08:22 "GET https://prathosh-14802-t/api/config HTTP/2.0" from 10.69.70.27:62862 - 200 219B in 8.7658ms
+2026/06/03 20:08:24 "GET https://prathosh-14802-t/auth/status HTTP/2.0" from 10.69.70.27:62862 - 200 1385B in 1.8924584s
+2026/06/03 20:08:25 "GET https://prathosh-14802-t/api/models HTTP/2.0" from 10.69.70.27:62862 - 200 830B in 956.0003ms
+2026/06/03 20:08:39 "GET https://prathosh-14802-t/ HTTP/2.0" from 10.69.70.27:62862 - 200 15539B in 1.2199ms
+2026/06/03 20:08:39 "GET https://prathosh-14802-t/home.css HTTP/2.0" from 10.69.70.27:62862 - 200 531B in 8.5313ms
+2026/06/03 20:08:39 "GET https://prathosh-14802-t/js/tabs.js HTTP/2.0" from 10.69.70.27:62862 - 200 899B in 0s
+2026/06/03 20:08:39 "GET https://prathosh-14802-t/js/docs.js HTTP/2.0" from 10.69.70.27:62862 - 200 4681B in 9.7665ms
+2026/06/03 20:08:39 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:62862 - 200 3570B in 4.9559ms
+2026/06/03 20:08:39 "GET https://prathosh-14802-t/js/zoho-auth.js HTTP/2.0" from 10.69.70.27:62862 - 200 5387B in 608.5µs
+2026/06/03 20:08:39 "GET https://prathosh-14802-t/auth/zoho/status HTTP/2.0" from 10.69.70.27:62862 - 200 40B in 0s
+2026/06/03 20:08:40 "GET https://prathosh-14802-t/tc/view HTTP/2.0" from 10.69.70.27:62862 - 200 37125B in 21.5802ms
+2026/06/03 20:08:40 "GET https://prathosh-14802-t/tc/health HTTP/2.0" from 10.69.70.27:62862 - 200 15B in 1.8665ms
+2026/06/03 20:08:40 "GET https://prathosh-14802-t/tc/stats HTTP/2.0" from 10.69.70.27:62862 - 200 2640B in 5.5476ms
+2026/06/03 20:08:40 "GET https://prathosh-14802-t/tc/gaps HTTP/2.0" from 10.69.70.27:62862 - 200 49451B in 37.1718ms
+2026/06/03 20:08:40 "GET https://prathosh-14802-t/tc/payloads HTTP/2.0" from 10.69.70.27:62862 - 200 341035B in 50.5831ms
+2026/06/03 20:08:40 "GET https://prathosh-14802-t/tc/testcases?status=active HTTP/2.0" from 10.69.70.27:62862 - 200 211516B in 25.1139ms
+{"time":"2026-06-03T20:13:43.6403742+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:52587: remote error: tls: unknown certificate"}
+{"time":"2026-06-03T20:13:43.6584634+05:30","level":"INFO","msg":"http: TLS handshake error from 10.69.70.27:59299: remote error: tls: unknown certificate"}
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/ HTTP/2.0" from 10.69.70.27:59422 - 200 12442B in 654.2µs
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/style.css HTTP/2.0" from 10.69.70.27:59422 - 200 45102B in 1.5782ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/app.js HTTP/2.0" from 10.69.70.27:59422 - 200 11188B in 1.4558ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/icon.png HTTP/2.0" from 10.69.70.27:59422 - 200 32842B in 1.5182ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/markdown.js HTTP/2.0" from 10.69.70.27:59422 - 200 1468B in 666.9µs
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/state.js HTTP/2.0" from 10.69.70.27:59422 - 200 1107B in 643.5µs
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/store.js HTTP/2.0" from 10.69.70.27:59422 - 200 2376B in 634.4µs
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/theme.js HTTP/2.0" from 10.69.70.27:59422 - 200 1276B in 634.4µs
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/auth.js HTTP/2.0" from 10.69.70.27:59422 - 200 6359B in 2.1086ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/sidebar.js HTTP/2.0" from 10.69.70.27:59422 - 200 4547B in 2.7333ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/messages.js HTTP/2.0" from 10.69.70.27:59422 - 200 10632B in 4.0381ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/suggestions.js HTTP/2.0" from 10.69.70.27:59422 - 200 7938B in 2.5957ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/chat-standalone.js HTTP/2.0" from 10.69.70.27:59422 - 200 8501B in 3.253ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/export.js HTTP/2.0" from 10.69.70.27:59422 - 200 1794B in 1.1942ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/chat-bridge.js HTTP/2.0" from 10.69.70.27:59422 - 200 10209B in 1.8496ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/js/feedback.js HTTP/2.0" from 10.69.70.27:59422 - 200 3570B in 613.7µs
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/agent-selector.js HTTP/2.0" from 10.69.70.27:59422 - 200 3886B in 1.3196ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/model-selector.js HTTP/2.0" from 10.69.70.27:59422 - 200 7053B in 1.3196ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/utils.js HTTP/2.0" from 10.69.70.27:59422 - 200 4287B in 1.3196ms
+2026/06/03 20:13:43 "GET https://prathosh-14802-t/explorer/js/file-upload.js HTTP/2.0" from 10.69.70.27:59422 - 200 5850B in 1.9098ms
+2026/06/03 20:13:44 "GET https://prathosh-14802-t/explorer/js/tool-ui.js HTTP/2.0" from 10.69.70.27:59422 - 200 7747B in 1.5966ms
+2026/06/03 20:13:44 "GET https://prathosh-14802-t/explorer/js/context.js HTTP/2.0" from 10.69.70.27:59422 - 200 2325B in 688.3µs
+2026/06/03 20:13:44 "GET https://prathosh-14802-t/explorer/js/api.js HTTP/2.0" from 10.69.70.27:59422 - 200 7020B in 1.3408ms
+2026/06/03 20:13:44 "GET https://prathosh-14802-t/api/mode HTTP/2.0" from 10.69.70.27:59422 - 200 42B in 0s
+2026/06/03 20:13:44 "GET https://prathosh-14802-t/api/config HTTP/2.0" from 10.69.70.27:59422 - 200 219B in 0s
+2026/06/03 20:13:45 "GET https://prathosh-14802-t/auth/status HTTP/2.0" from 10.69.70.27:59422 - 200 1385B in 1.3824853s
+2026/06/03 20:13:46 "GET https://prathosh-14802-t/api/models HTTP/2.0" from 10.69.70.27:59422 - 200 830B in 371.1039ms
+{"time":"2026-06-04T09:54:05.3321585+05:30","level":"INFO","msg":"http: TLS handshake error from 10.61.232.18:45440: remote error: tls: unknown certificate"}
+{"time":"2026-06-04T09:54:05.4384658+05:30","level":"INFO","msg":"http: TLS handshake error from 10.61.232.18:45446: remote error: tls: unknown certificate"}
+{"time":"2026-06-04T09:54:08.6288434+05:30","level":"INFO","msg":"http: TLS handshake error from 10.61.232.18:45448: remote error: tls: unknown certificate"}
+{"time":"2026-06-04T09:54:08.768253+05:30","level":"INFO","msg":"http: TLS handshake error from 10.61.232.18:45458: remote error: tls: unknown certificate"}
+2026/06/04 09:54:08 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/ HTTP/2.0" from 10.61.232.18:45466 - 200 12442B in 2.0647ms
+2026/06/04 09:54:08 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/style.css HTTP/2.0" from 10.61.232.18:45466 - 200 45102B in 1.5459ms
+2026/06/04 09:54:08 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/app.js HTTP/2.0" from 10.61.232.18:45466 - 200 11188B in 778.9µs
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/icon.png HTTP/2.0" from 10.61.232.18:45466 - 200 32842B in 1.4839ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/state.js HTTP/2.0" from 10.61.232.18:45466 - 200 1107B in 2.8011ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/markdown.js HTTP/2.0" from 10.61.232.18:45466 - 200 1468B in 2.8011ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/theme.js HTTP/2.0" from 10.61.232.18:45466 - 200 1276B in 2.0184ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/store.js HTTP/2.0" from 10.61.232.18:45466 - 200 2376B in 2.8011ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/auth.js HTTP/2.0" from 10.61.232.18:45466 - 200 6359B in 2.5311ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/export.js HTTP/2.0" from 10.61.232.18:45466 - 200 1794B in 1.2603ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/feedback.js HTTP/2.0" from 10.61.232.18:45466 - 200 3570B in 1.2603ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/sidebar.js HTTP/2.0" from 10.61.232.18:45466 - 200 4547B in 2.8949ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/agent-selector.js HTTP/2.0" from 10.61.232.18:45466 - 200 3886B in 1.1493ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/messages.js HTTP/2.0" from 10.61.232.18:45466 - 200 10632B in 4.428ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/suggestions.js HTTP/2.0" from 10.61.232.18:45466 - 200 7938B in 2.9416ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/chat-standalone.js HTTP/2.0" from 10.61.232.18:45466 - 200 8501B in 2.4096ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/file-upload.js HTTP/2.0" from 10.61.232.18:45466 - 200 5850B in 1.8969ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/model-selector.js HTTP/2.0" from 10.61.232.18:45466 - 200 7053B in 1.1493ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/chat-bridge.js HTTP/2.0" from 10.61.232.18:45466 - 200 10209B in 2.5168ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/utils.js HTTP/2.0" from 10.61.232.18:45466 - 200 4287B in 1.1786ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/context.js HTTP/2.0" from 10.61.232.18:45466 - 200 2325B in 513.3µs
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/api.js HTTP/2.0" from 10.61.232.18:45466 - 200 7020B in 1.0687ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/js/tool-ui.js HTTP/2.0" from 10.61.232.18:45466 - 200 7747B in 1.0687ms
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/api/mode HTTP/2.0" from 10.61.232.18:45466 - 200 42B in 0s
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/api/config HTTP/2.0" from 10.61.232.18:45466 - 200 219B in 0s
+2026/06/04 09:54:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/status HTTP/2.0" from 10.61.232.18:45466 - 200 21B in 0s
+2026/06/04 09:54:12 "POST https://prathosh-14802-t.csez.zohocorpin.com/auth/initiate HTTP/2.0" from 10.61.232.18:45466 - 200 248B in 378.9022ms
+2026/06/04 09:54:17 "GET https://prathosh-14802-t.csez.zohocorpin.com/explorer/icon.png HTTP/2.0" from 10.61.232.18:45466 - 200 32842B in 1.7158ms
+2026/06/04 09:54:22 "POST https://prathosh-14802-t.csez.zohocorpin.com/auth/poll HTTP/2.0" from 10.61.232.18:45466 - 200 21B in 258.5424ms
+2026/06/04 09:54:28 "POST https://prathosh-14802-t.csez.zohocorpin.com/auth/poll HTTP/2.0" from 10.61.232.18:45466 - 200 21B in 250.7816ms
+2026/06/04 09:54:35 "POST https://prathosh-14802-t.csez.zohocorpin.com/auth/poll HTTP/2.0" from 10.61.232.18:45466 - 200 17B in 919.4059ms
+2026/06/04 09:54:36 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/status HTTP/2.0" from 10.61.232.18:45466 - 200 1385B in 1.3405079s
+2026/06/04 09:54:36 "GET https://prathosh-14802-t.csez.zohocorpin.com/api/models HTTP/2.0" from 10.61.232.18:45466 - 200 830B in 349.9238ms
+{"time":"2026-06-04T10:36:46.7925115+05:30","level":"INFO","msg":"http: TLS handshake error from 10.61.232.18:46958: remote error: tls: unknown certificate"}
+{"time":"2026-06-04T10:36:46.8960593+05:30","level":"INFO","msg":"http: TLS handshake error from 10.61.232.18:46972: remote error: tls: unknown certificate"}
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/ HTTP/2.0" from 10.61.232.18:46974 - 200 15539B in 4.696ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/home.css HTTP/2.0" from 10.61.232.18:46974 - 200 531B in 1.5408ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/tabs.js HTTP/2.0" from 10.61.232.18:46974 - 200 899B in 2.0843ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/docs.js HTTP/2.0" from 10.61.232.18:46974 - 200 4681B in 2.6994ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/base.css HTTP/2.0" from 10.61.232.18:46974 - 200 1101B in 1.2864ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/layout.css HTTP/2.0" from 10.61.232.18:46974 - 200 1616B in 2.0048ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/cards.css HTTP/2.0" from 10.61.232.18:46974 - 200 3981B in 1.9561ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/getting-started.css HTTP/2.0" from 10.61.232.18:46974 - 200 3101B in 1.9561ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/feedback.css HTTP/2.0" from 10.61.232.18:46974 - 200 4478B in 2.571ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/responsive.css HTTP/2.0" from 10.61.232.18:46974 - 200 435B in 1.3638ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/auth.css HTTP/2.0" from 10.61.232.18:46974 - 200 3276B in 2.0356ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/docs-viewer.css HTTP/2.0" from 10.61.232.18:46974 - 200 4947B in 2.0356ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/icon.png HTTP/2.0" from 10.61.232.18:46974 - 200 32842B in 4.1395ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/feedback.js HTTP/2.0" from 10.61.232.18:46974 - 200 3570B in 1.3546ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/zoho-auth.js HTTP/2.0" from 10.61.232.18:46974 - 200 5387B in 2.6069ms
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/zoho/status HTTP/2.0" from 10.61.232.18:46974 - 200 40B in 320.3µs
+2026/06/04 10:36:47 "GET https://prathosh-14802-t.csez.zohocorpin.com/icon.png HTTP/2.0" from 10.61.232.18:46974 - 200 32842B in 4.35ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/docs/source/uems-agent-chat HTTP/2.0" from 10.61.232.18:46974 - 200 15539B in 1.4863ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/home.css HTTP/2.0" from 10.61.232.18:46974 - 200 531B in 654.7µs
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/icon.png HTTP/2.0" from 10.61.232.18:46974 - 200 32842B in 1.4673ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/tabs.js HTTP/2.0" from 10.61.232.18:46974 - 200 899B in 707.2µs
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/docs.js HTTP/2.0" from 10.61.232.18:46974 - 200 4681B in 1.5608ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/base.css HTTP/2.0" from 10.61.232.18:46974 - 200 1101B in 740.3µs
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/layout.css HTTP/2.0" from 10.61.232.18:46974 - 200 1616B in 1.23ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/getting-started.css HTTP/2.0" from 10.61.232.18:46974 - 200 3101B in 624µs
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/cards.css HTTP/2.0" from 10.61.232.18:46974 - 200 3981B in 624µs
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/responsive.css HTTP/2.0" from 10.61.232.18:46974 - 200 435B in 655µs
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/feedback.css HTTP/2.0" from 10.61.232.18:46974 - 200 4478B in 1.9225ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/auth.css HTTP/2.0" from 10.61.232.18:46974 - 200 3276B in 1.8529ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/docs-viewer.css HTTP/2.0" from 10.61.232.18:46974 - 200 4947B in 2.5043ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/feedback.js HTTP/2.0" from 10.61.232.18:46974 - 200 3570B in 1.3184ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/zoho-auth.js HTTP/2.0" from 10.61.232.18:46974 - 200 5387B in 1.8981ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/api/docs/source/uems-agent-chat HTTP/2.0" from 10.61.232.18:46974 - 200 17766B in 4.5293ms
+2026/06/04 10:37:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/zoho/status HTTP/2.0" from 10.61.232.18:46974 - 200 40B in 0s
+{"time":"2026-06-04T10:39:16.8907902+05:30","level":"INFO","msg":"http: TLS handshake error from 10.71.29.174:61895: remote error: tls: unknown certificate"}
+{"time":"2026-06-04T10:39:20.3694403+05:30","level":"INFO","msg":"http: TLS handshake error from 10.71.29.174:52286: remote error: tls: unknown certificate"}
+2026/06/04 10:39:20 "GET https://prathosh-14802-t/uems-testcase-generator-flow.html HTTP/2.0" from 10.71.29.174:55463 - 200 36040B in 693.1µs
+2026/06/04 10:39:21 "GET https://prathosh-14802-t/favicon.ico HTTP/2.0" from 10.71.29.174:55463 - 404 19B in 1.192ms
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/docs/source/uems-agent-chat HTTP/2.0" from 10.61.232.18:46974 - 200 15539B in 2.2205ms
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/tabs.js HTTP/2.0" from 10.61.232.18:46974 - 200 899B in 605.7µs
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/home.css HTTP/2.0" from 10.61.232.18:46974 - 200 531B in 605.7µs
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/docs.js HTTP/2.0" from 10.61.232.18:46974 - 200 4681B in 1.2591ms
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/layout.css HTTP/2.0" from 10.61.232.18:46974 - 200 1616B in 1.2575ms
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/base.css HTTP/2.0" from 10.61.232.18:46974 - 200 1101B in 1.2575ms
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/cards.css HTTP/2.0" from 10.61.232.18:46974 - 200 3981B in 652.6µs
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/auth.css HTTP/2.0" from 10.61.232.18:46974 - 200 3276B in 652.6µs
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/getting-started.css HTTP/2.0" from 10.61.232.18:46974 - 200 3101B in 652.6µs
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/feedback.css HTTP/2.0" from 10.61.232.18:46974 - 200 4478B in 1.2623ms
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/responsive.css HTTP/2.0" from 10.61.232.18:46974 - 200 435B in 652.6µs
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/docs-viewer.css HTTP/2.0" from 10.61.232.18:46974 - 200 4947B in 2.4178ms
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/icon.png HTTP/2.0" from 10.61.232.18:46974 - 200 32842B in 1.3398ms
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/feedback.js HTTP/2.0" from 10.61.232.18:46974 - 200 3570B in 699.9µs
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/zoho-auth.js HTTP/2.0" from 10.61.232.18:46974 - 200 5387B in 1.3588ms
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/api/docs/source/uems-agent-chat HTTP/2.0" from 10.61.232.18:46974 - 200 17766B in 1.3588ms
+2026/06/04 10:39:30 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/zoho/status HTTP/2.0" from 10.61.232.18:46974 - 200 40B in 0s
+2026/06/04 10:39:40 "GET https://prathosh-14802-t.csez.zohocorpin.com/uems-testcase-generator-flow.html HTTP/2.0" from 10.61.232.18:46974 - 200 36040B in 1.1888ms
+2026/06/04 10:39:40 "GET https://prathosh-14802-t.csez.zohocorpin.com/favicon.ico HTTP/2.0" from 10.61.232.18:46974 - 404 19B in 8.1533ms
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/ HTTP/2.0" from 10.61.232.18:46974 - 200 15539B in 2.1844ms
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/home.css HTTP/2.0" from 10.61.232.18:46974 - 200 531B in 0s
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/tabs.js HTTP/2.0" from 10.61.232.18:46974 - 200 899B in 0s
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/icon.png HTTP/2.0" from 10.61.232.18:46974 - 200 32842B in 1.2278ms
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/docs.js HTTP/2.0" from 10.61.232.18:46974 - 200 4681B in 1.2278ms
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/base.css HTTP/2.0" from 10.61.232.18:46974 - 200 1101B in 10.2186ms
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/layout.css HTTP/2.0" from 10.61.232.18:46974 - 200 1616B in 679.1µs
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/cards.css HTTP/2.0" from 10.61.232.18:46974 - 200 3981B in 598.5µs
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/getting-started.css HTTP/2.0" from 10.61.232.18:46974 - 200 3101B in 598.5µs
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/feedback.css HTTP/2.0" from 10.61.232.18:46974 - 200 4478B in 1.1507ms
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/docs-viewer.css HTTP/2.0" from 10.61.232.18:46974 - 200 4947B in 1.6817ms
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/responsive.css HTTP/2.0" from 10.61.232.18:46974 - 200 435B in 531µs
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/auth.css HTTP/2.0" from 10.61.232.18:46974 - 200 3276B in 1.0912ms
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/feedback.js HTTP/2.0" from 10.61.232.18:46974 - 200 3570B in 618.7µs
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/zoho-auth.js HTTP/2.0" from 10.61.232.18:46974 - 200 5387B in 1.2013ms
+2026/06/04 10:40:51 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/zoho/status HTTP/2.0" from 10.61.232.18:46974 - 200 40B in 8.8605ms
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/docs/agents HTTP/2.0" from 10.61.232.18:46974 - 200 15539B in 2.4422ms
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/home.css HTTP/2.0" from 10.61.232.18:46974 - 200 531B in 659.8µs
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/icon.png HTTP/2.0" from 10.61.232.18:46974 - 200 32842B in 1.9307ms
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/tabs.js HTTP/2.0" from 10.61.232.18:46974 - 200 899B in 576.5µs
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/docs.js HTTP/2.0" from 10.61.232.18:46974 - 200 4681B in 1.2065ms
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/base.css HTTP/2.0" from 10.61.232.18:46974 - 200 1101B in 739.5µs
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/layout.css HTTP/2.0" from 10.61.232.18:46974 - 200 1616B in 762.2µs
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/cards.css HTTP/2.0" from 10.61.232.18:46974 - 200 3981B in 762.2µs
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/getting-started.css HTTP/2.0" from 10.61.232.18:46974 - 200 3101B in 711.6µs
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/auth.css HTTP/2.0" from 10.61.232.18:46974 - 200 3276B in 654.2µs
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/docs-viewer.css HTTP/2.0" from 10.61.232.18:46974 - 200 4947B in 1.3658ms
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/feedback.css HTTP/2.0" from 10.61.232.18:46974 - 200 4478B in 1.3658ms
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/responsive.css HTTP/2.0" from 10.61.232.18:46974 - 200 435B in 2.005ms
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/feedback.js HTTP/2.0" from 10.61.232.18:46974 - 200 3570B in 1.4297ms
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/zoho-auth.js HTTP/2.0" from 10.61.232.18:46974 - 200 5387B in 1.6797ms
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/api/docs/agents HTTP/2.0" from 10.61.232.18:46974 - 200 273B in 14.0924ms
+2026/06/04 10:40:58 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/zoho/status HTTP/2.0" from 10.61.232.18:46974 - 200 40B in 0s
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/docs/agents/orchestrator HTTP/2.0" from 10.61.232.18:46974 - 200 15539B in 1.4494ms
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/home.css HTTP/2.0" from 10.61.232.18:46974 - 200 531B in 784.6µs
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/icon.png HTTP/2.0" from 10.61.232.18:46974 - 200 32842B in 1.1658ms
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/tabs.js HTTP/2.0" from 10.61.232.18:46974 - 200 899B in 601.2µs
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/docs.js HTTP/2.0" from 10.61.232.18:46974 - 200 4681B in 1.3582ms
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/layout.css HTTP/2.0" from 10.61.232.18:46974 - 200 1616B in 1.836ms
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/auth.css HTTP/2.0" from 10.61.232.18:46974 - 200 3276B in 1.246ms
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/cards.css HTTP/2.0" from 10.61.232.18:46974 - 200 3981B in 1.836ms
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/base.css HTTP/2.0" from 10.61.232.18:46974 - 200 1101B in 1.836ms
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/responsive.css HTTP/2.0" from 10.61.232.18:46974 - 200 435B in 793.4µs
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/feedback.css HTTP/2.0" from 10.61.232.18:46974 - 200 4478B in 2.0394ms
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/getting-started.css HTTP/2.0" from 10.61.232.18:46974 - 200 3101B in 11.7175ms
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/css/docs-viewer.css HTTP/2.0" from 10.61.232.18:46974 - 200 4947B in 11.9205ms
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/feedback.js HTTP/2.0" from 10.61.232.18:46974 - 200 3570B in 0s
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/zoho-auth.js HTTP/2.0" from 10.61.232.18:46974 - 200 5387B in 0s
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/api/docs/agents/orchestrator HTTP/2.0" from 10.61.232.18:46974 - 200 9485B in 0s
+2026/06/04 10:41:00 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/zoho/status HTTP/2.0" from 10.61.232.18:46974 - 200 40B in 0s
+2026/06/04 10:41:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/docs/agents HTTP/2.0" from 10.61.232.18:46974 - 200 15539B in 1.3982ms
+2026/06/04 10:41:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/home.css HTTP/2.0" from 10.61.232.18:46974 - 200 531B in 700.9µs
+2026/06/04 10:41:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/tabs.js HTTP/2.0" from 10.61.232.18:46974 - 200 899B in 627µs
+2026/06/04 10:41:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/docs.js HTTP/2.0" from 10.61.232.18:46974 - 200 4681B in 1.4829ms
+2026/06/04 10:41:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/feedback.js HTTP/2.0" from 10.61.232.18:46974 - 200 3570B in 685.6µs
+2026/06/04 10:41:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/zoho-auth.js HTTP/2.0" from 10.61.232.18:46974 - 200 5387B in 685.6µs
+2026/06/04 10:41:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/api/docs/agents HTTP/2.0" from 10.61.232.18:46974 - 200 273B in 9.7623ms
+2026/06/04 10:41:09 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/zoho/status HTTP/2.0" from 10.61.232.18:46974 - 200 40B in 0s
+2026/06/04 10:47:45 "GET https://prathosh-14802-t.csez.zohocorpin.com/ HTTP/2.0" from 10.61.232.18:46974 - 200 15539B in 1.9586ms
+2026/06/04 10:47:45 "GET https://prathosh-14802-t.csez.zohocorpin.com/home.css HTTP/2.0" from 10.61.232.18:46974 - 200 531B in 598.8µs
+2026/06/04 10:47:45 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/tabs.js HTTP/2.0" from 10.61.232.18:46974 - 200 899B in 598.8µs
+2026/06/04 10:47:45 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/docs.js HTTP/2.0" from 10.61.232.18:46974 - 200 4681B in 1.2517ms
+2026/06/04 10:47:45 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/feedback.js HTTP/2.0" from 10.61.232.18:46974 - 200 3570B in 672µs
+2026/06/04 10:47:45 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/zoho-auth.js HTTP/2.0" from 10.61.232.18:46974 - 200 5387B in 1.4182ms
+2026/06/04 10:47:45 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/zoho/status HTTP/2.0" from 10.61.232.18:46974 - 200 40B in 0s
+2026/06/04 10:47:48 "GET https://prathosh-14802-t.csez.zohocorpin.com/ HTTP/2.0" from 10.61.232.18:46974 - 200 15539B in 3.659ms
+2026/06/04 10:47:48 "GET https://prathosh-14802-t.csez.zohocorpin.com/home.css HTTP/2.0" from 10.61.232.18:46974 - 200 531B in 786µs
+2026/06/04 10:47:48 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/tabs.js HTTP/2.0" from 10.61.232.18:46974 - 200 899B in 824.7µs
+2026/06/04 10:47:48 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/docs.js HTTP/2.0" from 10.61.232.18:46974 - 200 4681B in 1.6528ms
+2026/06/04 10:47:48 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/feedback.js HTTP/2.0" from 10.61.232.18:46974 - 200 3570B in 8.8656ms
+2026/06/04 10:47:48 "GET https://prathosh-14802-t.csez.zohocorpin.com/js/zoho-auth.js HTTP/2.0" from 10.61.232.18:46974 - 200 5387B in 800.7µs
+2026/06/04 10:47:48 "GET https://prathosh-14802-t.csez.zohocorpin.com/auth/zoho/status HTTP/2.0" from 10.61.232.18:46974 - 200 40B in 0s
+{"time":"2026-06-08T15:46:19.7590754+05:30","level":"INFO","msg":"http: TLS handshake error from 10.71.28.74:52911: remote error: tls: unknown certificate"}
+{"time":"2026-06-08T15:46:19.9252997+05:30","level":"INFO","msg":"http: TLS handshake error from 10.71.28.74:59710: remote error: tls: unknown certificate"}
+{"time":"2026-06-08T15:46:19.939557+05:30","level":"INFO","msg":"http: TLS handshake error from 10.71.28.74:49676: remote error: tls: unknown certificate"}
+{"time":"2026-06-08T15:46:19.9402451+05:30","level":"INFO","msg":"http: TLS handshake error from 10.71.28.74:58207: remote error: tls: unknown certificate"}
+2026/06/08 15:46:19 "GET https://prathosh-14802-t/tc/view HTTP/2.0" from 10.71.28.74:55141 - 200 37125B in 39.2302ms
+2026/06/08 15:46:20 "GET https://prathosh-14802-t/tc/health HTTP/2.0" from 10.71.28.74:55141 - 200 15B in 3.5153ms
+2026/06/08 15:46:20 "GET https://prathosh-14802-t/tc/stats HTTP/2.0" from 10.71.28.74:55141 - 200 2640B in 24.3546ms
+2026/06/08 15:46:20 "GET https://prathosh-14802-t/tc/gaps HTTP/2.0" from 10.71.28.74:55141 - 200 49451B in 38.3383ms
+2026/06/08 15:46:20 "GET https://prathosh-14802-t/tc/payloads HTTP/2.0" from 10.71.28.74:55141 - 200 341035B in 43.7211ms
+2026/06/08 15:46:20 "GET https://prathosh-14802-t/favicon.ico HTTP/2.0" from 10.71.28.74:55141 - 404 19B in 2.4932ms
+2026/06/08 15:46:20 "GET https://prathosh-14802-t/tc/testcases?status=active HTTP/2.0" from 10.71.28.74:55141 - 200 211516B in 12.8034ms
+2026/06/08 15:46:26 "GET https://prathosh-14802-t/uems-testcase-generator-flow.html HTTP/2.0" from 10.71.28.74:55141 - 200 36040B in 1.5087ms
+{"time":"2026-06-08T22:15:33.8799327+05:30","level":"INFO","msg":"http: TLS handshake error from 10.71.29.174:63309: remote error: tls: unknown certificate"}

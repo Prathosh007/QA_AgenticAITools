@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SSMK — Diff Analysis & Test Plan</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: #f5f6fa; color: #222; }
+  .header { background: #0078d4; color: #fff; padding: 24px 32px; }
+  .header h1 { margin: 0; font-size: 22px; }
+  .header .meta { opacity: .85; font-size: 13px; margin-top: 6px; }
+  .content { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+  .cards { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; }
+  .card { background: #fff; border-radius: 8px; padding: 16px 22px; min-width: 140px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .card .num { font-size: 30px; font-weight: 700; color: #0078d4; }
+  .card .label { font-size: 12px; color: #666; margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+  .card.warn .num { color: #c0392b; }
+  .card.ok .num { color: #1e7e34; }
+  table { border-collapse: collapse; width: 100%; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 24px; }
+  th { background: #0078d4; color: #fff; padding: 9px 14px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+  td { padding: 8px 14px; border-bottom: 1px solid #eee; font-size: 13px; vertical-align: top; }
+  tr:hover td { background: #f0f6ff; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-p1 { background: #fde8e8; color: #c0392b; }
+  .badge-p2 { background: #fff3cd; color: #856404; }
+  .badge-p3 { background: #e8f4fd; color: #1a6895; }
+  .badge-h { background: #fde8e8; color: #c0392b; }
+  .badge-m { background: #fff3cd; color: #856404; }
+  .badge-l { background: #e6f4ea; color: #1e7e34; }
+  h2 { font-size: 17px; color: #333; margin: 28px 0 12px; border-left: 4px solid #0078d4; padding-left: 12px; }
+  .risk { background: #fff8e1; border-left: 4px solid #f39c12; padding: 10px 14px; border-radius: 4px; margin-bottom: 8px; font-size: 13px; }
+  .footer { text-align: center; padding: 16px; color: #aaa; font-size: 12px; }
+  code { background: #eef; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Service Specific Master Key (SSMK) — Diff Analysis &amp; Test Plan</h1>
+  <div class="meta">Generated 2026-06-04 · 7 repositories · Windows + Mac + Linux + DS</div>
+</div>
+
+<div class="content">
+
+<div class="cards">
+  <div class="card"><div class="num">7</div><div class="label">Repositories</div></div>
+  <div class="card"><div class="num">214</div><div class="label">Files Changed</div></div>
+  <div class="card warn"><div class="num">23,474</div><div class="label">Insertions</div></div>
+  <div class="card warn"><div class="num">10,238</div><div class="label">Deletions</div></div>
+  <div class="card ok"><div class="num">132</div><div class="label">New Test Cases</div></div>
+  <div class="card ok"><div class="num">346</div><div class="label">Existing TCs</div></div>
+  <div class="card ok"><div class="num">478</div><div class="label">Combined Coverage</div></div>
+  <div class="card"><div class="num">4</div><div class="label">Testers</div></div>
+</div>
+
+<h2>Repositories Analyzed</h2>
+<table>
+<tr><th>#</th><th>Repository</th><th>Source (newer)</th><th>Target (older)</th><th>Files</th><th>+</th><th>-</th><th>Risk</th></tr>
+<tr><td>1</td><td>uems_agent_utils</td><td>origin/SSMK_26.20.01</td><td>UEMS_AGENT_UTILS_26.20.01</td><td>40</td><td>3,567</td><td>219</td><td><span class="badge badge-h">High</span></td></tr>
+<tr><td>2</td><td>uems_agent_framework</td><td>origin/SSMK_26.20.01</td><td>UEMS_AGENT_FRAMEWORK_26.20.01</td><td>12</td><td>387</td><td>134</td><td><span class="badge badge-m">Med</span></td></tr>
+<tr><td>3</td><td>uems_ds</td><td>origin/SSMK_26.20.01</td><td>UEMS_DS_26.20.01</td><td>7</td><td>559</td><td>128</td><td><span class="badge badge-h">High</span></td></tr>
+<tr><td>4</td><td>uems_server_native</td><td>origin/SSMK_26.20.01</td><td>UEMS_SERVER_NATIVE_26.20.01</td><td>6</td><td>957</td><td>3</td><td><span class="badge badge-m">Med</span></td></tr>
+<tr><td>5</td><td>dc_native (Linux/Go)</td><td>origin/SSMK_26.20.01</td><td>DC_NATIVE_26.20.01</td><td>51</td><td>10,724</td><td>3,660</td><td><span class="badge badge-h">High</span></td></tr>
+<tr><td>6</td><td>agent-utils (Mac)</td><td>origin/service-specific-key-26.18</td><td>UEMS_MAC_AGENT_UTILS_26.18.01</td><td>26</td><td>1,355</td><td>408</td><td><span class="badge badge-h">High</span></td></tr>
+<tr><td>7</td><td>framework-ops-suite (Mac)</td><td>origin/service-specific-key-26.20</td><td>UEMS_MAC_AGENT_FRAMEWORK_26.20.01</td><td>72</td><td>5,925</td><td>5,686</td><td><span class="badge badge-h">High</span></td></tr>
+</table>
+
+<h2>Feature Summary</h2>
+<p style="font-size:13px">SSMK replaces a single shared master key with <strong>per-service-module</strong> encryption keys (AGENT_UTILS, FRAMEWORK, PATCH, INVENTORY, DCP, ACP, DMS, SOM). Keys are negotiated/rotated with the DS via a <strong>Key Share servlet</strong> and stored in a per-platform vault (Win registry + AES blobs, Linux SQLite, Mac plist + keychain). Auth tokens, proxy creds, cert keys are all re-encrypted under the per-module key. Lifecycle states: <em>Active → Adaption → Active</em> with both keys valid during adaption window.</p>
+
+<h2>High-Risk Areas</h2>
+
+<div class="risk"><strong>R1 — Credential/key encryption.</strong> Wrong key = permanent data loss. Affects all 7 repos.</div>
+<div class="risk"><strong>R2 — Key Share handshake.</strong> Network race, 401/403/503 from DS, partial response handling. Watch <code>TC-SSMK-KEYSHARE-*</code>.</div>
+<div class="risk"><strong>R3 — Upgrade migration.</strong> One-shot migration; failure leaves agent unable to decrypt. Old-master-key file must be removed only after vault verified. <code>TC-SSMK-UPGRADE-*</code>, <code>TC-SSMK-LIN-UPGRADE-*</code>.</div>
+<div class="risk"><strong>R4 — AES-GCM nonce reuse.</strong> Three independent implementations added across repos. Catastrophic if nonce reused with same key. <code>TC-SSMK-LIN-VAULT-003</code>.</div>
+<div class="risk"><strong>R5 — DS-DS replication.</strong> Two DS rotating same module simultaneously. <code>TC-SSMK-DSREPL-003</code>.</div>
+<div class="risk"><strong>R6 — Backward compatibility.</strong> New agent ↔ old DS and old agent ↔ new DS must both work or fail safely. <code>TC-SSMK-INT-AGENTDS-002/003</code>.</div>
+<div class="risk"><strong>R7 — Mac DMS WebSocket revamp.</strong> Bundled into framework-ops-suite — independent risk vector. <code>TC-SSMK-MAC-DMS-*</code>.</div>
+
+<h2>New Test Cases by Module</h2>
+<table>
+<tr><th>Module</th><th>Count</th></tr>
+<tr><td>dc_native (Linux/Go)</td><td>27</td></tr>
+<tr><td>uems_agent_utils (Win)</td><td>24</td></tr>
+<tr><td>cross-cutting / E2E</td><td>21</td></tr>
+<tr><td>agent-utils (Mac)</td><td>20</td></tr>
+<tr><td>framework-ops-suite (Mac)</td><td>16</td></tr>
+<tr><td>uems_agent_framework (Win)</td><td>9</td></tr>
+<tr><td>uems_ds (Win DS)</td><td>6</td></tr>
+<tr><td>regression</td><td>5</td></tr>
+<tr><td>uems_server_native</td><td>4</td></tr>
+<tr><th>Total</th><th>132</th></tr>
+</table>
+
+<h2>New Test Cases by Category</h2>
+<table>
+<tr><th>Category</th><th>Count</th></tr>
+<tr><td>Functional / Happy Path</td><td>18</td></tr>
+<tr><td>Failure / Error Handling</td><td>16</td></tr>
+<tr><td>Negative</td><td>12</td></tr>
+<tr><td>Edge Cases</td><td>12</td></tr>
+<tr><td>Retry / Recovery</td><td>10</td></tr>
+<tr><td>Upgrade / Migration</td><td>9</td></tr>
+<tr><td>Security / Permission</td><td>8</td></tr>
+<tr><td>State Transition</td><td>8</td></tr>
+<tr><td>Integration (Agent ↔ DS, DS ↔ DS)</td><td>8</td></tr>
+<tr><td>Concurrency / Race</td><td>6</td></tr>
+<tr><td>Timing / Timeout</td><td>5</td></tr>
+<tr><td>Resource Exhaustion</td><td>4</td></tr>
+<tr><td>Cross-Environment</td><td>4</td></tr>
+<tr><td>E2E</td><td>4</td></tr>
+<tr><td>Cleanup / Uninstall</td><td>3</td></tr>
+<tr><td>Rare / Unlikely</td><td>3</td></tr>
+</table>
+
+<h2>4-Person Test Split</h2>
+<table>
+<tr><th>Tester</th><th>Scope</th><th>New TCs</th><th>Existing TCs</th><th>Total</th><th>% of all</th></tr>
+<tr><td>A — Windows + DS</td><td>uems_agent_utils, uems_agent_framework, uems_ds, uems_server_native</td><td>46</td><td>154</td><td>200</td><td>41.8%</td></tr>
+<tr><td>B — Linux</td><td>dc_native (Linux/Go)</td><td>27</td><td>105</td><td>132</td><td>27.6%</td></tr>
+<tr><td>C — Mac</td><td>agent-utils, framework-ops-suite</td><td>36</td><td>87</td><td>123</td><td>25.7%</td></tr>
+<tr><td>D — Cross + Regression</td><td>Cross-platform E2E, compat matrix, perf, security audit, regression triage</td><td>27</td><td>—</td><td>27 + triage</td><td>5.6%</td></tr>
+<tr><th colspan="2">TOTAL</th><th>136</th><th>346</th><th>482</th><th>100%</th></tr>
+</table>
+
+<h2>Suggested 5-Day Schedule</h2>
+<table>
+<tr><th>Day</th><th>Focus</th></tr>
+<tr><td>Day 1</td><td>Environment setup + E2E smoke (<code>TC-SSMK-INT-AGENTDS-001</code>). Blocker bar.</td></tr>
+<tr><td>Day 2</td><td>Happy-path + Functional (P1). D starts compat matrix.</td></tr>
+<tr><td>Day 3</td><td>Failure / Retry / Negative / Security.</td></tr>
+<tr><td>Day 4</td><td>Edge / Concurrency / Upgrade. D runs fleet-wide rotation + perf.</td></tr>
+<tr><td>Day 5</td><td>Regression sweep, Cleanup/Uninstall, final sign-off by D.</td></tr>
+</table>
+
+<h2>Top 12 Bugs / Logic Concerns to Verify</h2>
+<table>
+<tr><th>#</th><th>Area</th><th>Concern</th><th>TC ID</th></tr>
+<tr><td>B1</td><td>uems_agent_utils/SSMKeyUtil.cpp</td><td>Reset modified time in cleanup — no key reuse after rotate-then-restart</td><td>TC-SSMK-KEYROT-002</td></tr>
+<tr><td>B2</td><td>uems_agent_utils/httphandlerex.cpp</td><td>Key Share servlet rejection — no infinite retry</td><td>TC-SSMK-KEYSHARE-003/004</td></tr>
+<tr><td>B3</td><td>dc_native/vaultcrypto.go</td><td>AES-GCM nonce uniqueness under concurrent writes</td><td>TC-SSMK-LIN-VAULT-003</td></tr>
+<tr><td>B4</td><td>dc_native/uemsdatavault.go</td><td>SQLite "database is locked" retry behavior</td><td>TC-SSMK-LIN-VAULT-002</td></tr>
+<tr><td>B5</td><td>dc_native/DcUpgrader.go</td><td>Old-file removal only after vault verified</td><td>TC-SSMK-LIN-UPGRADE-001</td></tr>
+<tr><td>B6</td><td>agent-utils/KeyShare.swift</td><td>isKeyAtAdaptionStage as String / missing</td><td>TC-SSMK-MAC-KS-002/003</td></tr>
+<tr><td>B7</td><td>agent-utils/AuthPropsMigration.swift</td><td>Per-token failure isolation</td><td>TC-SSMK-MAC-MIG-002</td></tr>
+<tr><td>B8</td><td>agent-utils/ProxyCredentialMigration.swift</td><td>Plist remnant cleanup</td><td>TC-SSMK-MAC-PROXY-002</td></tr>
+<tr><td>B9</td><td>framework-ops-suite/WSTransport.swift</td><td>Read deadline reset on pong</td><td>TC-SSMK-MAC-DMS-004</td></tr>
+<tr><td>B10</td><td>uems_ds/processmastermetadata.cpp</td><td>DS-DS replication conflict resolution</td><td>TC-SSMK-DSREPL-003</td></tr>
+<tr><td>B11</td><td>uems_server_native/SymNativeAesCipherUtils.cpp</td><td>Server cipher compat with agent</td><td>TC-SSMK-SERVER-002</td></tr>
+<tr><td>B12</td><td>uems_agent_framework/AgentUpgrader.cpp</td><td>JSONStatusUtil reports migration failure</td><td>TC-SSMK-UPGRADE-008</td></tr>
+</table>
+
+<h2>Output Files</h2>
+<table>
+<tr><th>File</th><th>Description</th></tr>
+<tr><td><code>SSMK_Diff_Analysis.md</code></td><td>Full analysis: feature summary, risk, classification, bug list, recommendations</td></tr>
+<tr><td><code>SSMK_New_TestCases.csv</code></td><td>132 new test cases (CSV in existing project format)</td></tr>
+<tr><td><code>SSMK_TestPlan_4People.md</code></td><td>4-person split, 5-day schedule, standup &amp; defect protocol</td></tr>
+<tr><td><code>SSMK_Report.html</code></td><td>This file — executive HTML report</td></tr>
+</table>
+
+<div class="footer">UEMS Agent Testcase Generator — SSMK release coverage report</div>
+
+</div>
+</body>
+</html>

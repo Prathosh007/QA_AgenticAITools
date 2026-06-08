@@ -1,0 +1,167 @@
+/* ── Primary Cards (responsive grid) ──────────────────────────── */
+
+.primary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding-bottom: 48px;
+}
+
+.card {
+  display: flex;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  gap: 20px;
+}
+
+.card-primary {
+  align-items: flex-start;
+}
+
+.card:hover {
+  transform: translateY(var(--card-hover-lift));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon .material-symbols-rounded {
+  font-size: 28px;
+}
+
+.card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.card-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.card-action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: gap 0.2s;
+}
+
+.card:hover .card-action {
+  gap: 10px;
+}
+
+.card-action .material-symbols-rounded {
+  font-size: 18px;
+}
+
+/* ── Card accent colours ──────────────────────────────────────── */
+
+.card-explorer:hover { border-color: var(--accent-blue); }
+.card-explorer .card-icon { background: rgba(88, 166, 255, 0.12); }
+.card-explorer .card-icon .material-symbols-rounded { color: var(--accent-blue); }
+.card-explorer .card-action { color: var(--accent-blue); }
+
+.card-extension:hover { border-color: var(--accent-purple); }
+.card-extension .card-icon { background: rgba(188, 140, 255, 0.12); }
+.card-extension .card-icon .material-symbols-rounded { color: var(--accent-purple); }
+.card-extension .card-action { color: var(--accent-purple); }
+
+.card-testcases:hover { border-color: var(--accent-green); }
+.card-testcases .card-icon { background: rgba(63, 185, 80, 0.12); }
+.card-testcases .card-icon .material-symbols-rounded { color: var(--accent-green); }
+.card-testcases .card-action { color: var(--accent-green); }
+
+/* ── Section title (shared heading style) ─────────────────────── */
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+.section-title .material-symbols-rounded {
+  font-size: 22px;
+  color: var(--text-secondary);
+}
+
+/* ── Documentation link grid ──────────────────────────────────── */
+
+.docs-section {
+  padding-bottom: 48px;
+}
+
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.doc-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, background 0.15s;
+}
+
+.doc-link:hover {
+  border-color: var(--accent-blue);
+  background: rgba(88, 166, 255, 0.04);
+}
+
+.doc-link > .material-symbols-rounded {
+  font-size: 22px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.doc-link:hover > .material-symbols-rounded {
+  color: var(--accent-blue);
+}
+
+.doc-link strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.doc-link span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}

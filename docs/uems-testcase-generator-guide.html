@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UEMS Testcase Generator — User Guide</title>
+<style>
+  :root {
+    --blue: #0078d4;
+    --blue-dark: #0f2b5b;
+    --blue-light: #e3f2fd;
+    --purple: #5c2d91;
+    --purple-light: #f3e5f5;
+    --green: #107c10;
+    --green-light: #e6f4ea;
+    --orange: #e65100;
+    --orange-light: #fff8e1;
+    --red: #c0392b;
+    --red-light: #fde8e8;
+    --gray-50: #f8fafd;
+    --gray-100: #f0f4fb;
+    --gray-200: #e0e5ec;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #1a1a2e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--gray-100);
+    color: var(--gray-900);
+    line-height: 1.6;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 48px 32px 40px;
+    text-align: center;
+  }
+  .hero h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .hero .tagline { font-size: 15px; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+
+  /* ── Containers ── */
+  .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+  .section { margin: 36px 0; }
+  .section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--blue-dark);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 3px solid var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--blue);
+    margin: 20px 0 10px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+  }
+  .card p { font-size: 14px; color: var(--gray-700); }
+
+  /* ── Stat cards (top row) ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 18px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border-top: 4px solid var(--blue);
+  }
+  .stat-card .icon { font-size: 28px; margin-bottom: 8px; }
+  .stat-card .label { font-size: 13px; color: var(--gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-card .value { font-size: 14px; color: var(--gray-900); font-weight: 700; margin-top: 4px; }
+  .stat-card:nth-child(2) { border-top-color: var(--purple); }
+  .stat-card:nth-child(3) { border-top-color: var(--green); }
+  .stat-card:nth-child(4) { border-top-color: var(--orange); }
+
+  /* ── Tables ── */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    background: var(--blue);
+    color: #fff;
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 700;
+  }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--gray-200); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f0f7ff; }
+
+  /* ── Timeline / Steps ── */
+  .timeline { position: relative; padding-left: 36px; }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--gray-200);
+    border-radius: 3px;
+  }
+  .step {
+    position: relative;
+    margin-bottom: 28px;
+  }
+  .step-dot {
+    position: absolute;
+    left: -36px;
+    top: 2px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    z-index: 1;
+  }
+  .dot-blue { background: var(--blue); }
+  .dot-purple { background: var(--purple); }
+  .dot-green { background: var(--green); }
+  .dot-orange { background: var(--orange); }
+  .step-content {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  }
+  .step-title { font-size: 15px; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; }
+  .step-desc { font-size: 13px; color: var(--gray-700); }
+  .step-desc ul { padding-left: 16px; margin-top: 6px; }
+  .step-desc li { margin-bottom: 4px; }
+
+  /* ── Callouts ── */
+  .callout {
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin: 16px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .callout-info  { background: var(--blue-light); border-left: 4px solid var(--blue); color: #0d47a1; }
+  .callout-warn  { background: var(--orange-light); border-left: 4px solid #f9a825; color: #5d4037; }
+  .callout-good  { background: var(--green-light); border-left: 4px solid var(--green); color: #1b5e20; }
+  .callout-error { background: var(--red-light); border-left: 4px solid var(--red); color: var(--red); }
+
+  /* ── Phase cards ── */
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: 10px 10px 0 0;
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .ph-blue   { background: var(--blue); }
+  .ph-purple { background: var(--purple); }
+  .ph-green  { background: var(--green); }
+  .ph-orange { background: #e67e00; }
+  .ph-teal   { background: #006b75; }
+  .phase-body {
+    background: #fff;
+    border-radius: 0 0 10px 10px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+  }
+  .phase-body p { font-size: 13px; color: var(--gray-700); margin-bottom: 8px; }
+  .phase-body ul { padding-left: 18px; font-size: 13px; color: var(--gray-700); }
+  .phase-body li { margin-bottom: 5px; }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .b-blue   { background: var(--blue-light); color: #0d47a1; }
+  .b-purple { background: var(--purple-light); color: var(--purple); }
+  .b-green  { background: var(--green-light); color: #1b5e20; }
+  .b-orange { background: var(--orange-light); color: var(--orange); }
+
+  /* ── Code blocks ── */
+  code {
+    background: var(--gray-50);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+    color: var(--blue-dark);
+  }
+  .code-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 12px 0;
+    white-space: pre;
+  }
+  .code-block .comment { color: #6c7086; }
+  .code-block .keyword { color: #89b4fa; }
+  .code-block .string  { color: #a6e3a1; }
+
+  /* ── Diagram ── */
+  .diagram-box {
+    background: var(--gray-50);
+    border: 2px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-family: "Cascadia Code", "Fira Code", monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    white-space: pre;
+    overflow-x: auto;
+    margin: 16px 0;
+    color: var(--gray-900);
+  }
+
+  /* ── Two-column layout ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 700px) {
+    .two-col { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── Mode comparison ── */
+  .mode-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border-top: 4px solid var(--blue);
+  }
+  .mode-card:nth-child(2) { border-top-color: var(--purple); }
+  .mode-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .mode-card p { font-size: 13px; color: var(--gray-700); }
+  .mode-card ul { padding-left: 16px; font-size: 13px; color: var(--gray-700); margin-top: 8px; }
+  .mode-card li { margin-bottom: 4px; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--gray-500);
+    font-size: 12px;
+    margin-top: 40px;
+  }
+
+  /* ── Connector arrow between phases ── */
+  .connector {
+    text-align: center;
+    font-size: 24px;
+    color: var(--gray-200);
+    padding: 4px 0;
+  }
+
+  /* ── FAQ accordion ── */
+  details {
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  summary {
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--blue-dark);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  summary::before { content: "▸"; font-size: 14px; color: var(--blue); transition: transform 0.2s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  summary::-webkit-details-marker { display: none; }
+  details .detail-body { padding: 0 20px 16px; font-size: 13px; color: var(--gray-700); }
+  details .detail-body p { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HERO                                                       -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="hero">
+  <h1>🧪 UEMS Testcase Generator</h1>
+  <p class="tagline">
+    A complete guide to how test cases are generated from your codebase,
+    converted into GOAT automation payloads, and tracked in a persistent database.
+  </p>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- WHAT IS THIS?                                          -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>🎯 What Is This?</h2>
+    <div class="card">
+      <p>
+        The <strong>UEMS Testcase Generator</strong> is an AI-powered agent that automates the entire QA workflow:
+      </p>
+      <br>
+      <p>
+        <strong>You say:</strong> <em>"Generate test cases for Computer Rename"</em><br>
+        <strong>It produces:</strong> structured manual test cases + GOAT automation JSON + a summary report — all in one run.
+      </p>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="icon">📋</div>
+        <div class="label">Test Cases</div>
+        <div class="value">Hierarchical manual TCs with product-level steps</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">⚙️</div>
+        <div class="label">GOAT JSON</div>
+        <div class="value">Automation payloads ready for execution</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">💾</div>
+        <div class="label">Persistent DB</div>
+        <div class="value">Never duplicates — reuses &amp; extends existing TCs</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">⚠️</div>
+        <div class="label">Gap Reports</div>
+        <div class="value">Unmappable steps are flagged, never silently skipped</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- TWO MODES                                               -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>🔀 Two Generation Modes</h2>
+    <div class="two-col">
+      <div class="mode-card">
+        <h4>📋 Functionality-Level</h4>
+        <p>Generate test cases for a <strong>feature or module</strong> from scratch (or extend existing coverage).</p>
+        <ul>
+          <li>Reads KNOWLEDGE.md for product context</li>
+          <li>Searches codebase for real file paths &amp; configs</li>
+          <li>Covers: Happy Path → Failure → Edge → Negative → Integration</li>
+        </ul>
+        <br>
+        <p><strong>Example prompts:</strong></p>
+        <ul>
+          <li><em>"Generate test cases for Computer Rename"</em></li>
+          <li><em>"Generate test cases for Software Deployment &gt; Patch Installation"</em></li>
+        </ul>
+      </div>
+      <div class="mode-card">
+        <h4>🔃 Diff Comparison</h4>
+        <p>Generate test cases based on <strong>what changed</strong> between two branches.</p>
+        <ul>
+          <li>Diffs source branch vs target branch</li>
+          <li>Classifies each change by functionality</li>
+          <li>Generates TCs only for affected areas</li>
+        </ul>
+        <br>
+        <p><strong>Example prompts:</strong></p>
+        <ul>
+          <li><em>"Generate diff test cases: feature_win_26.05 vs main"</em></li>
+          <li><em>"What changed between feature_rename_fix and main?"</em></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- HOW REPOS ARE USED                                      -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>📦 How Does the Codebase Connect?</h2>
+    <div class="card">
+      <p>
+        The UEMS agent code lives across <strong>~38 repositories</strong> (macOS, Linux, Windows).
+        A file called <code>repos.json</code> acts as a <strong>phone book</strong> — it stores metadata about each repo, not actual code.
+      </p>
+    </div>
+
+    <h3>What's in repos.json?</h3>
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <tr><th style="width:25%">Field</th><th style="width:35%">Purpose</th><th>Example</th></tr>
+        <tr><td><code>gitUrl</code></td><td>Git clone URL</td><td><code>https://git.csez.…/patch-management.git</code></td></tr>
+        <tr><td><code>layer</code></td><td>Build dependency order</td><td><code>3</code> (higher = more dependencies)</td></tr>
+        <tr><td><code>dependencies</code></td><td>Other repos it needs</td><td><code>["agent-utils", "cmickey_utils"]</code></td></tr>
+        <tr><td><code>platform</code></td><td>OS platform</td><td><code>mac</code>, <code>linux</code>, <code>windows</code></td></tr>
+        <tr><td><code>description</code></td><td>What the repo does</td><td><code>"Patch management functionality"</code></td></tr>
+      </table>
+    </div>
+
+    <h3>How Are Relevant Repos Identified?</h3>
+    <div class="callout callout-info">
+      <span class="callout-icon">💡</span>
+      <div><strong>Not all 38 repos are cloned.</strong> Only the repos relevant to your task are pulled — through a 3-layer identification process.</div>
+    </div>
+
+    <div class="timeline" style="margin-top: 20px;">
+      <div class="step">
+        <div class="step-dot dot-blue">1</div>
+        <div class="step-content">
+          <div class="step-title">AI Reads Your Request</div>
+          <div class="step-desc">
+            You say <em>"Generate test cases for Patch Management on macOS"</em>. The AI matches keywords
+            against repo descriptions and <code>repo-map.md</code> guidelines.
+            <br><br>
+            <strong>Result:</strong> Primary repo identified → <code>patch-management</code>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-purple">2</div>
+        <div class="step-content">
+          <div class="step-title">Dependency Chain Is Resolved</div>
+          <div class="step-desc">
+            <code>repos.json</code> says <code>patch-management</code> depends on:
+            <ul>
+              <li><code>agent-utils</code> (shared wrappers)</li>
+              <li><code>cmickey_utils</code> (legacy utilities)</li>
+              <li><code>uems_native_dependencies</code> (third-party libs)</li>
+            </ul>
+            The system recursively walks the dependency tree so nothing is missed.
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-green">3</div>
+        <div class="step-content">
+          <div class="step-title">On-Demand Clone</div>
+          <div class="step-desc">
+            The <code>setup-workspace</code> tool looks up each repo's <code>gitUrl</code> in <code>repos.json</code>
+            and runs <code>git clone</code> (or <code>git fetch</code> if already present).
+            <br><br>
+            <strong>Only the needed repos are cloned</strong> — the AI then searches this local code to understand
+            real file paths, configs, and behaviors for generating accurate test cases.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">⚡</span>
+      <div><strong>Key insight:</strong> It's the AI's reasoning that picks the relevant repos.
+      <code>repos.json</code> provides the metadata — the AI does the thinking. If it can't determine which repos, it simply asks you.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- END-TO-END WORKFLOW                                     -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>🔄 End-to-End Workflow</h2>
+    <p style="font-size:14px; color:var(--gray-700); margin-bottom:20px;">
+      Here's everything that happens when you ask the Testcase Generator to produce test cases — from the moment you type the prompt to the final report.
+    </p>
+
+    <!-- Phase 0 -->
+    <div class="phase-header ph-teal">🏥 Phase 0 — Database Health Check</div>
+    <div class="phase-body">
+      <p>Before anything else, the agent checks if the <strong>testcase database</strong> is running:</p>
+      <div class="code-block"><span class="keyword">GET</span> <span class="string">http://localhost:3000/health</span>
+<span class="comment">// If online → shows stats (total TCs, converted, gaps)</span>
+<span class="comment">// If offline → stops and tells you how to start the server</span></div>
+      <div class="callout callout-error">
+        <span class="callout-icon">⛔</span>
+        <div>The generator will <strong>not proceed</strong> until the DB is reachable. This prevents duplicate test cases.</div>
+      </div>
+    </div>
+    <div class="connector">▼</div>
+
+    <!-- Phase 1 -->
+    <div class="phase-header ph-blue">📋 Phase 1 — Collect Your Inputs</div>
+    <div class="phase-body">
+      <p>The agent asks you <strong>one dialog</strong> with all the questions up front:</p>
+      <table>
+        <tr><th style="width:8%">#</th><th style="width:32%">Question</th><th>What You Provide</th></tr>
+        <tr><td>1</td><td>Generation mode</td><td><span class="badge b-blue">Functionality-level</span> or <span class="badge b-purple">Diff comparison</span></td></tr>
+        <tr><td>2</td><td>Functionality name</td><td>e.g., <em>Computer Rename</em>, <em>Software Deployment &gt; Patch Install</em></td></tr>
+        <tr><td>3</td><td>Branches <span class="badge b-purple">Diff only</span></td><td>e.g., <em>feature_branch → main</em></td></tr>
+        <tr><td>4</td><td>Repository <span class="badge b-purple">Diff only</span></td><td>e.g., <em>uems_agent_framework</em></td></tr>
+      </table>
+    </div>
+    <div class="connector">▼</div>
+
+    <!-- Phase 2 -->
+    <div class="phase-header ph-blue">🧪 Phase 2 — Generate Test Cases</div>
+    <div class="phase-body">
+      <p>The <strong>testcase-generation skill</strong> runs a systematic process:</p>
+      <table>
+        <tr><th style="width:8%">Step</th><th style="width:30%">Action</th><th>Details</th></tr>
+        <tr>
+          <td>1</td>
+          <td><strong>Check existing DB</strong></td>
+          <td>Queries the database to find existing test cases for this functionality — avoids duplicates</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>Gather context</strong></td>
+          <td>
+            <strong>Functionality mode:</strong> reads <code>KNOWLEDGE.md</code>, existing CSVs, and searches the codebase<br>
+            <strong>Diff mode:</strong> runs <code>uems_agent_diff_branches</code> to get actual code changes
+          </td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>Classify &amp; categorize</strong></td>
+          <td>Groups code changes by functionality, sub-functionality, platform, and complexity</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>Generate test cases</strong></td>
+          <td>Creates TCs in priority order:<br>
+            <span class="badge b-green">Happy Path</span>
+            <span class="badge b-orange">Bug Scenario</span>
+            <span class="badge b-orange">Failure/Retry</span>
+            <span class="badge b-purple">Edge Case</span>
+            <span class="badge b-purple">Negative</span>
+            <span class="badge b-blue">Integration</span>
+          </td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><strong>Write product-level steps</strong></td>
+          <td>Steps use tester language (not code references) — real file paths, service names, and GOAT hints</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td><strong>Save to CSV &amp; DB</strong></td>
+          <td>Outputs CSV file + POSTs each TC to the database</td>
+        </tr>
+      </table>
+
+      <div class="callout callout-good">
+        <span class="callout-icon">✅</span>
+        <div><strong>Smart merge:</strong> If test cases already exist, the system merges — modifying outdated ones, adding new ones, and deprecating obsolete ones. Never starts from scratch unnecessarily.</div>
+      </div>
+    </div>
+    <div class="connector">▼</div>
+
+    <!-- Phase 3 -->
+    <div class="phase-header ph-purple">⚙️ Phase 3 — Convert to GOAT JSON</div>
+    <div class="phase-body">
+      <p>The <strong>testcase-json-converter skill</strong> automatically converts each test case into an executable automation payload:</p>
+      <table>
+        <tr><th style="width:8%">Step</th><th style="width:30%">Action</th><th>Details</th></tr>
+        <tr>
+          <td>0</td>
+          <td><strong>Read GOAT operations</strong></td>
+          <td>Loads <code>GOAT_Operations_Context.md</code> — the single source of truth for all 22+ operation types</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td><strong>Skip already converted</strong></td>
+          <td>Checks DB: if a payload already exists for a TC → skips it</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>Map steps → operations</strong></td>
+          <td>Each test step is matched to a GOAT <code>operation_type</code> + <code>action</code> + parameters</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>Build JSON payload</strong></td>
+          <td>Assembles the full payload with component, operations array, and expected result</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>Save or report gap</strong></td>
+          <td><span class="badge b-green">Mappable</span> → saved to DB &amp; file<br>
+              <span class="badge b-orange">Unmappable</span> → gap report with missing util name &amp; suggestion</td>
+        </tr>
+      </table>
+
+      <h3 style="margin-top: 18px;">What Does a GOAT Payload Look Like?</h3>
+      <div class="code-block">{
+  <span class="string">"TC-RENAME-001"</span>: {
+    <span class="string">"testcase_id"</span>: <span class="string">"TC-RENAME-001"</span>,
+    <span class="string">"product_name"</span>: <span class="string">"UEMS Agent"</span>,
+    <span class="string">"operations"</span>: [
+      {
+        <span class="string">"operation_type"</span>: <span class="string">"service_actions"</span>,
+        <span class="string">"parameters"</span>: {
+          <span class="string">"action"</span>: <span class="string">"stop"</span>,
+          <span class="string">"service_name"</span>: <span class="string">"ManageEngine UEMS - Agent"</span>
+        }
+      },
+      {
+        <span class="string">"operation_type"</span>: <span class="string">"registry_operation"</span>,
+        <span class="string">"parameters"</span>: {
+          <span class="string">"action"</span>: <span class="string">"set"</span>,
+          <span class="string">"path"</span>: <span class="string">"HKLM\\SOFTWARE\\UEMS Agent\\ComputerName"</span>,
+          <span class="string">"value"</span>: <span class="string">"NEW-PC-NAME"</span>
+        }
+      }
+    ],
+    <span class="string">"expected_result"</span>: <span class="string">"Agent re-registers with the new computer name"</span>
+  }
+}</div>
+    </div>
+    <div class="connector">▼</div>
+
+    <!-- Decision -->
+    <div style="background:#fffde7; border:2px dashed #f9a825; border-radius:10px; padding:16px 20px; text-align:center; margin-bottom:16px;">
+      <div style="font-weight:700; color:var(--orange); font-size:14px;">⚖️ Were All Steps Mappable to GOAT?</div>
+      <div style="font-size:13px; color:var(--gray-500); margin-top:4px;">Each step checked against GOAT_Operations_Context.md — exact match only</div>
+    </div>
+
+    <div class="two-col" style="margin-bottom:20px;">
+      <div class="card" style="border-left: 4px solid var(--green); text-align: center;">
+        <div style="font-weight:700; color:var(--green);">✅ Yes — All Mapped</div>
+        <p style="margin-top:8px;">GOAT payload saved to DB and file.<br>Viewer shows <span class="badge b-green">Converted</span></p>
+      </div>
+      <div class="card" style="border-left: 4px solid var(--red); text-align: center;">
+        <div style="font-weight:700; color:var(--red);">⚠️ No — Gap Found</div>
+        <p style="margin-top:8px;">Gap recorded with missing util name &amp; suggestion.<br>Viewer shows <span class="badge b-orange">Unconverted</span></p>
+      </div>
+    </div>
+    <div class="connector">▼</div>
+
+    <!-- Phase 4 -->
+    <div class="phase-header ph-green">📊 Phase 4 — Summary Report</div>
+    <div class="phase-body">
+      <p>Two report formats are generated automatically:</p>
+      <div class="two-col">
+        <div>
+          <strong>📝 Markdown Report</strong>
+          <ul style="margin-top:8px;">
+            <li>Coverage by sub-functionality</li>
+            <li>Coverage by test category</li>
+            <li>GOAT gap report table</li>
+            <li>Output file locations</li>
+          </ul>
+        </div>
+        <div>
+          <strong>🌐 HTML Report</strong>
+          <ul style="margin-top:8px;">
+            <li>Visual dashboard with metric cards</li>
+            <li>Color-coded priority badges</li>
+            <li>Interactive test case table</li>
+            <li>Gap report with context</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- WHERE THE ORCHESTRATOR FITS IN                          -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>🎛️ How Does the Orchestrator Fit In?</h2>
+    <div class="card">
+      <p>
+        The <strong>Orchestrator</strong> is the top-level "project manager" AI that handles the full software development lifecycle (SDLC).
+        The Testcase Generator is one of its <strong>specialist sub-agents</strong>.
+      </p>
+    </div>
+
+    <div class="diagram-box">          You give a task (e.g., "Add computer rename feature")
+                     │
+                     ▼
+            ┌─────────────────┐
+            │   ORCHESTRATOR   │  ← the project manager
+            └────────┬────────┘
+                     │
+        Gate 0 ── Asks: which platform? which repos?
+        Gate 1 ── Loads coding standards & guidelines
+        Gate 2 ── Clones repos (using repos.json)
+                     │
+                     │  Classifies task, then delegates in order:
+                     │
+        ┌────────────┼───────────────────────────────────┐
+        │            │                                    │
+        ▼            ▼              ▼           ▼         ▼
+   ┌─────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────┐
+   │ Planner │ │ Architect│ │Developer │ │ Reviewer │ │ QA  │
+   │         │ │          │ │          │ │          │ │     │
+   └─────────┘ └──────────┘ └──────────┘ └──────────┘ └──┬──┘
+     breaks      designs      writes       reviews       │
+     down task   solution     code         code          │
+                                                         ▼
+                                               ┌──────────────────┐
+                                               │ Testcase         │
+                                               │ Generator        │
+                                               │ (this workflow)  │
+                                               └──────────────────┘</div>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">💡</span>
+      <div>
+        <strong>Two ways to use the Testcase Generator:</strong>
+        <br><br>
+        <strong>1. Via the Orchestrator</strong> — Part of a full SDLC pipeline. The orchestrator clones repos, runs all gates, then delegates to the Testcase Generator for QA.
+        <br><br>
+        <strong>2. Standalone</strong> — Invoke it directly (e.g., <em>"@testcase-generator Generate test cases for Computer Rename"</em>). It handles repo cloning and context gathering on its own.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- OUTPUT FILES                                            -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>📂 Output Files</h2>
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <tr><th style="width:30%">File</th><th style="width:35%">Path</th><th>Description</th></tr>
+        <tr>
+          <td>📄 Test Cases CSV</td>
+          <td><code>&lt;Functionality&gt;_testcases.csv</code></td>
+          <td>All generated test cases in spreadsheet format</td>
+        </tr>
+        <tr>
+          <td>💾 Testcase DB</td>
+          <td><code>http://localhost:3000</code></td>
+          <td>Persistent database with full CRUD API</td>
+        </tr>
+        <tr>
+          <td>⚙️ GOAT Payloads</td>
+          <td><code>testcases/&lt;F&gt;/goat-payloads/*.js</code></td>
+          <td>One JSON file per converted test case</td>
+        </tr>
+        <tr>
+          <td>⚠️ Gap Report</td>
+          <td><code>testcases/&lt;F&gt;/goat-payloads/gap-report.md</code></td>
+          <td>Lists test cases that couldn't be automated</td>
+        </tr>
+        <tr>
+          <td>📝 Markdown Report</td>
+          <td><code>testcases/&lt;F&gt;/reports/summary.md</code></td>
+          <td>Full coverage summary in Markdown</td>
+        </tr>
+        <tr>
+          <td>🌐 HTML Report</td>
+          <td><code>testcases/&lt;F&gt;/reports/summary.html</code></td>
+          <td>Visual dashboard report</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- FAQ                                                     -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>❓ Frequently Asked Questions</h2>
+
+    <details>
+      <summary>Does it pull all 38 repositories?</summary>
+      <div class="detail-body">
+        <p><strong>No.</strong> Only repos relevant to your task are cloned on-demand. The AI identifies which repos are needed from your prompt, then <code>repos.json</code> provides the Git URLs and dependency chain. If you're testing "Computer Rename", it only clones the repos that contain computer rename logic and their dependencies.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What if the testcase DB is offline?</summary>
+      <div class="detail-body">
+        <p>The generator stops at Phase 0 and tells you exactly how to start it:</p>
+        <p><code>cd source/testcase-db && node server.js</code></p>
+        <p>This is mandatory to prevent duplicate test cases across runs.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What if a test step can't be automated with GOAT?</summary>
+      <div class="detail-body">
+        <p>It's <strong>never silently skipped</strong>. The converter creates a gap report entry with:</p>
+        <p>• The test case ID<br>• The unmappable step text<br>• The missing GOAT operation name<br>• A suggestion for what operation should be added to GOAT</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What happens if I run it again for the same functionality?</summary>
+      <div class="detail-body">
+        <p>It <strong>merges intelligently</strong>. Existing test cases are loaded from the DB, then:</p>
+        <p>• <strong>New scenarios</strong> → added with new IDs<br>• <strong>Changed scenarios</strong> → updated in place<br>• <strong>Obsolete scenarios</strong> → deprecated (not deleted)<br>• <strong>Unchanged</strong> → left as-is</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>What is GOAT?</summary>
+      <div class="detail-body">
+        <p><strong>G.O.A.T</strong> = <strong>Generic Orchestrated Automated Testing</strong>. It's the testing framework used by UEMS that executes JSON-defined test operations on remote machines. Each operation has a type (like <code>registry_operation</code>, <code>service_actions</code>, <code>file_folder_operation</code>) with specific actions and parameters.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Can I use this without the Orchestrator?</summary>
+      <div class="detail-body">
+        <p><strong>Yes.</strong> The Testcase Generator is a standalone agent. You can invoke it directly in VS Code Copilot Chat. It handles repo cloning and context gathering on its own — the Orchestrator is only needed for full SDLC workflows (plan → build → review → test).</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- QUICK START                                             -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section">
+    <h2>🚀 Quick Start</h2>
+    <div class="timeline">
+      <div class="step">
+        <div class="step-dot dot-blue">1</div>
+        <div class="step-content">
+          <div class="step-title">Start the Testcase DB</div>
+          <div class="step-desc">
+            <div class="code-block"><span class="keyword">cd</span> source/testcase-db
+<span class="keyword">node</span> server.js</div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-purple">2</div>
+        <div class="step-content">
+          <div class="step-title">Open VS Code Copilot Chat</div>
+          <div class="step-desc">
+            Press <code>Ctrl+Shift+I</code> or click the Copilot icon in the sidebar.
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-green">3</div>
+        <div class="step-content">
+          <div class="step-title">Type Your Prompt</div>
+          <div class="step-desc">
+            <div class="code-block"><span class="comment">// Functionality mode:</span>
+Generate test cases for Computer Rename
+
+<span class="comment">// Diff mode:</span>
+Generate diff test cases: feature_win_26.05 vs main in uems_agent_framework</div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot dot-orange">4</div>
+        <div class="step-content">
+          <div class="step-title">Answer the Dialog</div>
+          <div class="step-desc">
+            The agent asks your mode, functionality name, and (for diff mode) branches + repo.
+            After that, it runs Phases 0–4 <strong>fully automated</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- FOOTER                                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="footer">
+  UEMS Agent Testcase Generator &nbsp;·&nbsp; User Guide &nbsp;·&nbsp; Last updated: April 2026
+</div>
+
+</body>
+</html>

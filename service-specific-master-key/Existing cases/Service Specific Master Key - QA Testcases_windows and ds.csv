@@ -1,0 +1,321 @@
+TEST CASE ID,Module,Type,TEST CASE DESCRIPTION,Prerequisite,Steps,EXPECTED RESULT,Remark
+TC_001,Agent Fw,Install,Agent Fresh Install,WinHttps & Poco,"1. Take a clean machine
+2. Run agent installer
+3. Complete installation",Agent installs successfully services start and agent registers with DS,
+TC_002,Agent Fw,Install,DS Fresh Install,WinHttps & Poco,"1. Take a clean machine
+2. Run DS installer
+3. Complete installation",DS installs successfully all services start and DS is accessible,
+TC_003,Agent Fw,Install,Agent Push Install,WinHttps & Poco,"1. From DS console select target machine
+2. Trigger push install of agent",Agent gets pushed installs silently and registers with DS,
+TC_004,Agent Fw,Install,DS Push Install,WinHttps & Poco,"1. Trigger DS push install from management console to target machine
+2. Monitor installation progress",DS installs silently on target and services start successfully,
+TC_005,Agent Fw,Proxy,Proxy - Agent communication via proxy,WinHttps & Poco,"1. Configure proxy settings
+2. Install agent
+3. Check agent-DS communication",Agent communicates with DS through configured proxy,
+TC_006,Agent Fw,Proxy,Proxy - DS communication via proxy,WinHttps & Poco,"1. Configure proxy on DS machine
+2. Verify DS outbound calls",DS communicates via proxy successfully,
+TC_007,Agent Fw,WFA,Agent Install with WFA Enabled,WinHttps & Poco,"1. Enable WFA on server
+2. Fresh install agent
+3. Check agent status",Agent installs detects WFA mode and operates accordingly,
+TC_008,Agent Fw,WFA,Agent Install with WFA Disabled,WinHttps & Poco,"1. Disable WFA on server
+2. Fresh install agent
+3. Check agent status",Agent installs and communicates normally without WFA flow,
+TC_009,Agent Fw,WFA,Agent Upgrade with WFA Enabled,WinHttps & Poco,"1. Enable WFA
+2. Upgrade agent from older version
+3. Verify WFA state post-upgrade",Agent upgrades successfully and WFA state is retained post-upgrade,
+TC_010,Agent Fw,WFA,Agent Upgrade with WFA Disabled,WinHttps & Poco,"1. Disable WFA
+2. Upgrade agent
+3. Verify normal communication",Agent upgrades with no WFA disruption,
+TC_011,Agent Fw,WFA,DS Install with WFA Enabled,WinHttps & Poco,"1. Enable WFA config
+2. Fresh install DS
+3. Verify DS behavior",DS installs and handles WFA mode correctly,
+TC_012,Agent Fw,WFA,DS Install with WFA Disabled,WinHttps & Poco,"1. Disable WFA
+2. Fresh install DS
+3. Verify DS behavior",DS installs normally and no WFA references are triggered,
+TC_013,Agent Fw,WFA,DS Upgrade with WFA Enabled,WinHttps & Poco,"1. Enable WFA
+2. Upgrade DS
+3. Verify WFA config post-upgrade",DS upgrades and WFA config persists and works post-upgrade,
+TC_014,Agent Fw,WFA,DS Upgrade with WFA Disabled,WinHttps & Poco,"1. Disable WFA
+2. Upgrade DS
+3. Verify normal communication",DS upgrades successfully and normal communication resumes,
+TC_015,Agent Fw,Config,Verify ds-server-infoV2.xml IP Scope,WinHttps & Poco,"1. Set IP scope on DS
+2. Trigger agent communication
+3. Check ds-server-infoV2.xml on agent machine",XML contains correct DS IP and scope entries matching configured values,ipscope validation
+TC_016,Agent Fw,Security,Verify binaries-checksumV2.json for Sign-Based Verification,WinHttps & Poco,"1. Fetch binaries-checksumV2.json
+2. Validate signatures of listed binaries
+3. Compare checksums",All binaries have valid signatures checksum matches and no tampering detected,
+TC_017,Agent Fw,Config,Verify server-info.json for Single Port Communication,WinHttps & Poco,"1. Check server-info.json after install
+2. Validate port entries
+3. Monitor agent communication",JSON contains single port entry and agent communicates on that port only,
+TC_018,Agent Fw,Credential,Credential Manager - Push Module,WinHttps & Poco,"1. Trigger push operation
+2. Capture credential usage
+3. Verify source is credential manager",Push module credentials are sourced from credential manager,
+TC_019,Agent Fw,Movement,RO Movement,WinHttps & Poco,"1. Move device to Remote Office scope
+2. Verify agent detects RO
+3. Check DS communication and policies",Agent detects RO communicates with correct DS and policies are applied,
+TC_020,Agent Fw,Certificate,getdscertificate - Normal Flow,WinHttps & Poco,"1. Agent calls getdscertificate API
+2. Check API response
+3. Verify certificate stored on agent",Valid DS certificate is returned and stored by agent,
+TC_021,Agent Fw,Auth,APIVersion=v1.1 in authprop,WinHttps & Poco,"1. Trigger authentication flow
+2. Capture authprop request
+3. Inspect request content",Request contains APIVersion=v1.1 in header or body,
+TC_022,Agent Fw,WFA,"Device Moved to WFA then Re-approved when keyshareservelt
+is hit again",WinHttps & Poco,"1. Move device to WFA
+2. Approve device again from console
+3. Check agent behavior post-approval",Agent detects re-approval and resumes normal communication,
+TC_023,Agent Fw,WFA,Device Approved Before Agent Detects WFA,WinHttps & Poco,"1. Move device to WFA
+2. Immediately approve before agent detects WFA
+3. Verify server handling",Server handles early approval gracefully with no sync issue,Handled server-side
+TC_024,Agent Fw,WFA,keyshareServlet Called After Re-approval When Keys Exist,WinHttps & Poco,"1. Ensure agent is aware of WFA
+2. Approve device from console
+3. Verify keyshareServlet is called even if keys exist",Agent sends keyshareServlet request post-approval even if keys are already present,Critical WFA case
+TC_025,Agent Fw,Coexistence,Agent on Machine Without DS Installed,WinHttps & Poco,"1. Install only agent on machine with no DS
+2. Start agent service
+3. Check logs and behavior",Agent attempts DS connection logs appropriate error and does not crash,
+TC_026,Agent Fw,Coexistence,DS on Machine Without Agent Installed,WinHttps & Poco,"1. Install only DS on machine with no agent
+2. Start DS service
+3. Check logs and behavior",DS runs independently with no agent-related errors or crashes,
+TC_027,Agent Fw,Coexistence,Agent and DS on Same Machine,WinHttps & Poco,"1. Install both agent and DS on same machine
+2. Start both services
+3. Verify communication and stability",Both run without conflict and agent communicates with local DS correctly,
+TC_028,Agent Fw,Adsync,,WinHttps & Poco,,,
+TC_029,Agent Fw,logs,,WinHttps & Poco,,,
+TC_030,Agent Fw,sensitivedata,,WinHttps & Poco,,,
+TC_031,Agent Fw,server native,,WinHttps & Poco,,,
+TC_032,Agent Fw,,,WinHttps & Poco,,,
+TC_033,Agent Fw,Add domain,"AD connector configured
+
+with and without ad connector",WinHttps & Poco,"1. Add AD domain with AD connector,
+
+2. And domain credentials validation should success",Domain addition success,
+TC_034,Agent Fw,Update domain,"AD connector configured
+with and without ad connector",WinHttps & Poco,"1. Update AD domain with AD connector, not contain username and password, instead it should have credential UUID,
+2. And domain credentials validation should success",Update addition success,
+TC_035,Agent Fw,Domain,Add domain,WinHttps & Poco,"1. Add a domain in domains page.
+2. ensure fetch Credential servlet is triggered
+3. ensure Domain is added in console",Domain addition success,
+TC_036,Agent Fw,Domain,Add domain,WinHttps & Poco,"1. Add a domain with wrong credentials / domain name in domains page.
+2. ensure fetch Credential servlet is triggered
+3. ensure Domain is added in console",Domain addition failure with respective error code,
+TC_037,Agent Fw,AD schedule,Configure Som policy is console and confirm sync is initiated at the specified time.,WinHttps & Poco,The scheduled scan should be triggered in the proper scheduled time.,The scheduled scan should be triggered in the proper scheduled time.,
+TC_038,Agent Fw,MDM enrollment,Domains added with AD connector,WinHttps & Poco,"1) Add OpAD in EC using DS
+2) configure self-enrollment by MDM -> Enrol -> Enrollment settings, select OnPremise AD for authentication
+3) Scan QR/ Copy url pasting in any browser in mac/windows, now user ad user name and password to ensure DS auth works",Enrollment Validation is success,
+TC_039,Agent Fw,DS certificates,"Delete the registry value DSCertificateInstalled in the path ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\AdventNet\DesktopCentral\DCDistributionServer\Certificates"".
+getDScertificate request will be triggered in the next replication cycle.",WinHttps & Poco,The certificates in the dsnginx path will be regenerated.,,
+TC_040,Config\SD,File-Folder,Credential fetch for network folder access works after enc/dec change,WinHttps & Poco,,,
+TC_041,Config\SD,Software Deployment,Software package deployment from network share fetches credentials correctly after enc/dec change,WinHttps & Poco,,,
+TC_042,Config\SD,Software Deployment,Windows Publisher MSI deployment fetches SSPCredentialManager creds correctly,WinHttps & Poco,,,
+TC_043,Config\SD,Software Deployment,Multiple software configs in the same collection each fetch their own credentials,WinHttps & Poco,,,
+TC_044,Config\SD,Shared Printer,Shared printer configuration deploys correctly with credential fetch after enc/dec change,WinHttps & Poco,,,
+TC_045,Config\SD,IP Printer,IP printer configuration deploys correctly with credential fetch after enc/dec change,WinHttps & Poco,,,
+TC_046,Config\SD,Script Config,Script configuration runs under specified user credentials after enc/dec change,WinHttps & Poco,,,
+TC_047,Config\SD,Folder Backup,Self-Service Portal folder backup accesses share with fetched credentials after enc/dec change,WinHttps & Poco,,,
+TC_048,Agent Fw,,""dsServerInfoBackwardCompatability"" ds-server-info should be replicated in ds for 90 days,WinHttps & Poco,,,
+TC_049,,,,WinHttps & Poco,,,
+TC_050,,,,WinHttps & Poco,,,
+TC_051,,,dsauth enabled,WinHttps & Poco,,,
+TC_052,,,old binary,WinHttps & Poco,,,
+TC_053,,,,,,,
+TC_054,,,,,,,
+TC_055,,"Fresh Installation
+
+[vault creation]",Vault space should be created during agent installation,,"Download agent
+install agent",All file and data vault should be created,
+TC_056,,"Fresh Installation
+
+[vault creation and config
+data retention]","Existing configuration data should be retained if the agent
+of same server is installed",,"-> Install agent 
+-> appli cert,wifi,usermanage,customscript
+-> uninstall agent 
+->Install same server agent","If the same server agent is installed existing vault 
+should be retained
+
+if different vault exist , All vault should be cleaned up 
+and new vaults should be created",
+TC_057,,Bulk installation and MDM,Need to test all mode of agent installation,,"-> GPO
+-> Push
+->MDM",Agent installation should succeed,
+TC_058,,CSR REQUEST,Need to trigger CSR request,,"-> delete key from vault
+-> delete spec key",CSR request should be sent,
+TC_059,,Authprop request,trigger authprop request,,delete authtoken from vault,auth prop should be sent,
+TC_060,,ESE key rotation,Image a machine and recover from image,,"-> create a image or set the imagedagent key
+-> rename the machine
+
+-> restart the machine",new ese key should be generated and all data should be rotated,
+TC_061,,data center migration,https://learn.zoho.com/portal/zohocorp/knowledge/manual/workflowdocs/article/when-why-and-how-to-test-in-csez,,,,
+TC_062,,DS authentication,DSauthtoken should be updated to vault,,"-> enable ds authentication
+->install agent under ds","In ""general_properties.conf"" update ""ds.auth.enable"" as true and 
+restart the server",
+TC_063,,closed network,"Test agent server\ds communication when closed network 
+enabled",,"-> enable closed network
+-> install agent",agent communication should work fine,
+TC_064,,master slave ds,Need to test dsauthtoken enabled case,,"->configure master slave ds with attached steps
+-> enable dsauthtoken","dsauthoken should be updated to vault and communication should 
+work fine",
+TC_065,,poco communication,Test agent to server\ds communication when poco enabled,,"-> set forceenablepoco in registry 
+-> validate agent communication",agent communication should work fine,
+TC_066,,,,,,,
+TC_067,,"Upgrade 
+
+/ondemand agent upgrade
+
+old to new version
+
+new to new version",`,,"Need to cover below cases:
+-> under ds , direct communication
+-> with proxy with password enabled and disabled
+Need to test all these combinations 
+
+-> with ds authtoken enabled and disabled","Old data should be migrated to vault
+
+agent upgrader vault should be created and data should be backed up there",
+TC_068,,,Test agent\ds upgrade in poco,,,,
+TC_069,,,Test agent\ds scheduled upgrade in winhttp,,,,
+TC_070,,,Test agent\ds scheduled upgrade in poco,,,,
+TC_071,,nginx client cert files with closed network,"conf\dsclient.crt and conf\dsclient.key
+
+should be updated to dsnginx and custom nginx folder
+when ever csr is generated in ds",,"-> install ds
+
+-> trigger csr by deleting files",files should be reflected in conf folder,
+TC_072,,AgentQpm upgrade,Test file replacement via QPM,,"-> generate qpm for file replace
+-> apply qpm 
+->trigger refresh in agent\ds",communication should work in qpm upgrader,
+TC_073,,Vault creation in refresh,"if vault space is corrupted , vault should be created in refresg",,"-> corrupt the configdata in fw vault
+
+-> trigger refresh",vault should be created in refresh,
+TC_074,,Upgrader checksum,"upgrader and msi checksum should be stored to vault
+
+and should be used for msi\upgrader download",,"> install agent
+-> rename mst in server
+-> trigger upgrade",msi and upgrader should be validated with local file checksum,
+TC_075,,TOTP,Agent totp data should be added to vault,,"change the totp status in server
+
+apply configuration in agent\ds",totp data from security setting json should be moved to vault,
+TC_076,,Remote office movement,"Move agent from one RO to another , all auth data should
+be updated properly",,"-> install agent 
+->move RO","remoteofice auth key , provi key ds authtoken should be updated",
+TC_077,,NS connection,"agent should connect ns with p12 file and password from
+vault",,"-> install agent
+-> trigger ondemand actions",All ondemand action should work,
+TC_078,,serverhashtime,"Serverhashtime is updated in metadataversion hive during
+installation",,"-> install ds
+
+->check the metadataversion hive",,
+TC_079,,uninstall,"Vault space should be retained on uninstall (to maintain config
+data )",,uninstall agent,data from fw vault should be cleaned,
+TC_080,,uninstall,Vault space should be cleaned on uninstall,,uninstall ds,data and file vault should be cleaned,
+TC_081,,push uninstall,totp secret key should be updated in ds vault,,"-> enable totp
+-> trigger push uninstall for mac linx agents under ds",agent uninstallation should succeed,
+TC_082,,Totp based uninstall,"need to check all totp cases.
+
+-> no of attempts
+
+-> attempt file corruption
+
+->wrong otp",,,,
+TC_083,,Troubleshooting tool,Need to ensure connectivity check in ts tool,,,,
+TC_084,,,,,,,
+TC_085,,,,,,,
+TC_086,,,,,,,
+TC_087,,,,,,,
+TC_088,,After Rebranding -> currrent build,Need to check upgrade,,"1) Install All supported Windows OS (Under DS & LocalOffice)
+2) Apply PPM 
+3) Check scheduler, Refresh upgrade for Agent & DS (each , machine try different type of upgrades as a switch)","1)Agent should be upgraded properly . 
+2) Vault Should be created .
+3) new dll files should be added.
+4) All newly introduced keys should be added in registry . 
+5) New Key for DS and agent should be created seperatly
+6) Additionally , cover basic cases related to encryption mentioned above",
+TC_089,,Rebranding -> Current build,Need to check upgrade,,"1) Install All supported Windows OS (Under DS & LocalOffice)
+2) Apply PPM 
+3) Check scheduler, Refresh upgrade for Agent & DS (each , machine try different type of upgrades as a switch)","1)Agent should be upgraded properly . 
+2) Vault Should be created .
+3) new dll files should be added.
+4) All newly introduced keys should be added in registry . 
+5) New Key for DS and agent should be created seperatly
+6) Additionally , cover basic cases related to encryption mentioned above",
+TC_090,,All customer ISU,Need to check upgrade put configuration policies populate all of these,,"1) Install All supported Windows OS (Under DS & LocalOffice)
+2) Apply ISU for all customers( DD , meta , data upgrade)
+3) Check scheduler, Refresh upgrade for Agent & DS (each , machine try different type of upgrades as a switch)","1)Agent should be upgraded properly . 
+2) Vault Should be created .
+3) new dll files should be added.
+4) All newly introduced keys should be added in registry . 
+5) New Key for DS and agent should be created seperatly
+6) Additionally , cover basic cases related to encryption mentioned above",
+TC_091,,Single Customer ISU,Need to check upgrade(not needed),,"1) Install All supported Windows OS (Under DS & LocalOffice)
+2) Apply ISU for a particular customer ( DD , meta , data upgrade)
+3) Check scheduler, Refresh upgrade for Agent & DS (each , machine try different type of upgrades as a switch)","1)Agent should be upgraded properly . 
+2) Vault Should be created .
+3) new dll files should be added.
+4) All newly introduced keys should be added in registry . 
+5) New Key for DS and agent should be created seperatly
+6) Additionally , cover basic cases related to encryption mentioned above",
+TC_092,,Encryption key generation,,,"1) Install 2-3 agent and 2-3 DS
+2) Check weather a separate encryption key is generated for each agent",Encryption key should be unique for each agent and each DS,
+TC_093,,Upgrade cases,,,"1) Install new version agent and upgrade to new 
+2) Agent should use old master key and generate separate/unique Eendpoint specific key",Old key should be replaced with new key,
+TC_094,,Upgrade cases,,,"1) Install new version DS and upgrade to new 
+2) Agent should use old master key and generate separate/unique Eendpoint specific key",Old key should be replaced with new key,
+TC_095,,Storing and Retrieving,Check registry keys in data vault is storing and retrieving correctly,,,,
+TC_096,,,Check UEMSAgentCryptoHandler is working correctly for storing and retreiving vault data correctly,,,,
+TC_097,,,Check vault creation is success during installation,,,,
+TC_098,,,Check vault is deleted during uninstallation,,,,
+TC_099,,,In Imaging keys should be rotated,,,,
+TC_100,,,Check client certificate should be properly set with each communication (System Key),,,,
+TC_101,,,Auth Token Dynamic Key,,,,
+TC_102,,Upgradation,Check applying PPM from non changes build to changes build(check auth token is decypted using older master key ),,,,
+TC_103,,,Check on time migration happening on installation(upgradation),,,,
+TC_104,,,Check during installation vault is created using dcagent http loads UEMSAgent Crypto Handler (dcagerntinstaller log),,,,
+TC_105,,,Check UEMSAgentcryptomigrator migrates all the required data to vauilt after installation,,,,
+TC_106,,,Check one time migration log writing in uemscryptomigration log,,,,
+TC_107,,,Check log rotation for uemsagentcrryptomigration,,,,
+TC_108,,,Check when already vault created case,,,,
+TC_109,,,Check encryption changing case ( install agent from one server uninstall and install agent from another server) vault should be deleted and created.,,,,
+,,,Check vault creation happening for same server same machine uninstalling one time and installing,,,,
+,,,Check encryption decryption inside vault happens by installed id and encryption key in  vault,,,,
+,,,Check resgitry keys are deleted after one time migration,,,,
+,,,Check if one time migration fails it should retry,,,,
+,,,Check auth token_backup is created in agent registry for backup handling after meta download it should get deleted,,,,
+,,,Check files and registry keys are downloaded from server if one time migration fails,,,,
+,,,Check one time migration should not happen when ese key enabled is 1,,,,
+,,,Check file vault also created and encryption decryptioon happens installer id,,,,
+,
+,,DS,Check ds auth token is not deleted after upgrade and one time migration,,,,
+,
+,,Imaging,Check durin imaging all registry keys shiuld be rotated and encrypted and decrypted with new encryption key,,,,
+,,,Check during imaging backup is created and new vault is created with new encryption key,,,,
+,,,After vault is created backup is restored in new vault with encryption,,,,
+,,,Check all keys functionalitu after imaging,,,,
+,
+,,After Vault Migration cases,CHeck UEMS Crypto handler doesnt crash after each communication,,,,
+,,,Check auth token is encrypted in vault and check communication,,,,
+,,,Check if auth token deleted auth token retried,,,,
+,,,Check client certificate is able to open and set certificate using systemspeckey,,,,
+,,,Check systemspec key deleted it will rengerated ?,,,,
+,,,Check PPU enabled key is working after migration if totp off key created or else key created,,,,
+,,,Check totp attempt functionality base on hash attempt check tretry after1 hour check count is correct,,,,
+,,,Check DS auth token is updated when moving remote office,,,,
+,,,Check DS auth token is updated using IP scope,,,,
+,,,Check DS auth token is updated using master slave DS(PPM and normal Flow),,,,
+,,,Check DS auth token is updated using closed network(PPM and normal Flow),,,,
+,,,In normal installation from json vault will be writed,,,,
+,,,In MDM installation from agent registry vault will be writed,,,,
+,,,Check during uninstallation all files and registry are deleted except config,,,,
+,,,Check making certificate folfder empty in both poco and winhttp,,,,
+,,,Check making certificate folfder 403 in both poco and winhttp,,,,
+,,,Check deleting each file it should get regenrated,,,,
+,,,Check deleting config vault it should be recreated,,,,
+,,,Check in closed network check both nginix and nginix custom check agent server communication under DS,,,,
+,,,Check during unnstallation ese key is deleted.. evry time one time migration ?,,,,
+,,,Check DS troubleshooting tool,,,,
+,,,Check all types of certificate agent server communication,,,,
+,,,"proxy under ds under local office push ds, push uninstall(key should be delted and files)",,,,
+,,,Remove computer vaut and key should be deleted,,,,
+,,,Agent Cleanup tool vault and key should deleted,,,,
+,
+,,PPM cases,Check rebranding to topic PPM,,,,
+,,,Check older sp to topic PPM,,,,
+,,,Check topic build to topic PPM,,,,

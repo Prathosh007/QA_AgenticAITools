@@ -1,0 +1,28 @@
+*.DS_Store
+
+# Local build data
+/native/Mac/**/build
+
+# Xcode user data
+/native/Mac/**/xcshareddata/**
+/native/Mac/**/xcuserdata/**
+
+# Outputs
+/native/Outputs/
+/.vs
+
+# Cloned repos (large, not tracked)
+Code Base/
+uems_win_agent_setup/
+
+# Server runtime artifacts
+source/uems-agent-web/*.log
+source/uems-agent-web/localhost.crt
+source/uems-agent-web/localhost.key
+source/uems-agent-web/gen-cert.go
+source/uems-agent-web/bin/
+
+# Testcase DB runtime
+source/testcase-db/testcases.db*
+source/testcase-db/server.log
+source/testcase-db/node_modules/

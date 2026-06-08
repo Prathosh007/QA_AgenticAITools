@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Testcase DB Viewer</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #1a1a1a; font-size: 13px; }
+
+/* ── Header ─── */
+.header { background: linear-gradient(135deg, #0078d4, #005a9e); color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
+.header h1 { font-size: 17px; font-weight: 600; }
+.header .status { font-size: 12px; opacity: .8; margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #4caf50; display: inline-block; }
+.dot.off { background: #f44336; }
+
+/* ── Cards ─── */
+.cards { display: flex; gap: 14px; padding: 18px 24px 0; flex-wrap: wrap; }
+.card { background: #fff; border-radius: 8px; padding: 16px 20px; min-width: 130px; box-shadow: 0 1px 4px rgba(0,0,0,.1); flex: 1; cursor: default; }
+.card .num { font-size: 30px; font-weight: 700; color: #0078d4; }
+.card.green .num { color: #1e7e34; }
+.card.amber .num { color: #856404; }
+.card .lbl { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: .5px; margin-top: 4px; }
+.card.red .num { color: #c0392b; }
+
+/* ── Gap tooltip ─── */
+.card.amber { position: relative; cursor: help; }
+.gap-tooltip { display: none; position: absolute; top: calc(100% + 8px); left: 0; z-index: 50; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.15); padding: 12px 14px; min-width: 260px; max-width: 360px; font-size: 12px; }
+.gap-tooltip h4 { font-size: 11px; font-weight: 700; color: #856404; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; }
+.gap-tooltip table { width: 100%; border-collapse: collapse; }
+.gap-tooltip td { padding: 3px 6px; border-bottom: 1px solid #f5f5f5; }
+.gap-tooltip td:first-child { font-family: monospace; font-size: 11px; color: #c0392b; font-weight: 600; }
+.gap-tooltip td:last-child { color: #555; text-align: right; font-size: 11px; }
+.gap-tooltip tr:last-child td { border-bottom: none; }
+.card.amber:hover .gap-tooltip { display: block; }
+.card.red:hover .gap-tooltip { display: block; }
+
+/* ── Toolbar ─── */
+.toolbar { display: flex; gap: 10px; padding: 16px 24px 10px; flex-wrap: wrap; align-items: center; }
+.toolbar select, .toolbar input { padding: 6px 10px; border: 1px solid #d0d0d0; border-radius: 5px; background: #fff; font-size: 12px; }
+.toolbar .spacer { flex: 1; }
+.btn { padding: 7px 14px; border: none; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600; }
+.btn-primary { background: #0078d4; color: #fff; }
+.btn-primary:hover { background: #005a9e; }
+.btn-outline { background: #fff; color: #0078d4; border: 1.5px solid #0078d4; }
+.btn-outline:hover { background: #e8f0fe; }
+
+/* ── Tabs ─── */
+.tabs { display: flex; padding: 0 24px; gap: 2px; border-bottom: 2px solid #e0e0e0; }
+.tab { padding: 9px 18px; cursor: pointer; font-size: 13px; font-weight: 500; color: #555; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color .15s; }
+.tab:hover { color: #0078d4; }
+.tab.active { color: #0078d4; border-bottom-color: #0078d4; font-weight: 600; }
+.tab .cnt { display: inline-block; background: #e8f0fe; color: #0078d4; border-radius: 10px; padding: 1px 7px; font-size: 11px; margin-left: 5px; }
+
+/* ── Table ─── */
+.pane { display: none; padding: 16px 24px; }
+.pane.active { display: block; }
+.table-wrap { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.1); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { background: #0078d4; color: #fff; padding: 9px 12px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+td { padding: 9px 12px; border-bottom: 1px solid #f2f2f2; vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #f5f9ff; }
+td.mono { font-family: 'Courier New', monospace; font-size: 11px; white-space: nowrap; }
+td.wrap { max-width: 280px; word-break: break-word; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.ok  { background: #e6f4ea; color: #1e7e34; }
+.gap { background: #fff3cd; color: #856404; }
+.uncv{ background: #fde8e8; color: #c0392b; }
+.p1  { background: #fde8e8; color: #c0392b; }
+.p2  { background: #fff3cd; color: #856404; }
+.func{ background: #e8f4fd; color: #1a6895; }
+.neg { background: #fdecea; color: #a93226; }
+.fail{ background: #fff8e1; color: #7d6608; }
+.edge{ background: #f3e8fd; color: #6c3483; }
+.int { background: #e8fdf5; color: #1a6666; }
+.dep { background: #f5f5f5; color: #999; text-decoration: line-through; }
+
+/* ── Detail panel ─── */
+.detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; }
+.detail-panel { background: #fff; width: 700px; max-width: 97vw; height: 100vh; margin-left: auto; overflow-y: auto; padding: 24px; position: relative; }
+.detail-panel h2 { font-size: 14px; font-weight: 700; margin-bottom: 16px; padding-right: 30px; }
+.close-btn { position: absolute; top: 18px; right: 18px; font-size: 18px; cursor: pointer; color: #666; border: none; background: none; }
+.field { margin-bottom: 14px; }
+.field label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: .4px; display: block; margin-bottom: 4px; }
+.field .val { font-size: 13px; line-height: 1.5; }
+.field .code { background: #f5f5f5; border-radius: 5px; padding: 10px; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; max-height: 300px; overflow-y: auto; }
+/* Steps */
+.steps-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.steps-header label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: .4px; }
+.step-list { list-style: none; counter-reset: step; border: 1px solid #eee; border-radius: 6px; overflow: hidden; }
+.step-list li { counter-increment: step; padding: 9px 12px 9px 40px; border-bottom: 1px solid #f0f0f0; position: relative; background: #fff; }
+.step-list li:last-child { border-bottom: none; }
+.step-list li:hover { background: #f7faff; }
+.step-list li::before { content: counter(step); position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: #0078d4; color: #fff; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.step-text { font-size: 12.5px; color: #222; line-height: 1.5; }
+.step-goat { display: inline-block; margin-top: 3px; padding: 1px 7px; border-radius: 10px; font-size: 10px; font-weight: 600; background: #e8f4fd; color: #0078d4; font-family: monospace; }
+.step-goat.unknown { background: #fff3cd; color: #856404; }
+.step-cnt { display: inline-block; background: #e8f0fe; color: #0078d4; border-radius: 10px; padding: 1px 8px; font-size: 11px; font-weight: 600; margin-left: 6px; }
+
+/* ── Loading / empty ─── */
+.loading { padding: 40px; text-align: center; color: #aaa; }
+.empty   { padding: 40px; text-align: center; color: #aaa; }
+.btn-danger { background: #c0392b; color: #fff; }
+.btn-danger:hover { background: #96281b; }
+.btn-warn   { background: #856404; color: #fff; }
+.btn-warn:hover   { background: #6d5203; }
+.mgmt-bar { display: flex; gap: 10px; padding: 10px 24px; flex-wrap: wrap; align-items: center; background: #fff8f0; border-top: 1px solid #f0c040; border-bottom: 1px solid #f0c040; font-size: 12px; }
+.mgmt-bar label { color: #856404; font-weight: 600; margin-right: 4px; }
+.mgmt-bar select { padding: 5px 9px; border: 1px solid #d0d0d0; border-radius: 5px; background: #fff; font-size: 12px; }
+.search-lbl { font-size: 12px; color: #555; }
+
+/* ── Payload viewer ─── */
+.payload-code { background: #1e1e1e; color: #d4d4d4; border-radius: 6px; padding: 14px; font-family: 'Courier New', monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; max-height: 400px; overflow-y: auto; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>&#128202; Testcase DB Viewer</h1>
+  <div class="status" id="srv-status"><span class="dot off" id="dot"></span> <span id="srv-lbl">Connecting…</span></div>
+</div>
+<div id="db-url-banner" style="display:none;background:#fff3cd;border-bottom:1px solid #f0c040;padding:7px 24px;font-size:12px;color:#856404">
+  &#128279; Connected to remote DB: <strong id="db-url-display"></strong>
+  &nbsp;—&nbsp; to switch, add <code>?api=http://&lt;host&gt;:3000</code> to the URL
+</div>
+
+<!-- Cards -->
+<div class="cards" id="cards">
+  <div class="card"><div class="num" id="c-total">—</div><div class="lbl">Total TCs</div></div>
+  <div class="card green"><div class="num" id="c-conv">—</div><div class="lbl">GOAT Converted</div></div>
+  <div class="card red" style="position:relative;cursor:help"><div class="num" id="c-unconverted">—</div><div class="lbl">Unconverted</div>
+    <div class="gap-tooltip" id="uncv-tooltip"><h4 style="color:#c0392b">Unconverted TCs</h4><table id="uncv-tooltip-table"><tr><td colspan="2" style="color:#aaa">Loading…</td></tr></table></div>
+  </div>
+  <div class="card amber" style="position:relative;cursor:help"><div class="num" id="c-gaps">—</div><div class="lbl">GOAT Gaps</div>
+    <div class="gap-tooltip"><h4>Active Gaps</h4><div style="font-size:10px;color:#aaa;margin-bottom:4px">unconverted TCs only</div><table id="gap-tooltip-table"><tr><td colspan="2" style="color:#aaa">Loading…</td></tr></table></div>
+  </div>
+  <div class="card"><div class="num" id="c-func">—</div><div class="lbl">Functionalities</div></div>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <label class="search-lbl">Functionality</label>
+  <select id="fil-func"><option value="">All</option></select>
+  <label class="search-lbl">Priority</label>
+  <select id="fil-prio"><option value="">All</option><option value="P1">P1</option><option value="P2">P2</option></select>
+  <label class="search-lbl">GOAT</label>
+  <select id="fil-goat"><option value="">All</option><option value="yes">Converted</option><option value="no">Unconverted</option></select>
+  <input id="fil-search" type="text" placeholder="Search title / ID…" style="min-width:200px">
+  <div class="spacer"></div>
+  <button class="btn btn-outline" onclick="exportCSV()">&#11015; Download CSV</button>
+  <button class="btn btn-primary" onclick="loadAll()">&#8635; Refresh</button>
+</div>
+
+<!-- Manage bar -->
+<div class="mgmt-bar">
+  <label>&#9881; Manage:</label>
+  <select id="mgmt-func"><option value="">Select Functionality…</option></select>
+  <button class="btn btn-warn" onclick="clearPayloads()" title="Deletes only GOAT payloads for the selected functionality — keeps TCs and gaps. Run testcase-json-converter again to re-convert.">&#8635; Clear Payloads (Re-convert)</button>
+  <button class="btn btn-warn" onclick="clearGaps()" title="Deletes gap reports for the selected functionality. Re-run conversion to regenerate gaps with updated GOAT operations.">&#8635; Clear Gaps (Reset)</button>
+  <button class="btn btn-warn" onclick="cleanStaleGaps()" title="Removes gap records for TCs that now have GOAT payloads — resolves phantom gaps from before a new operation type was added to GOAT_Operations_Context.md.">&#9851; Clean Stale Gaps</button>
+  <button class="btn btn-danger" onclick="deleteFunc()" title="Hard-deletes ALL test cases, payloads, and gaps for this functionality from the DB. Cannot be undone.">&#128465; Delete Entire Functionality</button>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('tc')" id="tab-tc">Test Cases <span class="cnt" id="tc-cnt">0</span></div>
+  <div class="tab" onclick="showTab('payload')" id="tab-payload">GOAT Payloads <span class="cnt" id="pay-cnt">0</span></div>
+  <div class="tab" onclick="showTab('gap')" id="tab-gap">Gaps <span class="cnt" id="gap-cnt">0</span></div>
+</div>
+
+<!-- Pane: Test Cases -->
+<div class="pane active" id="pane-tc">
+  <div class="table-wrap">
+    <table id="tc-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Sub-Functionality</th>
+          <th>Title</th>
+          <th>Priority</th>
+          <th>Category</th>
+          <th>Steps</th>
+          <th>GOAT</th>
+          <th>Platform</th>
+        </tr>
+      </thead>
+      <tbody id="tc-body"><tr><td colspan="8" class="loading">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pane: GOAT Payloads -->
+<div class="pane" id="pane-payload">
+  <div class="table-wrap">
+    <table id="pay-table">
+      <thead>
+        <tr>
+          <th>TC ID</th>
+          <th>Functionality</th>
+          <th>Component</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="pay-body"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pane: Gaps -->
+<div class="pane" id="pane-gap">
+  <div class="table-wrap">
+    <table id="gap-table">
+      <thead>
+        <tr>
+          <th>TC ID</th>
+          <th>Missing Util</th>
+          <th>Unmappable Step</th>
+          <th>Suggestion</th>
+          <th>Recorded</th>
+        </tr>
+      </thead>
+      <tbody id="gap-body"><tr><td colspan="5" class="loading">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Detail panel (slide-over) -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail()">
+  <div class="detail-panel" onclick="event.stopPropagation()">
+    <button class="close-btn" onclick="closeDetail()">&#10005;</button>
+    <h2 id="detail-title">Detail</h2>
+    <div id="detail-body"></div>
+  </div>
+</div>
+
+<script>
+// Auto-detect base path: if served at /tc/view, API calls go to origin/tc
+const _path = window.location.pathname;
+const _basePath = _path.startsWith("/tc/") ? "/tc" : "";
+const API_DEFAULT = window.location.origin + _basePath;
+// Priority: ?api= query param > auto-detected origin+basePath
+let API = new URLSearchParams(location.search).get("api") || API_DEFAULT;
+let allTCs = [], allPayloads = [], allGaps = [];
+let payloadMap = {};
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+function esc(s) { return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function fmt(dt) { return dt ? dt.slice(0,16).replace("T"," ") : "—"; }
+function catBadge(c) {
+  const map = { Functional:"func", Negative:"neg", Failure:"fail", Edge:"edge", Integration:"int", E2E:"func" };
+  return `<span class="badge ${map[c]||"func"}">${esc(c)}</span>`;
+}
+function prioBadge(p) { return `<span class="badge ${p==="P1"?"p1":"p2"}">${esc(p)}</span>`; }
+function goatBadge(g) { return g==="yes" ? `<span class="badge ok">✓ Converted</span>` : `<span class="badge uncv">✗ Unconverted</span>`; }
+function statusBadge(s) { return s==="active" ? "" : `<span class="badge dep">${esc(s)}</span>`; }
+
+// ── API calls ─────────────────────────────────────────────────────────────────
+async function get(path) {
+  const r = await fetch(API + path);
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+async function ping() {
+  try {
+    await get("/health");
+    document.getElementById("dot").className = "dot";
+    document.getElementById("srv-lbl").textContent = "Server: " + API;
+  } catch {
+    document.getElementById("dot").className = "dot off";
+    document.getElementById("srv-lbl").textContent = "Server offline — start node server.js";
+  }
+}
+
+async function loadStats() {
+  try {
+    const s = await get("/stats");
+    document.getElementById("c-total").textContent        = s.total;
+    document.getElementById("c-gaps").textContent         = s.gaps;
+    // c-conv and c-unconverted are set by updateConversionCounts() once payloadMap is ready
+    document.getElementById("c-func").textContent         = s.by_functionality.length;
+
+    // Sync both dropdowns
+    const opts = `<option value="">All</option>` + s.by_functionality.map(f =>
+      `<option value="${esc(f.functionality)}">${esc(f.functionality)} (${f.n})</option>`).join("");
+    const mgmtOpts = `<option value="">Select Functionality\u2026</option>` + s.by_functionality.map(f =>
+      `<option value="${esc(f.functionality)}">${esc(f.functionality)} (${f.n})</option>`).join("");
+
+    const filSel  = document.getElementById("fil-func");
+    const mgmtSel = document.getElementById("mgmt-func");
+    const cur = filSel.value;
+    filSel.innerHTML  = opts;
+    mgmtSel.innerHTML = mgmtOpts;
+    filSel.value = cur;
+  } catch {}
+}
+
+function refreshGapTooltip() {
+  const el = document.getElementById("gap-tooltip-table");
+  if (!el) return;
+  // Only show gaps for TCs that are currently unconverted (no payload yet)
+  const activeGaps = allGaps.filter(g => !payloadMap[g.tc_id]);
+  if (!activeGaps.length) {
+    el.innerHTML = `<tr><td colspan="2" style="color:#aaa">No active gaps</td></tr>`;
+    return;
+  }
+  const counts = {};
+  activeGaps.forEach(g => { counts[g.missing_util] = (counts[g.missing_util] || 0) + 1; });
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  el.innerHTML = entries.map(([util, cnt]) =>
+    `<tr><td>${esc(util)}</td><td>${cnt} TC${cnt > 1 ? "s" : ""}</td></tr>`
+  ).join("");
+}
+
+async function loadAll() {
+  await Promise.all([loadStats(), loadPayloads(), loadGaps()]);
+  await loadTCs();  // allTCs populated here
+  updateConversionCounts(); // now total, payloadMap, allTCs are all ready
+  refreshGapTooltip();
+}
+
+async function loadTCs() {
+  try {
+    allTCs = await get("/testcases?status=active");
+  } catch { allTCs = []; }
+  // build payload lookup
+  payloadMap = {};
+  allPayloads.forEach(p => { payloadMap[p.tc_id] = true; });
+  renderTCs();
+}
+
+async function loadPayloads() {
+  try {
+    const raw = await get("/payloads");
+    allPayloads = raw.filter(p => p.tc_id && p.payload);
+  } catch { allPayloads = []; }
+  document.getElementById("pay-cnt").textContent = allPayloads.length;
+  payloadMap = {};
+  allPayloads.forEach(p => { payloadMap[p.tc_id] = true; });
+  renderPayloads();
+  renderTCs();
+}
+
+function updateConversionCounts() {
+  const converted = Object.keys(payloadMap).length;
+  const total = parseInt(document.getElementById("c-total").textContent, 10) || allTCs.length;
+  document.getElementById("c-conv").textContent        = converted;
+  document.getElementById("c-unconverted").textContent = total - converted;
+  updateUnconvertedTooltip();
+  refreshGapTooltip();
+}
+
+function updateUnconvertedTooltip() {
+  const uncvTCs = allTCs.filter(tc => !payloadMap[tc.id]);
+  const el = document.getElementById("uncv-tooltip-table");
+  if (!el) return;
+  if (!uncvTCs.length) { el.innerHTML = `<tr><td colspan="2" style="color:#aaa">All converted</td></tr>`; return; }
+
+  // Build lookup: tc_id → missing_util from allGaps
+  const gapReason = {};
+  allGaps.forEach(g => {
+    if (!gapReason[g.tc_id]) gapReason[g.tc_id] = g.missing_util || "(unknown)";
+  });
+
+  // Group unconverted TCs by their gap reason
+  const groups = {};
+  uncvTCs.forEach(tc => {
+    const reason = gapReason[tc.id] || "null";
+    groups[reason] = (groups[reason] || 0) + 1;
+  });
+  const entries = Object.entries(groups).sort((a, b) => b[1] - a[1]);
+  el.innerHTML = entries.map(([reason, cnt]) =>
+    `<tr><td>${esc(reason)}</td><td>${cnt} TC${cnt > 1 ? "s" : ""}</td></tr>`
+  ).join("");
+}
+
+async function loadGaps() {
+  try {
+    allGaps = await get("/gaps");
+  } catch { allGaps = []; }
+  document.getElementById("gap-cnt").textContent = allGaps.length;
+  renderGaps();
+}
+
+// ── Rendering ─────────────────────────────────────────────────────────────────
+function renderTCs() {
+  const func   = document.getElementById("fil-func").value;
+  const prio   = document.getElementById("fil-prio").value;
+  const goat   = document.getElementById("fil-goat").value;
+  const search = document.getElementById("fil-search").value.toLowerCase();
+
+  let rows = allTCs.filter(tc => {
+    if (func   && tc.functionality !== func) return false;
+    if (prio   && tc.priority      !== prio) return false;
+    const isConv = payloadMap[tc.id] ? "yes" : "no";
+    if (goat   && isConv !== goat)           return false;
+    if (search && !tc.id.toLowerCase().includes(search) && !tc.title.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  document.getElementById("tc-cnt").textContent = rows.length;
+
+  // ── Update summary cards based on filtered results ──
+  const filteredTotal     = rows.length;
+  const filteredConverted = rows.filter(tc => payloadMap[tc.id]).length;
+  const filteredUnconv    = filteredTotal - filteredConverted;
+  const filteredIds       = new Set(rows.map(tc => tc.id));
+  const filteredGaps      = allGaps.filter(g => filteredIds.has(g.tc_id) && !payloadMap[g.tc_id]).length;
+  const filteredFuncs     = new Set(rows.map(tc => tc.functionality)).size;
+
+  document.getElementById("c-total").textContent       = filteredTotal;
+  document.getElementById("c-conv").textContent        = filteredConverted;
+  document.getElementById("c-unconverted").textContent = filteredUnconv;
+  document.getElementById("c-gaps").textContent        = filteredGaps;
+  document.getElementById("c-func").textContent        = filteredFuncs;
+
+  // Update tooltips for filtered scope
+  updateFilteredTooltips(rows, filteredIds);
+
+  if (!rows.length) {
+    document.getElementById("tc-body").innerHTML = `<tr><td colspan="8" class="empty">No test cases match.</td></tr>`;
+    return;
+  }
+  document.getElementById("tc-body").innerHTML = rows.map(tc => {
+    const conv = payloadMap[tc.id] ? "yes" : "no";
+    const stepCount = Array.isArray(tc.steps) ? tc.steps.length : 0;
+    return `<tr onclick="showTC('${tc.id}')" style="cursor:pointer">
+      <td class="mono">${esc(tc.id)}</td>
+      <td>${esc(tc.sub_functionality)}</td>
+      <td class="wrap">${esc(tc.title)}</td>
+      <td>${prioBadge(tc.priority)}</td>
+      <td>${catBadge(tc.category)}</td>
+      <td><span class="step-cnt">${stepCount}</span></td>
+      <td>${goatBadge(conv)}</td>
+      <td>${esc(tc.platform||"windows")}</td>
+    </tr>`;
+  }).join("");
+}
+
+function updateFilteredTooltips(filteredTCs, filteredIds) {
+  // Unconverted tooltip
+  const uncvTCs = filteredTCs.filter(tc => !payloadMap[tc.id]);
+  const uncvEl = document.getElementById("uncv-tooltip-table");
+  if (uncvEl) {
+    if (!uncvTCs.length) {
+      uncvEl.innerHTML = `<tr><td colspan="2" style="color:#aaa">All converted</td></tr>`;
+    } else {
+      const gapReason = {};
+      allGaps.forEach(g => { if (!gapReason[g.tc_id]) gapReason[g.tc_id] = g.missing_util || "(unknown)"; });
+      const groups = {};
+      uncvTCs.forEach(tc => { const r = gapReason[tc.id] || "null"; groups[r] = (groups[r] || 0) + 1; });
+      const entries = Object.entries(groups).sort((a, b) => b[1] - a[1]);
+      uncvEl.innerHTML = entries.map(([reason, cnt]) =>
+        `<tr><td>${esc(reason)}</td><td>${cnt} TC${cnt > 1 ? "s" : ""}</td></tr>`
+      ).join("");
+    }
+  }
+  // Gap tooltip
+  const gapEl = document.getElementById("gap-tooltip-table");
+  if (gapEl) {
+    const activeGaps = allGaps.filter(g => filteredIds.has(g.tc_id) && !payloadMap[g.tc_id]);
+    if (!activeGaps.length) {
+      gapEl.innerHTML = `<tr><td colspan="2" style="color:#aaa">No active gaps</td></tr>`;
+    } else {
+      const counts = {};
+      activeGaps.forEach(g => { counts[g.missing_util] = (counts[g.missing_util] || 0) + 1; });
+      const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      gapEl.innerHTML = entries.map(([util, cnt]) =>
+        `<tr><td>${esc(util)}</td><td>${cnt} TC${cnt > 1 ? "s" : ""}</td></tr>`
+      ).join("");
+    }
+  }
+}
+
+function renderPayloads() {
+  const func = document.getElementById("fil-func").value;
+  const filtered = func ? allPayloads.filter(p => p.functionality === func) : allPayloads;
+  document.getElementById("pay-cnt").textContent = filtered.length;
+  if (!filtered.length) {
+    document.getElementById("pay-body").innerHTML = `<tr><td colspan="5" class="empty">No GOAT payloads found.</td></tr>`;
+    return;
+  }
+  document.getElementById("pay-body").innerHTML = filtered.map(p => `
+    <tr>
+      <td class="mono">${esc(p.tc_id)}</td>
+      <td>${esc(p.functionality)}</td>
+      <td class="mono">${esc(p.component)}</td>
+      <td>${fmt(p.created_at)}</td>
+      <td><button class="btn btn-outline" onclick="showPayload('${esc(p.tc_id)}')">View</button></td>
+    </tr>`).join("");
+}
+
+function renderGaps() {
+  const func = document.getElementById("fil-func").value;
+  const filtered = func ? allGaps.filter(g => g.functionality === func) : allGaps;
+  document.getElementById("gap-cnt").textContent = filtered.length;
+  if (!filtered.length) {
+    document.getElementById("gap-body").innerHTML = `<tr><td colspan="5" class="empty">No gap reports found.</td></tr>`;
+    return;
+  }
+  document.getElementById("gap-body").innerHTML = filtered.map(g => `
+    <tr>
+      <td class="mono">${esc(g.tc_id)}</td>
+      <td><code style="font-size:11px;background:#fff3cd;padding:2px 6px;border-radius:3px">${esc(g.missing_util)}</code></td>
+      <td class="wrap">${esc(g.step_text)}</td>
+      <td class="wrap">${esc(g.suggestion)}</td>
+      <td style="white-space:nowrap">${fmt(g.created_at)}</td>
+    </tr>`).join("");
+}
+
+function parseStepGoat(stepStr) {
+  // Extract [operation_type: action] tag from end of step string
+  const m = stepStr.match(/\[([^\]]+)\]\s*$/);
+  if (!m) return { text: stepStr.trim(), goat: null };
+  const tag  = m[1].trim();
+  const text = stepStr.slice(0, stepStr.lastIndexOf("[")).trim();
+  const isUnknown = tag.toLowerCase().includes("unknown") || tag.toLowerCase().includes("goat:");
+  return { text, goat: tag, unknown: isUnknown };
+}
+
+function renderStepList(steps) {
+  if (!steps || !steps.length) return "";
+  const items = steps.map(s => {
+    const raw   = typeof s === "string" ? s : (s.action || s.step || JSON.stringify(s));
+    const { text, goat, unknown } = parseStepGoat(raw);
+    const goatBadgeHtml = goat
+      ? `<br><span class="step-goat${unknown ? " unknown" : ""}">${esc(goat)}</span>`
+      : "";
+    return `<li><div class="step-text">${esc(text)}${goatBadgeHtml}</div></li>`;
+  }).join("");
+  return `<ul class=\"step-list\">${items}</ul>`;
+}
+
+// ── Detail ────────────────────────────────────────────────────────────────────
+function showTC(id) {
+  const tc = allTCs.find(t => t.id === id);
+  if (!tc) return;
+  const steps = Array.isArray(tc.steps) ? tc.steps : [];
+  const conv  = payloadMap[tc.id] ? "yes" : "no";
+  document.getElementById("detail-title").textContent = tc.id;
+  document.getElementById("detail-body").innerHTML = `
+    <div class="field"><label>Title</label><div class="val">${esc(tc.title)}</div></div>
+    <div class="field"><label>Functionality / Sub</label><div class="val">${esc(tc.functionality)} / ${esc(tc.sub_functionality)}</div></div>
+    <div class="field"><label>Priority / Category</label><div class="val">${prioBadge(tc.priority)} ${catBadge(tc.category)}</div></div>
+    <div class="field"><label>GOAT Status</label><div class="val">${goatBadge(conv)}${conv==="no" ? ` <span style="font-size:11px;color:#888;margin-left:6px">No payload — check Gaps tab for missing utils</span>` : ""}</div></div>
+    <div class="field"><label>Platform</label><div class="val">${esc(tc.platform||"windows")}</div></div>
+    ${steps.length ? `
+    <div class="field">
+      <div class="steps-header">
+        <label>Test Steps</label>
+        <span class="step-cnt">${steps.length} steps</span>
+      </div>
+      ${renderStepList(steps)}
+    </div>` : "<div class='field'><label>Test Steps</label><div class='val' style='color:#aaa'>No steps recorded</div></div>"}
+    <div class="field"><label>Expected Result</label><div class="val" style="background:#f0fdf4;padding:10px;border-radius:5px;border-left:3px solid #1e7e34">${esc(tc.expected_result)}</div></div>
+    ${tc.issue_id ? `<div class="field"><label>Issue ID</label><div class="val">${esc(tc.issue_id)}</div></div>` : ""}
+    <div class="field"><label>Created / Updated</label><div class="val" style="color:#888">${fmt(tc.created_at)} / ${fmt(tc.updated_at)}</div></div>
+    ${conv === "yes" ? `<div style="margin-top:14px"><button class="btn btn-outline" onclick="showPayload('${esc(id)}')">&#9654; View GOAT Payload</button></div>` : ""}
+  `;
+  document.getElementById("detail-overlay").style.display = "block";
+}
+
+function prettifyPayload(raw) {
+  if (!raw) return raw;
+  // Case 1: Full .js file with `payload = {...};` wrapper — extract and pretty-print JSON block
+  const marker = "payload = {";
+  const start = raw.indexOf(marker);
+  if (start !== -1) {
+    const jsonStart = start + "payload = ".length;
+    let depth = 0, i = jsonStart;
+    for (; i < raw.length; i++) {
+      if (raw[i] === "{") depth++;
+      else if (raw[i] === "}") { depth--; if (depth === 0) break; }
+    }
+    try {
+      const obj = JSON.parse(raw.slice(jsonStart, i + 1));
+      const pretty = JSON.stringify(obj, null, 2);
+      return raw.slice(0, jsonStart) + pretty + raw.slice(i + 1);
+    } catch { return raw; }
+  }
+  // Case 2: Raw JSON string stored in DB — try to parse and pretty-print directly
+  const trimmed = raw.trim();
+  if (trimmed.startsWith("{")) {
+    try {
+      const obj = JSON.parse(trimmed);
+      return JSON.stringify(obj, null, 2);
+    } catch { return raw; }
+  }
+  return raw;
+}
+
+function showPayload(tcId) {
+  const p = allPayloads.find(x => x.tc_id === tcId);
+  if (!p) return;
+  document.getElementById("detail-title").textContent = p.tc_id + " — GOAT Payload";
+  document.getElementById("detail-body").innerHTML = `
+    <div class="field"><label>Component</label><div class="val mono">${esc(p.component)}</div></div>
+    <div class="field"><label>Created</label><div class="val">${fmt(p.created_at)}</div></div>
+    <div class="field"><label>Payload Script</label><pre class="payload-code">${esc(prettifyPayload(p.payload))}</pre></div>
+  `;
+  document.getElementById("detail-overlay").style.display = "block";
+}
+
+function closeDetail() {
+  document.getElementById("detail-overlay").style.display = "none";
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function showTab(name) {
+  ["tc","payload","gap"].forEach(n => {
+    document.getElementById("pane-"+n).classList.toggle("active", n===name);
+    document.getElementById("tab-"+(n==="tc"?"tc":n==="payload"?"payload":"gap")).classList.toggle("active", n===name);
+  });
+}
+
+// ── Manage actions ────────────────────────────────────────────────────────────
+function mgmtFunc() {
+  const v = document.getElementById("mgmt-func").value;
+  if (!v) { alert("Select a functionality first."); return null; }
+  return v;
+}
+
+async function clearPayloads() {
+  const fn = mgmtFunc(); if (!fn) return;
+  if (!confirm(`Clear ALL GOAT payloads for "${fn}"?\n\nTest cases and gaps are kept — run the testcase-json-converter skill again to re-convert them.`)) return;
+  try {
+    const r = await fetch(`${API}/payloads/functionality/${encodeURIComponent(fn)}`, { method: "DELETE" });
+    const d = await r.json();
+    alert(`Cleared ${d.deleted_payloads} payload(s) for "${fn}".\nYou can now re-run the testcase-json-converter to convert all TCs fresh.`);
+    await loadAll();
+  } catch(e) { alert("Error: " + e.message); }
+}
+
+async function clearGaps() {
+  const fn = mgmtFunc(); if (!fn) return;
+  if (!confirm(`Clear ALL gap reports for "${fn}"?\n\nGaps will be re-populated automatically the next time testcase-json-converter runs.`)) return;
+  try {
+    const r = await fetch(`${API}/gaps/functionality/${encodeURIComponent(fn)}`, { method: "DELETE" });
+    const d = await r.json();
+    alert(`Cleared ${d.deleted_gaps} gap(s) for "${fn}".`);
+    await loadAll();
+  } catch(e) { alert("Error: " + e.message); }
+}
+
+async function cleanStaleGaps() {
+  if (!confirm(`Remove stale gap records?\n\nThis deletes gap entries for TCs that now have GOAT payloads.\nUse this after adding a missing operation to GOAT_Operations_Context.md and re-converting.`)) return;
+  try {
+    const r = await fetch(`${API}/gaps/stale`, { method: "DELETE" });
+    const d = await r.json();
+    alert(`Removed ${d.deleted_stale} stale gap record(s).`);
+    await Promise.all([loadStats(), loadGaps()]);
+    refreshGapTooltip();
+  } catch(e) { alert("Error: " + e.message); }
+}
+
+async function deleteFunc() {
+  const fn = mgmtFunc(); if (!fn) return;
+  const confirm1 = confirm(`⚠️ HARD DELETE:\n\nThis will permanently delete ALL test cases, GOAT payloads, and gap reports for "${fn}".\n\nThis cannot be undone.\n\nContinue?`);
+  if (!confirm1) return;
+  const confirm2 = prompt(`Type the functionality name to confirm:\n\n${fn}`);
+  if (confirm2 !== fn) { alert("Cancelled — name did not match."); return; }
+  try {
+    const r = await fetch(`${API}/functionality/${encodeURIComponent(fn)}`, { method: "DELETE" });
+    const d = await r.json();
+    alert(`Deleted:\n  ${d.deleted_tcs} test case(s)\n  ${d.deleted_payloads} payload(s)\n  ${d.deleted_gaps} gap(s)\nfor "${fn}".`);
+    await loadAll();
+  } catch(e) { alert("Error: " + e.message); }
+}
+
+// ── CSV Export ────────────────────────────────────────────────────────────────
+function exportCSV() {
+  const func = document.getElementById("fil-func").value;
+  let url = API + "/export/csv";
+  if (func) url += "?functionality=" + encodeURIComponent(func);
+  window.open(url, "_blank");
+}
+
+// ── Filters ───────────────────────────────────────────────────────────────────
+function applyFilters() { renderTCs(); renderPayloads(); renderGaps(); }
+document.getElementById("fil-func").addEventListener("change", applyFilters);
+document.getElementById("fil-prio").addEventListener("change", renderTCs);
+document.getElementById("fil-goat").addEventListener("change", renderTCs);
+document.getElementById("fil-search").addEventListener("input",  renderTCs);
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
+(async () => {
+  // If no ?api= override, try to read db-config.json via /config
+  // When served through the /tc/ reverse proxy, keep using the proxy path
+  // so we avoid mixed-content (HTTPS→HTTP) issues.
+  if (!new URLSearchParams(location.search).get("api")) {
+    if (!_basePath) {
+      // Direct access (not proxied) — check db-config for remote URL
+      try {
+        const cfg = await (await fetch(API_DEFAULT + "/config")).json();
+        if (cfg.db_url && cfg.db_url !== API_DEFAULT) {
+          API = cfg.db_url;
+          const banner = document.getElementById("db-url-banner");
+          document.getElementById("db-url-display").textContent = API;
+          banner.style.display = "block";
+        }
+      } catch {}
+    }
+  } else {
+    const banner = document.getElementById("db-url-banner");
+    document.getElementById("db-url-display").textContent = API;
+    banner.style.display = "block";
+  }
+  await ping();
+  await loadAll();
+})();
+</script>
+</body>
+</html>

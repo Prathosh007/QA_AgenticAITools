@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UEMS Agent Explorer</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" disabled>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+</head>
+<body>
+
+  <!-- Loading overlay (visible by default, hidden once auth resolves) -->
+  <div id="loading-screen" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0d1117;z-index:9999;transition:opacity .3s ease">
+    <img src="icon.png" alt="" width="48" height="48" style="animation:pulse-logo 1.8s ease-in-out infinite">
+    <div style="width:24px;height:24px;margin-top:20px;border:2.5px solid rgba(255,255,255,.15);border-top-color:#58a6ff;border-radius:50%;animation:spin-loader .7s linear infinite"></div>
+  </div>
+  <style>
+    @keyframes pulse-logo{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}
+    @keyframes spin-loader{to{transform:rotate(360deg)}}
+  </style>
+
+  <!-- Login screen (hidden until auth check confirms not logged in) -->
+  <div id="login-screen" class="login-screen hidden">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="icon.png" alt="UEMS" width="56" height="56">
+      </div>
+      <h1 class="login-title">UEMS Agent Explorer</h1>
+      <p class="login-subtitle">Your AI companion for code exploration, workflow tracing, log analysis, and debugging across native agent repositories</p>
+      <div class="auth-content" id="auth-content">
+        <button id="btn-login" class="primary-btn login-btn">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          Continue with GitHub
+        </button>
+      </div>
+      <div id="login-error" class="error-box hidden"></div>
+    </div>
+  </div>
+
+  <!-- App container (hidden until logged in) -->
+  <div id="app" class="app-container hidden">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <label for="sidebar-toggle" class="action-btn sidebar-toggle-label" title="Toggle Sidebar">
+          <span class="material-symbols-rounded">left_panel_open</span>
+        </label>
+        <div class="header-brand" id="header-brand" title="Home">
+          <img src="icon.png" alt="UEMS" width="22" height="22">
+          <span>UEMS Agent Explorer</span>
+        </div>
+      </div>
+      <div class="header-center">
+        <span id="chat-title" class="chat-title">New Chat</span>
+      </div>
+      <div class="header-right">
+        <button type="button" class="action-btn" id="btn-theme" title="Toggle theme">
+          <span class="material-symbols-rounded">dark_mode</span>
+        </button>
+        <button type="button" class="header-user" id="btn-user-menu" title="User Profile">
+          <div class="user-avatar">
+            <img id="user-avatar-img" src="" alt="" style="display:none">
+            <div class="avatar-placeholder" id="avatar-placeholder"></div>
+          </div>
+        </button>
+
+        <!-- User popover menu -->
+        <div id="user-menu" class="popover-menu hidden">
+          <div class="popover-menu-user">
+            <div id="user-menu-name" class="user-menu-name"></div>
+          </div>
+          <div class="popover-menu-divider"></div>
+          <button type="button" class="popover-menu-item" id="btn-export-md">
+            <span class="material-symbols-rounded">description</span>
+            <span>Export as Markdown</span>
+          </button>
+          <button type="button" class="popover-menu-item" id="btn-export-json">
+            <span class="material-symbols-rounded">data_object</span>
+            <span>Export as JSON</span>
+          </button>
+          <div class="popover-menu-divider"></div>
+          <button type="button" class="popover-menu-item delete" id="btn-logout">
+            <span class="material-symbols-rounded">logout</span>
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <input type="checkbox" id="sidebar-toggle" hidden>
+    <label for="sidebar-toggle" class="sidebar-backdrop"></label>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <button type="button" class="sidebar-new-chat-btn" id="btn-new-chat" title="New Chat">
+          <span class="material-symbols-rounded">add</span>
+          <span class="new-chat-text">New Chat</span>
+        </button>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <!-- Conversation items injected by JS -->
+      </nav>
+    </aside>
+
+    <!-- Main chat area -->
+    <div class="main-layout">
+      <main class="chat-container" id="chat-container">
+        <!-- Greeting or messages injected by JS -->
+      </main>
+
+      <div class="omnibox-container" id="omnibox-container">
+        <div class="omnibox-status-bar hidden" id="status-bar">
+          <div class="thinking-status">
+            <div class="spinner mini"></div>
+            <span id="status-text">Thinking...</span>
+          </div>
+          <button class="stop-btn" id="btn-stop" title="Stop">
+            <span class="material-symbols-rounded">stop_circle</span>
+          </button>
+        </div>
+        <div class="omnibox-wrapper">
+          <div class="attachment-strip hidden" id="attachment-strip">
+            <!-- Attached file chips injected by JS -->
+          </div>
+          <div class="omnibox-input-area">
+            <textarea id="chat-input" class="omnibox-input" placeholder="Ask about UEMS native agent code…" rows="1"></textarea>
+          </div>
+          <div class="omnibox-actions">
+            <div class="action-left">
+              <button type="button" class="action-btn" id="btn-reset" title="New Chat">
+                <span class="material-symbols-rounded">refresh</span>
+              </button>
+              <button type="button" class="action-btn" id="btn-attach" title="Attach file">
+                <span class="material-symbols-rounded">attach_file</span>
+              </button>
+              <input type="file" id="file-input" multiple hidden accept=".txt,.md,.json,.yaml,.yml,.xml,.csv,.log,.js,.ts,.go,.py,.c,.cpp,.h,.m,.swift,.cs,.sh,.bat,.ps1,.conf,.cfg,.ini,.toml,.html,.css,.sql,.diff,.patch">
+            </div>
+            <div class="action-right">
+              <div class="agent-selector" id="agent-selector">
+                <button type="button" class="agent-selector-btn" title="Select Agent">
+                  <span class="material-symbols-rounded agent-icon">explore</span>
+                  <span class="agent-selector-label">Explorer</span>
+                  <span class="material-symbols-rounded model-chevron">expand_more</span>
+                </button>
+                <div class="agent-dropdown model-dropdown hidden">
+                  <!-- Agent options injected by JS -->
+                </div>
+              </div>
+              <div class="model-selector" id="model-selector">
+                <button type="button" class="model-selector-btn" id="btn-model" title="Select Model">
+                  <span class="model-selector-label" id="model-label">Claude Sonnet 4.6</span>
+                  <span class="material-symbols-rounded model-chevron">expand_more</span>
+                </button>
+                <div class="model-dropdown hidden" id="model-dropdown">
+                  <!-- Model options injected by JS -->
+                </div>
+              </div>
+              <button type="button" class="action-btn send-btn" id="btn-send" title="Send">
+                <span class="material-symbols-rounded">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback FAB + Modal -->
+  <button class="feedback-fab" id="feedback-fab" title="Share Feedback">
+    <span class="material-symbols-rounded">rate_review</span>
+    <span class="feedback-fab-label">Feedback</span>
+  </button>
+
+  <div class="feedback-overlay hidden" id="feedback-overlay">
+    <div class="feedback-modal">
+      <div class="feedback-header">
+        <h3>
+          <span class="material-symbols-rounded">rate_review</span>
+          Share Feedback
+        </h3>
+        <button class="feedback-close" id="feedback-close">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <p class="feedback-hint">Tell us what worked, what didn't, or what you'd like to see.</p>
+      <div class="feedback-field">
+        <label for="feedback-name">Name</label>
+        <input type="text" id="feedback-name" placeholder="Your name" autocomplete="name">
+      </div>
+      <div class="feedback-field">
+        <label for="feedback-category">Category</label>
+        <select id="feedback-category">
+          <option value="General">General</option>
+          <option value="Explorer">Explorer</option>
+          <option value="Documentation">Documentation</option>
+          <option value="Bug Report">Bug Report</option>
+          <option value="Feature Request">Feature Request</option>
+        </select>
+      </div>
+      <div class="feedback-field">
+        <label for="feedback-text">Your feedback</label>
+        <textarea id="feedback-text" rows="5" placeholder="What's on your mind?"></textarea>
+      </div>
+      <button class="feedback-submit" id="feedback-submit">
+        <span class="material-symbols-rounded">send</span>
+        Send Feedback
+      </button>
+    </div>
+  </div>
+
+  <!-- PII Confirmation Modal -->
+  <div class="pii-overlay hidden" id="pii-overlay">
+    <div class="pii-modal">
+      <div class="pii-header">
+        <h3>
+          <span class="material-symbols-rounded">shield</span>
+          Data Safety Confirmation
+        </h3>
+      </div>
+      <div class="pii-body">
+        <p class="pii-warning">You are about to share file contents with an AI model. Please confirm:</p>
+        <label class="pii-checkbox-label">
+          <input type="checkbox" id="pii-confirm-check">
+          <span>I confirm that the attached files do <strong>not</strong> contain any sensitive, confidential, or personally identifiable information (PII) such as passwords, tokens, API keys, private keys, personal data, or proprietary secrets.</span>
+        </label>
+        <div class="pii-file-list" id="pii-file-list">
+          <!-- File names listed here by JS -->
+        </div>
+      </div>
+      <div class="pii-actions">
+        <button type="button" class="pii-cancel-btn" id="pii-cancel">Cancel</button>
+        <button type="button" class="pii-confirm-btn" id="pii-confirm" disabled>Attach Files</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "chat.tools.autoApprove": true,
+  "chat.agent.autoApprove": true,
+  "dotnet.preferCSharpExtension": true
+}

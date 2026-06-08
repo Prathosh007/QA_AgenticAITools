@@ -1,0 +1,406 @@
+TC ID,Category,Priority,Pre-Requisites,Objective,Detailed Steps,,Test Data / Input,Expected Result,Log / DB Verification,OS Platform,Related Ticket / Workflow,Status
+DC_NS_1,Installation,High,Fresh OS image (Windows Server / Win10/11 client).,Verify NS service installs alongside DC server on all supported OS,"1. Download the DesktopCentral installer for the target OS.
+2. Run the installer with default options.
+3. Wait for installation to complete and the server to start.
+4. Open services.msc and locate 'ManageEngine Desktop Central Server', 'Apache', and 'ManageEngine Desktop Central Notification Server'.
+5. Confirm each is in 'Running' state.
+6. Open the Web console and confirm it loads.",GOAT,Installer package for each supported OS.,"All three services - DC server, Apache, Notification server - are in Running state.",dcnotificationserverlog: startup banner with port and worker thread count.,All supported OS,,
+DC_NS_2,Uninstallation,High,DC server (with NS) installed.,Verify NS service is removed on DC server uninstall,"1. Go to Control Panel > Programs and Features.
+2. Select ManageEngine Desktop Central and click Uninstall.
+3. Follow uninstall prompts to completion.
+4. Run 'sc query dcnotificationserver' and check Programs list.",GOAT,Existing DC install.,NS service no longer exists. sc query returns 'service does not exist'.,Uninstall log shows NS stop + delete entries.,Windows,,
+DC_NS_3,Restart DC Server,Medium,DC server running.,Verify NS service restarts when DC server restarts,"1. Open services.msc.
+2. Right-click ManageEngine Desktop Central Server > Restart.
+3. Wait for the parent service to come back up.
+4. Verify NS service state.",GOAT,Service Manager restart.,NS service restarts and is in Running state after DC server restart.,nscontrollerlog records stop and start transitions.,Windows,,
+DC_NS_4,Stop NS,Medium,NS service running for the first time (no prior crashes).,Verify first stop is recorded with failure count = 1,"1. Open services.msc and stop 'ManageEngine Desktop Central Notification Server'.
+2. Open nsrequestlog (DesktopCentral_server/logs).
+3. Locate the exception line for the stop event.
+4. Confirm failure count value.",GOAT,Manual stop via Service Manager.,Exception logged. Failure count = 1.,nsrequestlog: exception entry with failure count = 1.,Windows,,
+DC_NS_5,NS monitoring,Medium,NS service stopped manually (case DC_NS_4).,Verify NS watchdog auto-restarts NS,"1. Immediately after DC_NS_4, watch the NS service state in services.msc.
+2. Wait up to the watchdog interval.
+3. Refresh services.msc.",GOAT,Single manual stop.,NS service restarts automatically.,nscontrollerlog: restart entry after the stop entry.,Windows,,
+DC_NS_6,Stop NS,Medium,First stop already happened within the last hour.,Verify second stop within 1h sets failure count = 2,"1. After DC_NS_5 restart, stop NS again from services.msc (within an hour of the first stop).
+2. Open nscontrollerlog and find the latest stop entry.
+3. Confirm failure count.",GOAT,Second manual stop within 60 min.,Failure count = 2 (or 1 if the previous stoppage was more than an hour ago).,nscontrollerlog: failure count = 2.,Windows,,
+DC_NS_7,NS monitoring,Medium,Two stops within an hour (after DC_NS_6).,Verify NS still auto-restarts after second stop,"1. Watch the NS service state after the second stop.
+2. Wait for the watchdog interval.
+3. Refresh services.msc.",GOAT,After second stop.,NS service restarts.,nscontrollerlog: restart entry.,Windows,,
+DC_NS_8,Stop NS,High,"Two stops already in last hour (DC_NS_6, DC_NS_7).",Verify third stop sets failure count = 3,"1. Stop NS for the third time from services.msc.
+2. Open nscontrollerlog and find the latest stop entry.
+3. Confirm failure count.",GOAT,Third manual stop within 60 min.,Failure count = 3.,nscontrollerlog: failure count = 3.,Windows,,
+DC_NS_9,NS monitoring,High,Three stops within an hour (DC_NS_8).,Verify NS does NOT auto-restart after third stop,"1. Watch the NS service state.
+2. Wait at least the watchdog interval.
+3. Confirm NS remains stopped.",GOAT,After third stop.,NS service does NOT restart.,NSDETAILS table flagged as disabled.,Windows,,
+DC_NS_10,NS monitoring,Medium,NS disabled after three stops (DC_NS_9).,Verify Web console alerts the operator,"1. Log in to the DC Web console.
+2. Open the Home page.
+3. Confirm the alert banner / widget.",Qengine,After third failure.,Alert message 'NS failed to start' is displayed.,Home page shows NS failure alert.,Web console,,
+DC_NS_11,NS monitoring,Medium,NS disabled in DB.,Verify operator can re-enable NS,"1. Open the DC DB tool / SQL client.
+2. Run: UPDATE NSDETAILS SET NS_ENABLED = 1 (or equivalent column).
+3. Restart the NS service from services.msc.
+4. Trigger an ondemand task to validate.",GOAT,DB update + service restart.,NS functions normally; agents register again.,nsrequestlog: registrations resume.,Windows,,
+DC_NS_12,dcnsdbsettings update,Medium,,Verify dcnsdbsettings.conf has LAN/WAN timeouts,"1. Navigate to <DC_install>/Desktopcentral_server/conf.
+2. Open dcnsdbsettings.conf in a text editor.
+3. Locate ns.lanTimeout and ns.wanTimeout keys.
+4. Verify each has a numeric value.",GOAT,Default conf file.,File contains LAN timeout and WAN timeout entries.,dcnsdbsettings.conf inspection.,Windows,,
+DC_NS_13,dcnssettings update,Medium,,"Verify dcnssettings.conf has service name, port, and display name","1. Open <DC_install>/Desktopcentral_server/conf/dcnssettings.conf.
+2. Verify service name key, port number key, and display name key.",GOAT,Default conf file.,"Contains service name, port, and display name.",dcnssettings.conf inspection.,Windows,,
+DC_NS_14,ns-status-details update,Medium,,Verify ns-status-details.xml exposes runtime NS details,"1. Open <DC_install>/Desktopcentral_server/client-data/ns-status-details.xml.
+2. Verify keys: PortNo, LANTimeout, WANTimeout, NSEnabled, MaxFailureCount.
+3. Cross-check values with dcnsdbsettings.conf.",GOAT,Default config.,All five fields populated and consistent with conf.,ns-status-details.xml inspection.,Windows,,
+DC_NS_15,Database update,Medium,,Verify dcnsdetails DB table mirrors runtime config,"1. Connect to the DC DB.
+2. SELECT * FROM dcnsdetails.
+3. Confirm columns for NS enabled status, LAN timeout, WAN timeout, port no.",GOAT,DB read.,Row present with all four columns populated.,dcnsdetails table inspection.,Windows,,
+DC_NS_16,Database entry check,Medium,At least one prior NS crash (from earlier cases or simulated).,Verify nscrashinfo records each NS crash,"1. Connect to the DC DB.
+2. SELECT * FROM nscrashinfo ORDER BY crash_time DESC.
+3. Confirm at least one row contains build number and crash time.",GOAT,Post-crash inspection.,Build number and crash time recorded per crash.,nscrashinfo table.,Windows,,
+DC_NS_17,Registry in Agent Side,Medium,Agent installed on Windows test machine.,Verify NS details written to agent registry,"1. On the agent machine open regedit.
+2. Navigate to HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432NODE\NSSTATUSDETAILS.
+3. Inspect PortNo, LANTimeout, WANTimeout values.",GOAT,Fresh agent install.,All three keys present with values that match server config.,Registry inspection on agent.,Windows,,
+DC_NS_18,Agent Register,High,"NS running, fresh agent install.",Verify new agent registers with required identity fields,"1. Install agent on test machine.
+2. Wait until first registration occurs.
+3. On the server, open dcnsclientaccess log (or query regClientList).
+4. Confirm domain name, remote office name, computer name.",GOAT,Fresh agent install.,Agent appears in NS registration log with all three fields.,dcnsclientaccess log entry.,Windows / Mac / Linux,,
+DC_NS_19,Agent Re-register,Medium,Agent registered.,Verify periodic re-registration every 10 minutes,"1. Note the time of the agent's first REGISTER in dcnsclientaccess.
+2. Wait at least 30 minutes.
+3. Count REGISTER entries in that window for the same resourceID.
+4. Compute deltas between successive registrations.",GOAT,Idle 30+ minutes.,REGISTER appears roughly every 10 minutes.,dcnsclientaccess inter-arrival = 600s.,Windows / Mac / Linux,,
+DC_NS_20,Agent Re-register Failure - Windows and MAC,Medium,Windows or Mac agent registered.,Verify Windows/Mac agent retries immediately after register failure,"1. Stop NS service.
+2. Wait until the agent attempts a register and fails.
+3. Restart NS service within a few minutes.
+4. Observe the time between NS coming up and the next REGISTER from the agent.",GOAT,NS down briefly.,Agent retries within seconds of NS coming back up.,dcondemandrequest / dcnsclientaccess timing.,Windows / Mac,,
+DC_NS_21,Agent Re-register Failure - LINUX,Medium,Linux agent registered.,Verify Linux agent retries at next 10-min slot (not immediately),"1. Stop NS.
+2. Wait until the agent's scheduled register fails.
+3. Restart NS before the next 10-min slot.
+4. Confirm the agent waits for the next slot rather than retrying immediately.",,NS down between scheduled slots.,Agent retries only at the next 10-minute boundary.,Linux agent dcondemand log.,Linux,,
+DC_NS_22,Agent Livelist,Medium,Several agents registered.,Verify livelist is sent to DC server every 10 min,"1. On the server, tail nsrequestlog.
+2. Wait at least 30 minutes.
+3. Count LIVE_LIST entries to the central server.
+4. Verify approximately one entry every 10 minutes.",,Multi-agent setup.,LIVE_LIST sent every 10 minutes.,nsrequestlog LIVE_LIST cadence.,Windows,,
+DC_NS_23,Port,High,,Verify default port is 8027,"1. Open a command prompt on the server.
+2. Run: netstat -ano | findstr 8027.
+3. Confirm NS process ID is listening on 8027.",,Default install.,NS listening on TCP 8027.,netstat output.,Windows,,
+DC_NS_24,Port,Medium,Choose a free port not in use anywhere on the machine.,Verify port change via Admin > Server Settings,"1. Log in to Web console.
+2. Go to Admin > Server Settings > Notification Server.
+3. Change port to chosen free port.
+4. Save and wait for NS to restart.
+5. Run netstat to confirm the new port.",,Free port.,NS restarts and listens on the new port.,"dcnssettings.conf updated, netstat shows new port.",Windows,,
+DC_NS_25,Port,Medium,Identify a port already in use (e.g. by another service).,Verify port-change to busy port is rejected,"1. Bind the port from another process (e.g. via netcat).
+2. In Web console > Admin > Server Settings change NS port to the busy port.
+3. Save.",,Busy port.,Alert 'port already in use' is shown; change is rejected.,Web console alert; dcnssettings.conf unchanged.,Windows,,
+DC_NS_26,Port - Files - nssettings,Low,Port change made via Web console (DC_NS_24).,Verify nssettings file reflects port change,"1. Open <DC_install>/Desktopcentral_server/conf/dcnssettings.conf.
+2. Verify port number matches the new value.",,Post DC_NS_24.,Port number updated.,dcnssettings.conf inspection.,Windows,,
+DC_NS_27,Port updation in Agent,Medium,Port change made on server.,Verify agent client-data ns-status-details.xml updated,"1. Wait for the agent's next contact cycle.
+2. On the agent open client-data/ns-status-details.xml.
+3. Verify the port matches the new value.",,Post port change + one agent cycle.,ns-status-details.xml updated.,Agent client-data inspection.,Windows / Mac / Linux,,
+DC_NS_28,Port updation in Agent,Medium,Port change made on server.,Verify agent registry reflects port change,"1. Wait for the agent's next contact cycle.
+2. On the agent open regedit at HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432NODE\NSSTATUSDETAILS.
+3. Verify PortNo value.",,Post port change + one agent cycle.,PortNo registry value updated.,Agent registry inspection.,Windows,,
+DC_NS_29,Server-NS-Agent communication,High,Agent registered and online.,Verify ondemand configuration deploys immediately,"1. In Web console create a Message Box configuration.
+2. Choose 'Deploy Immediately'.
+3. Note the submit time.
+4. Verify the agent receives and applies the config; capture arrival time.
+5. Open nsrequestlog and confirm the PUSH entry.",,Ondemand message-box config.,Configuration applied within seconds.,nsrequestlog PUSH entry; agent dcconfigondemand log.,Windows,,
+DC_NS_30,Server-NS-Agent communication,Medium,DS (Distribution Server) deployed; agent under DS.,Verify ondemand via DS deploys after DS replication,"1. Submit an ondemand config targeting an agent under a DS.
+2. Note the submit time.
+3. Wait for the DS replication cycle to complete.
+4. Confirm the agent receives the config immediately after the cycle.",,DS replication cycle = N minutes.,Config arrives after the next DS replication cycle.,nsrequestlog + DS replication log.,Windows,,
+DC_NS_31,Server-NS-Agent communication,High,Agent registered.,Verify ondemand inventory and patch scan succeed,"1. From Web console launch inventory scan for the agent (ondemand).
+2. Launch patch scan for the agent (ondemand).
+3. Confirm both scans complete successfully.",,Automated.,Both scans complete.,Inventory + patch logs on server and agent.,Windows,,
+DC_NS_32,Server-NS-Agent communication,Medium,Agent registered.,Verify 'Move to remote office' via Scope of Management,"1. Open Scope of Management.
+2. Select the agent and click 'Move to remote office'.
+3. Choose the target remote office.
+4. Confirm the move.",,Automated.,Agent is moved successfully.,dcondemandaccess log on agent.,Windows,,
+DC_NS_33,Server-NS-Agent communication,Medium,Agent registered.,Verify Chat to agent initiates successfully,"1. Open the agent in the Web console.
+2. Click 'Chat'.
+3. Send a message and wait for receipt on the agent.",,Automated.,Chat session established.,nsrequestlog chat entry.,Windows,,
+DC_NS_34,Server-NS-Agent communication,High,Agent registered.,Verify RDS connection with HTML and ActiveX viewer,"1. From Web console click RDS for the agent.
+2. Choose HTML viewer; confirm session opens.
+3. Disconnect; reopen using ActiveX viewer.",,Automated.,RDS session establishes successfully in both viewers.,RDS server log.,Windows,,
+DC_NS_35,Server-NS-Agent communication,Medium,Agent registered.,Verify System Manager task on agent,"1. From the Web console launch a System Manager task on the agent.
+2. Confirm the task is delivered and executed.",,Automated.,Task executes successfully.,nsrequestlog + agent log.,Windows,,
+DC_NS_36,Server-NS-Agent communication,Medium,Agent registered.,Verify Announcement task,"1. Create and dispatch an Announcement task to the agent.
+2. Confirm the announcement is shown on the agent.",,Automated.,Announcement shown on agent.,Announcement log.,Windows,,
+DC_NS_37,Server-NS-Agent communication,Medium,Agent registered.,Verify Remote shutdown task,"1. Initiate a Remote Shutdown task on the agent.
+2. Wait for the agent to shut down.",,Remote shutdown task.,Agent machine shuts down.,Agent power state.,Windows,,
+DC_NS_38,Server-NS-Agent communication,Medium,Agent powered off but reachable via WoL.,Verify WoL task wakes the agent,"1. Power off the agent.
+2. Trigger a Wake-on-LAN task from the Web console.
+3. Wait for the agent to power on.",,WoL task.,Agent powers on.,Agent boot logs.,Windows,,
+DC_NS_39,Server-NS-Agent communication,Medium,Agent registered and then taken offline.,Verify agent-down status shown red,"1. Stop the agent service / power off the agent.
+2. Wait for live-status to update.
+3. Open the agent's live-status icon in Web console.",,Automated.,Live-status icon is red.,Web console status icon.,Windows,,
+DC_NS_40,Server-NS-Agent communication,Medium,Agent registered and online.,Verify agent-up status shown green,"1. Verify the agent service is running.
+2. Wait for live-status to update.
+3. Open the agent's live-status icon in Web console.",,Automated.,Live-status icon is green.,Web console status icon.,Windows,,
+DC_NS_41,Troubleshooting tool,Medium,Agent registered.,Verify agent Troubleshooting tool reports correct comms summary,"1. On the agent open the Troubleshooting tool.
+2. Run the connectivity check.
+3. Review the summary panel.",,Agent-side tool.,Server-NS-agent comms shown as healthy; summary is accurate.,Troubleshooting tool output.,Windows / Mac / Linux,,
+DC_NS_42,Logs,Low,NS running.,Verify dcnotificationserver log count = 3 + cores,"1. On the server check the processor core count.
+2. Open the dcnotificationserver log folder.
+3. Count the dcnotificationserver log files.",,Variable cores.,Number of logs = 3 + number of cores.,Log directory listing.,Windows,,
+DC_NS_43,Logs,Low,NS running.,Verify each log shows a distinct thread ID,"1. Open each dcnotificationserver log file.
+2. Note the thread_id in each.
+3. Confirm all thread IDs are different.",,Multi-thread workload.,Each log file shows a different thread ID.,Per-log thread_id field.,Windows,,
+DC_NS_44,Resource action,Medium,Agent registered.,Verify resource-action timing recorded in nsrequestlog,"1. In the Web console, click the resource-action icon for the agent.
+2. Note submit time.
+3. Wait for the action list to display.
+4. Open nsrequestlog and find the corresponding entry.",,Resource icon click.,Log contains the time taken between click and display.,nsrequestlog resource-action timing.,Web console,,
+DC_NS_45,Dump,Medium,NS running.,Verify Dump folder is created and stores NS crash info,"1. Navigate to <DC_install>/Desktopcentral/Logs.
+2. Confirm a Dump subfolder exists.
+3. If a crash has occurred, confirm dump files are present.",,Standard install.,Dump folder present.,Dump folder listing.,Windows,,
+DC_NS_46,Batch file,Low,NS running.,Verify batch file disables NS logger,"1. Run the disable-logger batch file shipped with NS.
+2. Open regedit and confirm HKEY_LOCAL_MACHINE\SOFTWARE\AdventNet\DesktopCentral NSLoggerLevel = 6.
+3. Restart NS.
+4. Confirm new dcnotificationserver log entries cease.",,Batch script.,NSLoggerLevel = 6; logging stops.,Registry + log activity.,Windows,,
+DC_NS_Uninstall_Failure_1,NS Uninstallation,Medium,NS Server in running state.,"Verify NS Stop, Uninstall, Install via MgrtDC.bat","1. Invoke MgrtDC.bat.
+2. Wait for the script to drive Stop, Uninstall, then Install.
+3. Verify service state at each phase.",,MgrtDC.bat,All three operations succeed.,Migration log.,Windows,,Pass
+DC_NS_Uninstall_Failure_2,NS Port Change,Low,,Re-run DC_NS_14 in port-change context,"1. Repeat DC_NS_14 after a port change.
+2. Confirm ns-status-details.xml reflects the new port.",,Post port change.,ns-status-details.xml correctly updated.,ns-status-details.xml.,Windows,,Pass
+DC_NS_Uninstall_Failure_3,NS Port Change,Medium,,Verify only NS Stop/Start happens on port change (not uninstall/reinstall),"1. Change Notification Server Port in Admin > Server Settings.
+2. Watch NS service state.
+3. Confirm only Stop followed by Start (no Uninstall).",,Port change action.,Only Stop + Start performed.,nscontroller.log only Stop+Start entries.,Windows (2003 R2 / XP),,Pass
+DC_NS_Uninstall_Failure_4,NS Port Change,Low,,Verify nscontroller.log captures Stop/Start log entries,"1. After DC_NS_Uninstall_Failure_3 open nscontroller.log.
+2. Verify Stop and Start entries with timestamps.",,Post port change.,Entries present.,nscontroller.log.,Windows (2003 R2 / XP),,Pass
+DC_NS_Uninstall_Failure_5,Server-NS-Agent communication,Medium,,Verify Message Box configuration deploys immediately,"1. Create a Message Box configuration in Web console.
+2. Choose Deploy Immediately.
+3. Wait for the agent to receive and display it.",,Message Box config.,Deployed immediately on agent.,Agent dcconfigondemand log.,Windows,,Pass
+DC_NS_NEW_01,TLS / Encryption / Security,High,NS installed; valid server certificate in conf folder.,Verify TLS-enabled NS accepts agent over SSL handshake,"1. Open <DC_install>/Desktopcentral_server/conf/dcnsdbsettings.conf.
+2. Set ns.tlsEnable = true.
+3. Restart NS service.
+4. Connect a TLS-aware agent (or 'openssl s_client -connect <host>:8027').
+5. Open dcnotificationserverlog and locate the TLS-enabled banner and cipher line.
+6. Verify the agent registers and appears in dcnsclientaccess log.",,ns.tlsEnable=true; valid cert.,TLS handshake succeeds; agent registers.,dcnotificationserverlog: 'TLS enabled' + cipher; dcnsclientaccess: REGISTER entry.,Windows / Linux,ARCHITECTURE: gv_isTLSenabled; sslDataManipulation.cpp,
+DC_NS_NEW_02,TLS / Encryption / Security,High,NS running with TLS enabled.,Verify malformed/corrupted SSL data does not hang NS,"1. Open a TCP connection to NS port using openssl s_client.
+2. Begin TLS handshake then inject garbage bytes (use 'send' inside s_client, or use a python ssl socket).
+3. Repeat with malformed ClientHello.
+4. Watch dcnotificationserverlog for SSL error code.
+5. Verify NS still accepts a new valid TLS client immediately after.",,Crafted bad TLS bytes.,NS logs the SSL error and closes the offending socket; remains responsive.,dcnotificationserverlog SSL error code lines; service remains Running.,Windows,Ticket 201259,
+DC_NS_NEW_03,TLS / Encryption / Security,High,NS running with ns.encEnable=true; agent built with matching salt.,Verify AES-256 decryption of agent payload,"1. In dcnsdbsettings.conf set ns.encEnable=true.
+2. Confirm gv_salt is configured.
+3. Restart NS.
+4. Connect an agent that encrypts payload with the same salt.
+5. Confirm REGISTER frame is decrypted and accepted.",,Matching salt on both sides.,Agent registers; resourceID parsed correctly.,dcnsclientaccess log; regClientList query.,Windows,"ARCHITECTURE: gv_isEncEnabled, gv_salt",
+DC_NS_NEW_04,TLS / Encryption / Security,Medium,NS running with encryption enabled.,Verify NS rejects payload encrypted with mismatched salt,"1. Change the salt on the agent so it differs from the server salt.
+2. Attempt agent registration.
+3. Inspect NS log for decryption failure.",,Mismatched salt.,Decryption fails; agent not in regClientList; NS remains stable.,dcnotificationserverlog decrypt-error.,Windows,WORKFLOW: AES-256 decrypt path,
+DC_NS_NEW_05,TLS / Encryption / Security,Medium,"NS running, no agent connections.",Verify NS rejects PUSH request from non-localhost source,"1. From a remote machine open a TCP connection to NS port 8027.
+2. Send a PUSH-format frame.
+3. Confirm NS rejects the request via CheckValidRequest().",,PUSH frame from non-loopback IP.,Request rejected; no propagation to clients; log records invalid source.,dcnotificationserverlog rejection entry.,Windows,WORKFLOW Sec.2 - CheckValidRequest localhost-only,
+DC_NS_NEW_06,TLS / Encryption / Security,Medium,NS installed via 'dcnotificationserver.exe -a install -u <serviceLogOnUserGroup>'.,Verify DACL grants only the intended user group,"1. On an admin command prompt run: sc sdshow dcnotificationserver.
+2. Decode the SDDL string.
+3. Confirm the specified user group has start/stop rights.
+4. Confirm Everyone / Authenticated Users do NOT have control rights.",,User group passed via -u.,Custom user group present; broad groups absent.,sc sdshow output.,Windows,WORKFLOW Sec.1 - DoUpdateSvcDacl,
+DC_NS_NEW_07,IOCP / Threading / Concurrency,High,NS binary available; test machines with 2/4/8/16/32 cores.,Verify worker thread count scales by core count (capped at 16),"1. On each machine note the physical core count.
+2. Start NS.
+3. Open Process Explorer; expand dcnotificationserver.exe Threads tab.
+4. Count worker threads (and compare with dcnotificationserver log file count = 3 + cores).
+5. Confirm cap behavior on the 32-core machine.",,Machines: 2/4/8/16/32 cores.,Worker threads = WORKER_THREADS_PER_PROCESSOR * cores; capped at the architectural max of 16.,Process Explorer thread count; log file count.,Windows,ARCHITECTURE: capped at 16 cores,
+DC_NS_NEW_08,IOCP / Threading / Concurrency,Medium,NS running. Registry override key exists.,Verify GetWorkerThreadCountFromRegistry overrides default,"1. Open regedit to the NS configuration key.
+2. Set the worker thread override DWORD (e.g. 6).
+3. Restart NS.
+4. Count worker threads in Process Explorer.
+5. Verify the count matches the override (6).",,Override = 6.,Exactly 6 worker threads spawned; log records the override.,dcnotificationserverlog override line; Process Explorer.,Windows,WORKFLOW Sec.3 - registry override,
+DC_NS_NEW_09,IOCP / Threading / Concurrency,High,NS running; load generator capable of opening many sockets.,Verify concurrent registration of 500+ agents does not corrupt regClientList,"1. Launch a load generator that opens 500-2000 sockets in parallel.
+2. Send a REGISTER frame with a unique resourceID on each socket.
+3. After ramp-up query the regClientList (or count entries in dcnsclientaccess).
+4. Verify each resourceID appears exactly once.
+5. Confirm gv_regClientCnt equals the number of unique IDs and NS did not crash.",,500-2000 concurrent agents.,All agents registered exactly once; no crash; no list corruption.,regClientList count = unique IDs; dcnsclientaccess matches.,Windows,ARCHITECTURE: gv_csClientRegisteration,
+DC_NS_NEW_10,IOCP / Threading / Concurrency,High,NS running with at least one registered agent.,Verify duplicate resourceID overwrites and frees old context,"1. Capture dcnotificationserver.exe handle count in Process Explorer (baseline).
+2. From a new socket, re-register the same agent (same resourceID).
+3. Confirm the old socket is force-disconnected.
+4. Capture handle count again.",,Same resourceID re-registered.,New context replaces old; old socket force-disconnected and freed; handle count returns to baseline.,dcnsclientaccess: overwrite entry; handle count stable.,Windows,WORKFLOW Sec.2 - duplicate ID overwrite,
+DC_NS_NEW_11,IOCP / Threading / Concurrency,High,NS running with many agents.,Verify NS handle count is stable over a 24h soak,"1. Start NS and a churn workload that registers and unregisters agents continuously.
+2. Run for 24 hours.
+3. Every hour record handle count and memory of dcnotificationserver.exe.
+4. Plot handle/memory over time and check for monotonic growth.",,Registration churn for 24h.,Handle count returns to baseline +/- small variance; no monotonic growth.,Hourly Process Explorer samples.,Windows,Ticket 95417,
+DC_NS_NEW_12,IOCP / Threading / Concurrency,Medium,NS running with registered agents.,Verify abnormal client disconnect frees context,"1. Pick a registered agent.
+2. Run Sysinternals 'pskill' or Task Manager 'End Task' on the agent process to force termination.
+3. On the server, watch dcnotificationserver memory and regClientList.
+4. Confirm the dead agent is removed.",,Forced agent termination.,RemoveClientFromHashAndMemory invoked; FreeUpMemory called; dead agent removed.,dcnsclientaccess: disconnect entry; regClientList no longer contains agent.,Windows,WORKFLOW Sec.3 - bytes==0 path,
+DC_NS_NEW_13,Service Lifecycle,Medium,NS installed.,Verify '-a reinstall' does Stop -> Uninstall -> Install in order,"1. Open an admin command prompt.
+2. Run: dcnotificationserver.exe -a reinstall.
+3. Tail dcnotificationserverlog while it runs.
+4. Confirm service state transitions in services.msc.",,Action = reinstall.,Sequence Stop -> Uninstall -> Install; service ends in Running state.,dcnotificationserverlog + nscontroller.log entries.,Windows,WORKFLOW Sec.1,
+DC_NS_NEW_14,Configuration / Port,Medium,Choose a free port.,Verify '-a changeport' switches listen port without reinstall,"1. Run: dcnotificationserver.exe -a changeport -k <newport>.
+2. Wait for NS restart.
+3. Run: netstat -ano | findstr <newport>.
+4. Open dcnssettings.conf and confirm the port.
+5. Query dcnsdetails table and confirm the port.",,Free port.,Service restarts; listens on new port; conf + DB updated.,netstat + dcnssettings.conf + dcnsdetails.,Windows,WORKFLOW Sec.1,
+DC_NS_NEW_15,Failover / DS / Secondary Server,High,Primary DC and FOS configured.,Verify NS runs on exactly one node at any time,"1. On both Primary and FOS check NS service state initially.
+2. Trigger a failover from Primary to FOS.
+3. Immediately check NS service state on both nodes.
+4. Wait 5 minutes and confirm only one node has NS Running.
+5. Fail back to Primary and repeat.",,DC + FOS environment.,Exactly one node has NS Running at any moment; agent green/red status stable.,services.msc on both nodes; NS log on both.,Windows,Ticket 101997,
+DC_NS_NEW_16,Failover / DS / Secondary Server,High,Secondary Server build available.,Verify NS service is created on Secondary Server during install,"1. On a fresh machine run the Secondary Server installer.
+2. Wait for installation to complete.
+3. Run: sc query dcnotificationserver.
+4. Confirm Running state.",,Fresh Secondary install.,NS service present and Running.,sc query + install log.,Windows,Ticket 206264,
+DC_NS_NEW_17,Installation / Uninstallation,High,Machine with stale stub from a previous DC server install.,Verify NS install handles stale old server service,"1. Create the stale state (e.g. service entry remains after botched uninstall).
+2. Run the new installer.
+3. Verify the installer detects and removes the stale service before NS install.
+4. Confirm NS starts after install.",,Upgrade from older build.,Stale service removed; NS installs and starts cleanly.,Install log + sc query dcnotificationserver.,Windows,Ticket 99934,
+DC_NS_NEW_18,Service Lifecycle,Medium,NS running; debugger / Process Hacker available.,Verify NS auto-recovers from hang via watchdog,"1. Attach Process Hacker to dcnotificationserver.exe.
+2. Suspend the main thread to simulate a hang.
+3. Wait long enough for the watchdog interval.
+4. Observe service state.",,Suspended main thread.,Watchdog detects unresponsive process; NS service is killed and auto-restarted.,nscontroller.log restart entry; new process ID.,Windows,Ticket 28106,
+DC_NS_NEW_19,Network / Firewall / Connectivity,High,Agent host placed behind a WAF that inspects/proxies TLS to NS.,Verify agent registers and runs through WAF,"1. Configure WAF to forward NS port to NS server.
+2. Install agent on a host behind the WAF.
+3. Wait for registration.
+4. Run for 30+ minutes and capture re-registers + livelist entries.
+5. Confirm no spurious disconnects.",,WAF in path.,"Agent registers, re-registers every 10 min, livelist sent every 10 min; no spurious drops.",dcnsclientaccess; nsrequestlog livelist cadence.,Windows,Ticket 56167,
+DC_NS_NEW_20,Network / Firewall / Connectivity,High,Agent with 3+ NICs in a closed network.,Verify dcondemand iterates IPs until one connects,"1. Identify all agent NIC IPs.
+2. On the server, block the agent's primary IP via firewall.
+3. Trigger an ondemand task to the agent.
+4. Tail dcondemandrequest on the agent.
+5. Confirm dcondemand iterates through IPs and connects on a reachable one.",,Agent with 3+ NICs; primary IP blocked.,dcondemand reaches the agent on a non-primary IP.,dcondemandrequest IP iteration trace.,Windows,"Tickets 30501, 194661",
+DC_NS_NEW_21,Network / Firewall / Connectivity,Medium,Agent with multiple IPs.,Verify dcondemand fails cleanly when all IPs are blocked,"1. Block all routes from server to agent.
+2. Trigger an ondemand task.
+3. Tail dcondemandrequest and observe iteration through all IPs.
+4. Confirm clean failure surface and no orphan threads on the agent.",,All agent IPs blocked.,Clean failure after iterating all IPs; no crash; no orphan threads.,dcondemandrequest failure entry.,Windows,Ticket 194661,
+DC_NS_NEW_22,Network / Firewall / Connectivity,Medium,NS running; test client that can force RST mid-read.,Verify NS handles TCP RST gracefully,"1. Connect a test agent and send partial REGISTER bytes.
+2. Force RST via iptables / Windows Filtering Platform rule.
+3. Watch NS log for disconnect handling.
+4. Connect a fresh valid agent immediately after; confirm registration.",,Forced RST mid-read.,"NS treats it as a disconnect, frees context, continues serving others; no crash.",dcnotificationserverlog disconnect entry.,Windows,ARCHITECTURE: IOCP error path,
+DC_NS_NEW_23,Server-NS-Agent Communication,High,Multiple agents registered.,Verify PUSH end-to-end: server -> NS -> clientList,"1. Submit ondemand config to a single agent and capture PUSH on NS + arrival on agent.
+2. Submit ondemand config to 100 agents and confirm arrival on all.
+3. Verify nsrequestlog records each push id with delivery status.",,Ondemand config to N=1 and N=100.,All agents receive the push within configured LAN/WAN timeout.,nsrequestlog push entries; agent dcconfigondemand log.,Windows,WORKFLOW Sec.2 - PUSH path,
+DC_NS_NEW_24,Server-NS-Agent Communication,High,One online agent and one offline agent.,Verify ALIVE_STATUS for a single resourceID,"1. From the server, request ALIVE_STATUS for the online agent.
+2. From the server, request ALIVE_STATUS for the offline agent.
+3. Cross-check the UI status icons.",,Two resourceIDs - online + offline.,NS returns correct status for each; UI green/red matches.,nsrequestlog ALIVE_STATUS entries.,Windows,WORKFLOW Sec.2 - ALIVE_STATUS,
+DC_NS_NEW_25,Server-NS-Agent Communication,Medium,Several agents registered.,Verify LIVE_LIST returns full contact-time list,"1. Trigger a LIVE_LIST request from the server.
+2. Compare the returned list with regClientList contents.
+3. Verify record count equals gv_regClientCnt.",,Multi-agent set.,Returned list matches GetContactTimeListinNS(); count = gv_regClientCnt.,nsrequestlog LIVE_LIST entry.,Windows,WORKFLOW Sec.2 - LIVE_LIST,
+DC_NS_NEW_26,Configuration / Port,Medium,Agent placed in WAN segment.,Verify ns.wanTimeout applies to WAN agents,"1. In dcnsdbsettings.conf set ns.wanTimeout=60.
+2. Restart NS.
+3. Place an agent on a WAN-classified network.
+4. Trigger an ondemand task with the agent unreachable.
+5. Measure the timeout duration.",,ns.wanTimeout=60s; agent unreachable.,Failure surfaced after exactly the WAN timeout.,nsrequestlog timeout entry.,Windows,"DC_NS_12, DC_NS_14 extension",
+DC_NS_NEW_27,Server-NS-Agent Communication,Medium,DS configured with a known replication cycle.,Verify ondemand via DS waits until next DS replication cycle,"1. Note the DS replication cycle (e.g. 5 min).
+2. Submit an ondemand task to an agent under the DS.
+3. Record submit time.
+4. Record agent arrival time.
+5. Compute delta and compare with cycle.",,DS cycle = 5 min.,Arrival = next cycle + epsilon; nsrequestlog records DS handoff.,nsrequestlog + DS replication log.,Windows,Extends DC_NS_30,
+DC_NS_NEW_28,Server-NS-Agent Communication,Medium,Agent with dcondemand. OpenSSL build without legacy provider.,Verify dcondemand survives legacy SSL context load attempt,"1. Reconfigure OpenSSL on the agent so the legacy provider is not loaded.
+2. Restart the agent.
+3. Trigger registration.
+4. Confirm dcondemand does not crash.",,OpenSSL without legacy provider.,dcondemand does not crash; falls back or logs explicit error.,Agent crash dump should NOT appear; dcondemand log shows clean error.,Windows,Ticket 194483,
+DC_NS_NEW_29,Agent Register / Livelist,High,"Fresh agents on Windows, Mac, and Linux.","Verify REGISTER carries resourceID, domain name, remote office, computer name","1. Install one agent on each OS.
+2. Capture the first REGISTER frame via packet capture (Wireshark) or dcnsclientaccess.
+3. Verify all four fields are present and match the agent machine.",,One agent each on Windows / Mac / Linux.,All four fields present and correct.,Wireshark capture + dcnsclientaccess fields.,Windows / Mac / Linux,Extends DC_NS_18,
+DC_NS_NEW_30,Agent Register / Livelist,Medium,One agent in steady state.,Verify re-register cadence is 10 min +/- 30s,"1. Run the agent for at least 60 minutes idle.
+2. Capture all REGISTER frames in that window via dcnsclientaccess.
+3. Compute deltas between successive REGISTERs.
+4. Verify all deltas are 600s +/- 30s.",,"Single agent, idle network.",All inter-arrival intervals within +/- 30s of 10 minutes.,dcnsclientaccess delta analysis.,Windows,Extends DC_NS_19,
+DC_NS_NEW_31,Agent Register / Livelist,Medium,Linux agent registered.,Verify Linux agent retries at NEXT 10-min slot after failure,"1. Wait until t=5 (5 minutes into the agent cycle).
+2. Stop NS service.
+3. Wait 2 minutes (until t=7).
+4. Restart NS.
+5. Observe when the agent next sends REGISTER.",,NS down between scheduled slots.,"Agent waits until t=10 (next slot), not immediately at t=7.",Agent dcondemand log timing.,Linux,Extends DC_NS_21,
+DC_NS_NEW_32,Agent Register / Livelist,Medium,Windows or Mac agent registered.,Verify Windows/Mac agent retries IMMEDIATELY on failure,"1. Stop NS while the agent is attempting register.
+2. Restart NS within 60 seconds.
+3. Observe time between NS coming up and agent's next REGISTER.",,NS down ~30s during register.,Agent retries within seconds of NS coming up.,dcondemand log timing.,Windows / Mac,Extends DC_NS_20,
+DC_NS_NEW_33,Agent Register / Livelist,Medium,Agent registered.,Verify MONITOR_STATUS keeps socket alive without re-registration,"1. Modify the test agent to send only MONITOR_STATUS frames at heartbeat interval.
+2. Run for 30 minutes.
+3. Confirm socket stays open and entry remains in regClientList.
+4. Confirm no spurious disconnect events.",,Periodic MONITOR_STATUS only.,Socket stays open; regClientList retains entry.,dcnotificationserverlog: no disconnect for this socket.,Windows,WORKFLOW Sec.2 - MONITOR_STATUS,
+DC_NS_NEW_34,Logging / Dump / Diagnostics,Medium,NS installed.,Verify DumpCreator.dll absence is detected and logged,"1. Stop NS.
+2. Rename <DC_install>/bin/DumpCreator.dll to DumpCreator.dll.bak.
+3. Start NS.
+4. Inspect dcnotificationserverlog for 'DumpCreator not found' warning.
+5. Confirm service stays Running.",,DumpCreator.dll missing.,Warning logged; NS continues without crash-dump support; does not abort startup.,dcnotificationserverlog warning line.,Windows,ARCHITECTURE: DumpCreator.dll path,
+DC_NS_NEW_35,Logging / Dump / Diagnostics,High,NS running; gv_NSEnableDumpModule enabled.,Verify crash dump is created on access-violation,"1. Attach a debugger to dcnotificationserver.exe.
+2. Force an access violation (e.g. write to a null pointer in a worker thread).
+3. Wait for NS to crash.
+4. Open <DC_install>/Logs/Dump and confirm a new minidump file.
+5. Query nscrashinfo table and confirm a new row with build no and timestamp.",,Forced AV in NS process.,Minidump file present; nscrashinfo row inserted.,Logs/Dump folder + nscrashinfo table.,Windows,"Extends DC_NS_16, DC_NS_45",
+DC_NS_NEW_36,Logging / Dump / Diagnostics,Low,Existing dump files in Logs/Dump.,Verify dump rotation keeps at most 50 files,"1. Stop NS.
+2. Place 60 dummy .dmp files in Logs/Dump (oldest with older timestamps).
+3. Start NS.
+4. Wait for RotateDumpLogFiles to run (startup task).
+5. Count remaining files.",,60 pre-existing dump files.,Exactly 50 files remain; oldest deleted first.,Logs/Dump file count.,Windows,WORKFLOW Sec.4 - LIM_N0_OF_DUMP_FILES=50,
+DC_NS_NEW_37,Logging / Dump / Diagnostics,Medium,NS running.,Verify NSLoggerLevel registry value controls verbosity,"1. Open regedit at HKEY_LOCAL_MACHINE\SOFTWARE\AdventNet\DesktopCentral.
+2. Set NSLoggerLevel = 6 (disable). Restart NS.
+3. Drive some traffic; confirm log is minimal or empty.
+4. Set NSLoggerLevel = 1 (verbose). Restart NS.
+5. Drive same traffic; confirm verbose entries appear.",,Registry values 6 and 1.,At 6 logs are minimal; at 1 logs are verbose.,dcnotificationserverlog size and content.,Windows,Extends DC_NS_46,
+DC_NS_NEW_38,Logging / Dump / Diagnostics,Low,NS running.,Verify log rotation deletes excess logs and rotates by size,"1. Run NS under a workload that produces log entries quickly.
+2. Wait until the active log file exceeds the size threshold.
+3. Confirm older logs are moved to the temp folder and pruned.
+4. Confirm the active log stays bounded in size.",,Log size exceeds threshold.,Older logs pruned; running log size remains bounded.,Log folder contents over time.,Windows,WORKFLOW Sec.4,
+DC_NS_NEW_39,Logging / Dump / Diagnostics,Medium,NS running.,Verify gv_csAccessLog protects dcnsclientaccess under concurrent writes,"1. Launch a load generator driving 200 concurrent registrations.
+2. Tail dcnsclientaccess log while load runs.
+3. After load finishes, parse the access log line-by-line.
+4. Verify all lines are well-formed (no interleaved / truncated lines).",,200 concurrent agent connections.,All log lines well-formed; no missing records vs regClientList.,dcnsclientaccess parser result.,Windows,ARCHITECTURE: gv_csAccessLog,
+DC_NS_NEW_40,Service Lifecycle,High,NS running; clean failure counter.,Verify 3 crashes within 1h disables NS and surfaces UI alert,"1. Force crash #1 (attach debugger and AV).
+2. Wait for NS auto-restart.
+3. Force crash #2 within an hour.
+4. Wait for restart.
+5. Force crash #3 within the same hour.
+6. Query NSDETAILS table and check the Home page banner.",,3 induced crashes within 60 min.,NSDETAILS marks NS disabled; Home page shows 'NS failed to start'; no further auto-restart.,NSDETAILS NS_ENABLED=0; Web console alert.,Windows,"Extends DC_NS_8, DC_NS_9, DC_NS_10",
+DC_NS_NEW_41,Service Lifecycle,Medium,After DC_NS_NEW_40 (NS disabled).,Verify operator can re-enable NS by updating NSDETAILS,"1. Set NSDETAILS NS_ENABLED = 1 via DB tool.
+2. Restart NS via services.msc.
+3. Run a smoke test (register an agent, push a config).",,DB update + restart.,NS resumes accepting connections; smoke test passes.,nsrequestlog activity resumes.,Windows,Extends DC_NS_11,
+DC_NS_NEW_42,Service Lifecycle,Medium,NS running.,Verify failure counter resets when crashes are >1h apart,"1. Force crash #1 and wait for restart.
+2. Wait 70 minutes.
+3. Force crash #2.
+4. Open nscontrollerlog and check the failure count of the second crash.",,Crashes spaced > 60 min.,Counter resets to 1 on the second crash; does not reach 3-strike threshold.,nscontrollerlog failure count = 1.,Windows,Extends DC_NS_6,
+DC_NS_NEW_43,Configuration / Port,Medium,NS running.,Verify dcnsdbsettings.conf reload on restart,"1. Edit dcnsdbsettings.conf: change ns.lanTimeout, ns.wanTimeout, ns.echoEnable.
+2. Save the file.
+3. Restart NS.
+4. Tail dcnotificationserverlog at startup and confirm LoadNSDBConfSettings prints the new values.
+5. Run a behavior test (e.g. force timeout and measure).",,New values for lan/wan timeout and echo.,Runtime behavior matches new conf values.,dcnotificationserverlog config-load entries.,Windows,ARCHITECTURE / WORKFLOW Sec.1 - LoadNSDBConfSettings,
+DC_NS_NEW_44,Configuration / Port,Medium,NS running.,Verify ns.echoEnable=true triggers periodic echo to clients,"1. Set ns.echoEnable=true.
+2. Restart NS.
+3. Take a packet capture between NS and a registered agent.
+4. Confirm periodic echo packets.
+5. Force a missed echo (block traffic) and verify client cleanup.",,ns.echoEnable=true.,Echo packets sent periodically; missed echo eventually cleans up the client.,Wireshark capture + dcnotificationserverlog cleanup entry.,Windows,ARCHITECTURE: EchoServe.cpp,
+DC_NS_NEW_45,Configuration / Port,Medium,NS running.,Verify ns.echoEnable=false disables echo without side-effects,"1. Set ns.echoEnable=false.
+2. Restart NS.
+3. Capture traffic; confirm no echo packets.
+4. Run smoke tests for register, push, livelist.",,ns.echoEnable=false.,No echo traffic; register / PUSH / livelist still work normally.,Wireshark capture + smoke logs.,Windows,ARCHITECTURE: EchoServe.cpp,
+DC_NS_NEW_46,Configuration / Port,Low,Fresh machine.,Verify -n / -d / -m install args,"1. Install with: dcnotificationserver.exe -a install -n CustomNS -d 'Custom NS Display' -m 'Custom NS description'.
+2. Open services.msc.
+3. Locate the service and verify name, display name, description.",,Custom service identity args.,Service shows custom name / display / description.,services.msc properties.,Windows,WORKFLOW Sec.1,
+DC_NS_NEW_47,Configuration / Port,Medium,Port 8027 already in use on the target machine.,Verify install fails gracefully when 8027 is busy,"1. Bind port 8027 with netcat: 'nc -l -p 8027'.
+2. Run the NS installer (or 'dcnotificationserver.exe -a install').
+3. Read the installer output and Web console alert.",,Port held by another process.,Installer surfaces clear 'port already in use' error; Web console alert matches.,Installer output + Web console alert.,Windows,Extends DC_NS_25,
+DC_NS_NEW_48,Service Lifecycle,High,Both x86 and x64 build artifacts available.,Verify x86 and x64 NS pass full smoke,"1. On the x86 build run DC_NS_1, DC_NS_17, DC_NS_18, DC_NS_23, DC_NS_29.
+2. Repeat on the x64 build.
+3. Compare results.",,x86 vs x64 binaries.,Both builds pass identical smoke results.,Smoke results matrix.,Windows x86 / x64,ARCHITECTURE: both solutions,
+DC_NS_NEW_49,Installation / Uninstallation,Medium,Tcpip service disabled or stopped.,Verify NS install enforces Tcpip dependency,"1. On the target machine, set Tcpip service to Disabled.
+2. Run NS install.
+3. Observe installer behavior.",,Tcpip disabled.,Install either fails with a clear dependency error OR re-enables Tcpip and proceeds; dependency visible in service config.,Installer output + sc qc dcnotificationserver.,Windows,ARCHITECTURE: depends on Tcpip,
+DC_NS_NEW_50,Installation / Uninstallation,Medium,NS already installed.,Verify second '-a install' is rejected cleanly,"1. Run: dcnotificationserver.exe -a install while the service already exists.
+2. Read the output.
+3. Confirm the existing service is unaffected.",,Duplicate install attempt.,Installer reports 'already installed'; existing service is not corrupted; no orphan service entry.,Installer output + sc query.,Windows,WORKFLOW Sec.1,
+DC_NS_NEW_51,Server-NS-Agent Communication,High,Agent registered.,Verify dcondemandtasks executes task and reports result,"1. Trigger an ondemand inventory scan from server.
+2. On the agent watch dcondemandtasks log.
+3. After task completion verify a result is pushed back to NS.
+4. Confirm the server marks the task complete.",,Ondemand inventory task.,Task runs; result returned via OP_RECEIVE_RESPONSE; server marks complete.,dcondemandtasks + nsrequestlog OP_RECEIVE_RESPONSE.,Windows,WORKFLOW Sec.3 - OP_RECEIVE_RESPONSE,
+DC_NS_NEW_52,Server-NS-Agent Communication,Medium,Agent registered.,Verify dcondemand failure path is clean,"1. Trigger an ondemand task that will fail on the agent (e.g. invalid script).
+2. Watch dcondemandtasks log on agent.
+3. Confirm failure status is returned to NS.
+4. Confirm server marks the task failed.
+5. Verify no resource leak on either side (handle count).",,Failing task.,Failure surfaced; task marked failed; no resource leak.,dcondemandtasks + nsrequestlog failure entry; handle count.,Windows,WORKFLOW Sec.3,
+DC_NS_NEW_53,Server-NS-Agent Communication,Medium,Agent registered; control of DNS A-record for the NS host.,Verify dcondemand re-resolves NS hostname on reconnect,"1. Change the DNS A-record for the NS host to a new IP.
+2. Force the agent to disconnect (briefly stop/start NS).
+3. Observe dcondemand log on agent during reconnect.
+4. Confirm it resolves and connects to the new IP.",,DNS record updated mid-session.,dcondemand re-resolves and connects to new IP; no stale-IP hang.,dcondemand log resolve trace.,Windows,Related to ticket 30501,
+DC_NS_NEW_54,IOCP / Threading / Concurrency,Medium,Load generator for 1000 simulated agents.,Verify NS sustains 1000 agents for 8 hours,"1. Bring up 1000 simulated agents that register and send periodic livelist.
+2. Run for 8 hours.
+3. Every 30 minutes sample: NS CPU %, memory, handle count.
+4. Confirm all agents stay registered throughout.
+5. After 8 hours check NS service is still Running and no crashes occurred.",,1000 simulated agents for 8h.,"CPU below threshold, memory stable, handle count stable, no crashes, agents stay registered.",Performance counters + service state.,Windows,ARCHITECTURE: capacity,
+DC_NS_NEW_55,IOCP / Threading / Concurrency,Low,NS running.,Verify NS handles SOMAXCONN accept-queue overflow,"1. From a load generator open more concurrent TCP connect attempts than SOMAXCONN.
+2. Observe NS behavior.
+3. Verify accepted connections proceed normally; excess get RST.",,Connection burst.,Excess connections refused with TCP RST; NS does not crash; accepted connections proceed.,tcpdump RST count; NS service state.,Windows,ARCHITECTURE: listen(SOMAXCONN),
+DC_NS_NEW_56,IOCP / Threading / Concurrency,Low,Build configured for ASIOserver / ASIOserverTcp.,Verify Boost.Asio variant works equivalently,"1. Build NS with the ASIO variant configuration.
+2. Install and start.
+3. Run smoke tests (register, push, livelist).
+4. Inspect io_context_pool worker counts in logs.",,ASIO variant build.,All smoke tests pass; io_context_pool spins expected number of contexts.,Smoke logs + io_context_pool log entries.,Windows,"ARCHITECTURE: ASIOserver.cpp, io_context_pool.cpp",
+DC_NS_NEW_57,Service Lifecycle,Medium,NS running with dependency on DC server service.,Verify CServerServiceStatusListener reacts to dependent stop,"1. Stop the dependent DC server service.
+2. Watch dcnotificationserverlog for the listener firing.
+3. Verify NS reacts per design (typically logs and signals stop or pauses processing).
+4. Restart the dependent service and confirm NS resumes.",,Dependent service stopped/restarted.,Listener fires; NS logs the dependency change and reacts; resumes on restart.,dcnotificationserverlog listener entries.,Windows,ARCHITECTURE: serverservicestatuslistener.cpp,

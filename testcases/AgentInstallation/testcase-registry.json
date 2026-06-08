@@ -1,0 +1,1555 @@
+{
+  "functionality": "AgentInstallation",
+  "last_updated": "2026-04-23T12:05:18.980Z",
+  "test_cases": [
+    {
+      "id": "TC-AGENTINSTALL-MANUALGUI-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Manual GUI Install",
+      "title": "Fresh manual GUI installation of agent via EXE wizard",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed on the target machine (clean state)\r\n2. Downloaded <BranchOfficeName>_Agent.exe from UEMS server console (Agent > Computers > Download Agent)\r\n3. Copied installer to target machine\r\n4. Logged in as local administrator",
+      "steps": [
+        "1. Double-click <BranchOfficeName>_Agent.exe to launch the installer wizard\r",
+        "2. Read the CAPTCHA text displayed on the captcha label [native_gui_operation: ReadText, automationId=3]\r",
+        "3. Enter the CAPTCHA text into the input field [native_gui_operation: EnterText, automationId=6]\r",
+        "4. Click OK to validate CAPTCHA [native_gui_operation: ClickButton, automationId=7]\r",
+        "5. Wait for the 'Next >' button to appear (timeout 10s) [native_gui_operation: Wait, automationId=2018]\r",
+        "6. Click 'Next >' (first Next — proceeds past info screen) [native_gui_operation: ClickButton, automationId=2018]\r",
+        "7. Click 'Next >' (second Next — starts installation) [native_gui_operation: ClickButton, automationId=2018]\r",
+        "8. Wait for the completion status text to appear (timeout 30s) [native_gui_operation: Wait, automationId=2023]\r",
+        "9. Read the completion status text — expected value: 'Installation Complete' [native_gui_operation: ReadText, automationId=2023]\r",
+        "10. Click Close to exit the installer [native_gui_operation: ClickButton, automationId=2075]\r",
+        "11. Verify ManageEngine UEMS Agent Service is RUNNING in services.msc [service_actions: status]\r",
+        "12. Verify registry key HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ServerName is populated [registry_operation: read_key]\r",
+        "13. Verify directory C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ exists with subdirs bin\\, conf\\, logs\\ [file_folder_operation: check_presence]"
+      ],
+      "expected_result": "1. Installer wizard completes all steps without errors\r\n2. Completion text reads 'Installation Complete'\r\n3. ManageEngine UEMS Agent Service status = RUNNING\r\n4. Registry HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ServerName contains the DS/server hostname\r\n5. C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\, conf\\, logs\\ directories exist",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-MANUALGUI-002",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Manual GUI Install",
+      "title": "Manual GUI install with invalid CAPTCHA entry",
+      "category": "Negative",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed on the target machine\r\n2. Downloaded <BranchOfficeName>_Agent.exe\r\n3. Logged in as local administrator",
+      "steps": [
+        "1. Launch <BranchOfficeName>_Agent.exe\r",
+        "2. Read the CAPTCHA text displayed [native_gui_operation: ReadText, automationId=3]\r",
+        "3. Enter an INCORRECT CAPTCHA value into the input field [native_gui_operation: EnterText, automationId=6]\r",
+        "4. Click OK [native_gui_operation: ClickButton, automationId=7]\r",
+        "5. Observe the error message displayed\r",
+        "6. Verify the installer does not proceed to the Next screen"
+      ],
+      "expected_result": "1. An error message is displayed indicating invalid CAPTCHA\r\n2. The installer remains on the CAPTCHA screen\r\n3. The user can re-enter the correct CAPTCHA to proceed",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-MANUALGUI-003",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Manual GUI Install",
+      "title": "Manual GUI install with corrupt installer EXE",
+      "category": "Negative",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. A corrupted copy of <BranchOfficeName>_Agent.exe (truncated or modified binary)\r\n2. Logged in as local administrator",
+      "steps": [
+        "1. Attempt to launch the corrupted <BranchOfficeName>_Agent.exe\r",
+        "2. Observe the system response"
+      ],
+      "expected_result": "1. Windows shows an error (e.g., 'This app can't run on your PC' or 'The file is corrupted')\r\n2. No agent service is installed\r\n3. No agent files are created under C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-MANUALGUI-004",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Manual GUI Install",
+      "title": "Manual GUI install without administrator privileges",
+      "category": "Negative",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Downloaded <BranchOfficeName>_Agent.exe\r\n3. Logged in as a STANDARD user (non-admin)",
+      "steps": [
+        "1. Double-click <BranchOfficeName>_Agent.exe\r",
+        "2. If UAC prompts, click 'No' or do not enter admin credentials\r",
+        "3. Observe the installer behavior"
+      ],
+      "expected_result": "1. The installer either fails to launch or shows a permission error\r\n2. Agent service is NOT installed\r\n3. No files are created under C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-MANUALGUI-005",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Manual GUI Install",
+      "title": "Manual GUI install on Windows 11",
+      "category": "Cross-Environment",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 11",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Downloaded <BranchOfficeName>_Agent.exe\r\n3. Windows 11 machine, logged in as administrator",
+      "steps": [
+        "1. Launch <BranchOfficeName>_Agent.exe\r",
+        "2. Complete the full wizard flow (CAPTCHA > Next > Next > Wait for completion) [native_gui_operation]\r",
+        "3. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "4. Verify registry keys under HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ [registry_operation: read_key]\r",
+        "5. Verify install directory C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ exists [file_folder_operation: check_presence]"
+      ],
+      "expected_result": "1. Installation completes with 'Installation Complete' message\r\n2. Agent service is RUNNING\r\n3. All registry keys are populated\r\n4. Install directory exists with bin\\, conf\\, logs\\",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-MANUALGUI-006",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Manual GUI Install",
+      "title": "Manual GUI install on Windows Server 2019",
+      "category": "Cross-Environment",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows Server 2019",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Downloaded <BranchOfficeName>_Agent.exe\r\n3. Windows Server 2019 machine, logged in as administrator",
+      "steps": [
+        "1. Launch <BranchOfficeName>_Agent.exe\r",
+        "2. Complete the full wizard flow [native_gui_operation]\r",
+        "3. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "4. Verify registry keys under HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ [registry_operation: read_key]\r",
+        "5. Verify install directory exists [file_folder_operation: check_presence]"
+      ],
+      "expected_result": "1. Installation completes successfully on Windows Server\r\n2. Agent service is RUNNING\r\n3. All registry keys populated\r\n4. Install directory present",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-MANUALGUI-007",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Manual GUI Install",
+      "title": "Manual GUI install when agent is already installed (re-install)",
+      "category": "Edge",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent IS already installed and running on the machine\r\n2. Downloaded fresh <BranchOfficeName>_Agent.exe\r\n3. Logged in as administrator",
+      "steps": [
+        "1. Launch <BranchOfficeName>_Agent.exe while agent is already installed\r",
+        "2. Observe installer behavior — does it detect existing installation?\r",
+        "3. If prompted, proceed through the wizard\r",
+        "4. Verify ManageEngine UEMS Agent Service is still RUNNING after re-install [service_actions: status]\r",
+        "5. Verify registry keys are intact [registry_operation: read_key]"
+      ],
+      "expected_result": "1. Installer detects existing agent and either upgrades or notifies user\r\n2. Agent service remains RUNNING after the operation\r\n3. No duplicate services or registry entries",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTEXE-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent EXE Install",
+      "title": "Fresh silent installation using EXE /silent flag",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Downloaded <BranchOfficeName>_Agent.exe\r\n3. Command Prompt opened as Administrator",
+      "steps": [
+        "1. Run: <BranchOfficeName>_Agent.exe /silent [run_bat: execute]\r",
+        "2. Wait for the process to complete (timeout 120s)\r",
+        "3. Verify no GUI window appeared during installation\r",
+        "4. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "5. Verify registry key HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ServerName is populated [registry_operation: read_key]\r",
+        "6. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ directory exists [file_folder_operation: check_presence]"
+      ],
+      "expected_result": "1. No GUI wizard appears\r\n2. Agent installs silently\r\n3. ManageEngine UEMS Agent Service is RUNNING\r\n4. Registry keys populated correctly\r\n5. Install directory created with bin\\, conf\\, logs\\",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTEXE-002",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent EXE Install",
+      "title": "Silent EXE install without administrator privileges",
+      "category": "Negative",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Downloaded <BranchOfficeName>_Agent.exe\r\n3. Command Prompt opened as STANDARD user",
+      "steps": [
+        "1. Run: <BranchOfficeName>_Agent.exe /silent\r",
+        "2. Observe the command output"
+      ],
+      "expected_result": "1. Installation fails with a permission error\r\n2. Agent service is NOT installed\r\n3. No files created under C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTEXE-003",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent EXE Install",
+      "title": "Silent EXE install with invalid argument",
+      "category": "Negative",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Downloaded <BranchOfficeName>_Agent.exe\r\n3. Administrator CMD",
+      "steps": [
+        "1. Run: <BranchOfficeName>_Agent.exe /invalidarg\r",
+        "2. Observe the behavior"
+      ],
+      "expected_result": "1. Installer either ignores invalid argument and shows GUI, or returns an error\r\n2. Agent is NOT silently installed with the invalid argument",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTEXE-004",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent EXE Install",
+      "title": "Silent EXE install with corrupt installer",
+      "category": "Negative",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Corrupted <BranchOfficeName>_Agent.exe\r\n2. Administrator CMD",
+      "steps": [
+        "1. Run the corrupted EXE with /silent flag\r",
+        "2. Observe the command output"
+      ],
+      "expected_result": "1. Installation fails\r\n2. No agent service installed\r\n3. No agent files created",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTEXE-005",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent EXE Install",
+      "title": "Silent EXE install on Windows 11",
+      "category": "Cross-Environment",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 11",
+      "prerequisites": "1. Windows 11 machine, agent NOT installed\r\n2. <BranchOfficeName>_Agent.exe downloaded\r\n3. Administrator CMD",
+      "steps": [
+        "1. Run: <BranchOfficeName>_Agent.exe /silent [run_bat: execute]\r",
+        "2. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "3. Verify registry keys [registry_operation: read_key]\r",
+        "4. Verify install directory [file_folder_operation: check_presence]"
+      ],
+      "expected_result": "1. Silent install succeeds on Windows 11\r\n2. Agent service RUNNING\r\n3. All registry keys populated",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTEXE-006",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent EXE Install",
+      "title": "Silent EXE install on Windows Server 2019",
+      "category": "Cross-Environment",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows Server 2019",
+      "prerequisites": "1. Windows Server 2019, agent NOT installed\r\n2. <BranchOfficeName>_Agent.exe downloaded\r\n3. Administrator CMD",
+      "steps": [
+        "1. Run: <BranchOfficeName>_Agent.exe /silent [run_bat: execute]\r",
+        "2. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "3. Verify registry keys [registry_operation: read_key]\r",
+        "4. Verify install directory [file_folder_operation: check_presence]"
+      ],
+      "expected_result": "1. Silent install succeeds on Windows Server 2019\r\n2. Agent service RUNNING",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTMSI-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent MSI Install",
+      "title": "Fresh silent MSI installation via msiexec command",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Downloaded and extracted MSI zip (UEMSAgent.msi, UEMSAgent.mst, DMRootCA-Server.crt, DMRootCA.crt)\r\n3. Command Prompt opened as Administrator in the extracted folder",
+      "steps": [
+        "1. Run: msiexec /i \"UEMSAgent.msi\" /qn TRANSFORMS=\"UEMSAgent.mst\" ENABLESILENT=yes REBOOT=ReallySuppress INSTALLSOURCE=Manual SERVER_ROOT_CRT=\"%cd%\\DMRootCA-Server.crt\" DS_ROOT_CRT=\"%cd%\\DMRootCA.crt\" /lv \"Agentinstalllog.txt\" [run_command]\r",
+        "2. Wait for msiexec process to complete (timeout 120s) [task_manager: verify_process, expect=processnotrunning, process_name=msiexec.exe]\r",
+        "3. Verify Agentinstalllog.txt is created in the current directory [file_folder_operation: check_presence]\r",
+        "4. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "5. Verify registry HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ServerName is populated [registry_operation: read_key]\r",
+        "6. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ directory exists [file_folder_operation: check_presence]"
+      ],
+      "expected_result": "1. MSI install completes silently\r\n2. Agentinstalllog.txt is created with no errors\r\n3. Agent service is RUNNING\r\n4. Registry keys populated\r\n5. Install directory present",
+      "support_files": [
+        "Agentinstalllog.txt",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTMSI-002",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent MSI Install",
+      "title": "Silent MSI install with missing UEMSAgent.mst transform file",
+      "category": "Failure",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Extracted MSI zip but DELETED UEMSAgent.mst\r\n3. Administrator CMD in extraction folder",
+      "steps": [
+        "1. Run the msiexec command with TRANSFORMS=\"UEMSAgent.mst\" [run_command]\r",
+        "2. Observe the error output\r",
+        "3. Check Agentinstalllog.txt for error details [file_folder_modification: value_should_be_present]"
+      ],
+      "expected_result": "1. Installation fails with 'Error applying transforms' message\r\n2. Agentinstalllog.txt contains transform error\r\n3. Agent service is NOT installed",
+      "support_files": [
+        "Agentinstalllog.txt",
+        "services.msc"
+      ],
+      "remarks": "FAILURE SCENARIO",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTMSI-003",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent MSI Install",
+      "title": "Silent MSI install with missing certificate files",
+      "category": "Failure",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Extracted MSI zip but DELETED DMRootCA-Server.crt and DMRootCA.crt\r\n3. Administrator CMD",
+      "steps": [
+        "1. Run the msiexec command referencing the missing cert files [run_command]\r",
+        "2. Observe the result\r",
+        "3. Check Agentinstalllog.txt"
+      ],
+      "expected_result": "1. Installation may complete but agent communication fails due to certificate validation errors\r\n2. Or installation fails outright referencing missing cert files",
+      "support_files": [
+        "Agentinstalllog.txt",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log"
+      ],
+      "remarks": "FAILURE SCENARIO",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTMSI-004",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent MSI Install",
+      "title": "Silent MSI install without administrator privileges",
+      "category": "Negative",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Extracted MSI zip\r\n3. CMD opened as STANDARD user",
+      "steps": [
+        "1. Run the msiexec command as standard user\r",
+        "2. Observe the error"
+      ],
+      "expected_result": "1. msiexec fails with permissions error\r\n2. Agent is NOT installed\r\n3. No agent service or directory created",
+      "support_files": [
+        "Agentinstalllog.txt",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTMSI-005",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent MSI Install",
+      "title": "Silent MSI install interrupted mid-way (cancel)",
+      "category": "Failure",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Extracted MSI zip\r\n3. Administrator CMD",
+      "steps": [
+        "1. Start the msiexec command\r",
+        "2. While installation is in progress, kill the msiexec.exe process [task_manager: kill_process]\r",
+        "3. Verify agent state after interruption"
+      ],
+      "expected_result": "1. Installation rolls back cleanly\r\n2. Agent service is NOT running\r\n3. Partial files may be cleaned up by MSI rollback",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+        "Agentinstalllog.txt"
+      ],
+      "remarks": "FAILURE SCENARIO",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SILENTMSI-006",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Silent MSI Install",
+      "title": "Silent MSI install with corrupt MSI file",
+      "category": "Negative",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Corrupted UEMSAgent.msi\r\n3. Administrator CMD",
+      "steps": [
+        "1. Run msiexec /i with the corrupted MSI file\r",
+        "2. Observe the error"
+      ],
+      "expected_result": "1. msiexec fails reporting corrupt or invalid package\r\n2. No agent service installed\r\n3. No agent files created",
+      "support_files": [
+        "Agentinstalllog.txt",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-ZIPINSTALL-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Zip Install",
+      "title": "Fresh agent installation via setup.bat from extracted zip",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is NOT installed\r\n2. Downloaded <BranchOfficeName>_Agent.zip from server\r\n3. Extracted zip to C:\\Installers\\ZipExtract\\\r\n4. Administrator CMD in extracted directory",
+      "steps": [
+        "1. Verify all required files exist in the extracted folder: setup.bat, UEMSAgent.msi, UEMSAgent.mst, DMRootCA-Server.crt, DMRootCA.crt, <BranchOfficeName>_Agent.exe [file_folder_operation: check_presence]\r",
+        "2. Run: setup.bat [run_bat: execute]\r",
+        "3. Wait for the batch file to complete\r",
+        "4. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "5. Verify registry HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ServerName is populated [registry_operation: read_key]\r",
+        "6. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ exists with bin\\, conf\\, logs\\ [file_folder_operation: check_presence]"
+      ],
+      "expected_result": "1. setup.bat completes without errors\r\n2. Agent service is RUNNING\r\n3. Registry keys populated\r\n4. Install directory with all subdirectories present",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-ZIPINSTALL-002",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Zip Install",
+      "title": "Zip install with missing UEMSAgent.mst in extracted folder",
+      "category": "Failure",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed\r\n2. Extracted zip but DELETED UEMSAgent.mst\r\n3. Administrator CMD",
+      "steps": [
+        "1. Run: setup.bat [run_bat: execute]\r",
+        "2. Observe the error output"
+      ],
+      "expected_result": "1. Installation fails with 'Error applying transforms' error\r\n2. Agent service is NOT installed",
+      "support_files": [
+        "C:\\Installers\\ZipExtract\\",
+        "services.msc"
+      ],
+      "remarks": "FAILURE SCENARIO",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-ZIPINSTALL-003",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Zip Install",
+      "title": "Zip install from corrupt zip archive",
+      "category": "Negative",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. A corrupted <BranchOfficeName>_Agent.zip (truncated download)\r\n2. Administrator CMD",
+      "steps": [
+        "1. Attempt to extract the corrupt zip [zip_operation: extract]\r",
+        "2. Observe the extraction result"
+      ],
+      "expected_result": "1. Extraction fails with corrupt archive error\r\n2. Files are not fully extracted\r\n3. Cannot proceed with installation",
+      "support_files": [
+        "C:\\Installers\\ZipExtract\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-ZIPINSTALL-004",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Zip Install",
+      "title": "Zip install using silent EXE from extracted contents",
+      "category": "Functional",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed\r\n2. Extracted zip contains <BranchOfficeName>_Agent.exe\r\n3. Administrator CMD in extracted folder",
+      "steps": [
+        "1. Run: <BranchOfficeName>_Agent.exe /silent from the extracted folder [run_bat: execute]\r",
+        "2. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "3. Verify registry keys [registry_operation: read_key]"
+      ],
+      "expected_result": "1. Silent install from zip contents succeeds\r\n2. Agent service RUNNING\r\n3. Registry keys populated",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-PUSHINSTALL-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Push Install",
+      "title": "Automatic push installation from server to target machine",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Target machine is in same domain/workgroup as UEMS server\r\n2. Admin credentials configured in UEMS server for target machine\r\n3. WMI accessible from server to target\r\n4. Agent NOT installed on target\r\n5. Ports open between server and target",
+      "steps": [
+        "1. In UEMS server console, navigate to Agent > Scope Of Management > Computers > Add Computers (Qengine — browser step)\r",
+        "2. Add the domain/workgroup and provide admin credentials (Qengine — browser step)\r",
+        "3. Select the target computer and click Install Agents (Qengine — browser step)\r",
+        "4. On the target machine, wait for ManageEngine UEMS Agent Service to start (timeout 300s) [service_actions: status]\r",
+        "5. Verify registry HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ServerName is populated [registry_operation: read_key]\r",
+        "6. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ directory exists [file_folder_operation: check_presence]\r",
+        "7. Verify DCAgentService.exe process is running [task_manager: verify_process]"
+      ],
+      "expected_result": "1. Agent installs automatically via push\r\n2. ManageEngine UEMS Agent Service is RUNNING\r\n3. Registry keys populated\r\n4. Install directory present\r\n5. Agent appears as Active in server SOM page",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-PUSHINSTALL-002",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Push Install",
+      "title": "Push install via UEMSRemoteInstaller only (force method isolation)",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed on target\r\n2. On the DS/Server machine: rename remcom.exe to remcom.exe.bak and remcom64.exe to remcom64.exe.bak in C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\\r\n3. Disable WMI service on target: net stop winmgmt /y",
+      "steps": [
+        "1. Rename C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\remcom.exe to remcom.exe.bak [file_folder_operation: rename]\r",
+        "2. Rename C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\remcom64.exe to remcom64.exe.bak [file_folder_operation: rename]\r",
+        "3. Stop WMI service on target: net stop winmgmt /y [service_actions: stop]\r",
+        "4. Trigger push install from UEMS server console (Qengine — browser step)\r",
+        "5. On target, verify ManageEngine UEMS Agent Service is RUNNING (timeout 300s) [service_actions: status]\r",
+        "6. TEARDOWN: Start WMI service: net start winmgmt [service_actions: start]\r",
+        "7. TEARDOWN: Rename remcom.exe.bak back to remcom.exe [file_folder_operation: rename]\r",
+        "8. TEARDOWN: Rename remcom64.exe.bak back to remcom64.exe [file_folder_operation: rename]"
+      ],
+      "expected_result": "1. Push install succeeds using only UEMSRemoteInstaller.exe\r\n2. Agent service is RUNNING\r\n3. Teardown restores all renamed files and services",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\UEMSRemoteInstaller.exe",
+        "services.msc"
+      ],
+      "remarks": "Push method isolation: UEMSRemoteInstaller",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-PUSHINSTALL-003",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Push Install",
+      "title": "Push install via WMI only (force method isolation)",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed on target\r\n2. On DS/Server: rename UEMSRemoteInstaller.exe and remcom.exe to .bak",
+      "steps": [
+        "1. Rename C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\UEMSRemoteInstaller.exe to UEMSRemoteInstaller.exe.bak [file_folder_operation: rename]\r",
+        "2. Rename C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\remcom.exe to remcom.exe.bak [file_folder_operation: rename]\r",
+        "3. Trigger push install from UEMS server console (Qengine — browser step)\r",
+        "4. On target, verify ManageEngine UEMS Agent Service is RUNNING (timeout 300s) [service_actions: status]\r",
+        "5. TEARDOWN: Rename UEMSRemoteInstaller.exe.bak back [file_folder_operation: rename]\r",
+        "6. TEARDOWN: Rename remcom.exe.bak back [file_folder_operation: rename]"
+      ],
+      "expected_result": "1. Push install succeeds using only WMI\r\n2. Agent service is RUNNING\r\n3. Teardown restores all renamed files",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\",
+        "services.msc"
+      ],
+      "remarks": "Push method isolation: WMI",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-PUSHINSTALL-004",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Push Install",
+      "title": "Push install via Remcom only (force method isolation)",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed on target\r\n2. On DS/Server: rename UEMSRemoteInstaller.exe to .bak\r\n3. Disable WMI on target",
+      "steps": [
+        "1. Rename C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\UEMSRemoteInstaller.exe to UEMSRemoteInstaller.exe.bak [file_folder_operation: rename]\r",
+        "2. Stop WMI service: net stop winmgmt /y [service_actions: stop]\r",
+        "3. Trigger push install from UEMS server console (Qengine — browser step)\r",
+        "4. On target, verify ManageEngine UEMS Agent Service is RUNNING (timeout 300s) [service_actions: status]\r",
+        "5. TEARDOWN: Start WMI: net start winmgmt [service_actions: start]\r",
+        "6. TEARDOWN: Rename UEMSRemoteInstaller.exe.bak back [file_folder_operation: rename]"
+      ],
+      "expected_result": "1. Push install succeeds using only remcom.exe\r\n2. Agent service is RUNNING",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\remcom.exe",
+        "services.msc"
+      ],
+      "remarks": "Push method isolation: Remcom",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-PUSHINSTALL-005",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Push Install",
+      "title": "Push install fails when all three methods are disabled",
+      "category": "Failure",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed on target\r\n2. On DS/Server: rename UEMSRemoteInstaller.exe and remcom.exe to .bak\r\n3. Disable WMI on target",
+      "steps": [
+        "1. Rename UEMSRemoteInstaller.exe to .bak [file_folder_operation: rename]\r",
+        "2. Rename remcom.exe to .bak [file_folder_operation: rename]\r",
+        "3. Stop WMI on target [service_actions: stop]\r",
+        "4. Trigger push install from UEMS server (Qengine — browser step)\r",
+        "5. Wait 300 seconds for attempted install\r",
+        "6. Verify ManageEngine UEMS Agent Service is NOT installed on target [service_actions: status, expect=serviceStopped]\r",
+        "7. TEARDOWN: Start WMI, rename files back"
+      ],
+      "expected_result": "1. Push installation fails — all three methods unavailable\r\n2. UEMS server console shows installation failure status for target machine\r\n3. Agent service does NOT exist on target",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\"
+      ],
+      "remarks": "FAILURE SCENARIO — All push methods disabled",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-PUSHINSTALL-006",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Push Install",
+      "title": "Push install with invalid admin credentials",
+      "category": "Negative",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed on target\r\n2. UEMS server configured with WRONG admin credentials for target",
+      "steps": [
+        "1. In UEMS server console, add target machine with invalid credentials (Qengine — browser step)\r",
+        "2. Trigger installation (Qengine — browser step)\r",
+        "3. Wait and observe server console for error status\r",
+        "4. Verify ManageEngine UEMS Agent Service is NOT installed on target [service_actions: status, expect=serviceStopped]"
+      ],
+      "expected_result": "1. Push install fails due to authentication failure\r\n2. UEMS server shows credential error for the target machine\r\n3. No agent installed on target",
+      "support_files": [
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-PUSHINSTALL-007",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Push Install",
+      "title": "Push install with firewall blocking required ports",
+      "category": "Failure",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed on target\r\n2. Windows Firewall enabled on target blocking all inbound connections",
+      "steps": [
+        "1. Enable Windows Firewall blocking all inbound on target machine\r",
+        "2. Trigger push install from UEMS server (Qengine — browser step)\r",
+        "3. Wait for installation timeout\r",
+        "4. Verify ManageEngine UEMS Agent Service is NOT installed [service_actions: status, expect=serviceStopped]"
+      ],
+      "expected_result": "1. Push install fails — server cannot reach target\r\n2. UEMS console shows network/connectivity error\r\n3. No agent installed",
+      "support_files": [
+        "services.msc"
+      ],
+      "remarks": "FAILURE SCENARIO — Firewall blocking",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-PUSHINSTALL-008",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Push Install",
+      "title": "Push install with low-privilege user credentials",
+      "category": "Negative",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed on target\r\n2. UEMS server configured with standard (non-admin) user credentials",
+      "steps": [
+        "1. In UEMS server, configure low-privilege user creds for target domain (Qengine — browser step)\r",
+        "2. Trigger push install (Qengine — browser step)\r",
+        "3. Verify agent is NOT installed on target [service_actions: status, expect=serviceStopped]"
+      ],
+      "expected_result": "1. Push install fails — insufficient privileges\r\n2. Server shows permission error\r\n3. No agent installed",
+      "support_files": [
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-POSTVERIFY-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Post-Install Verification",
+      "title": "Verify agent service startup type is Automatic after install",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent is installed via any method\r\n2. ManageEngine UEMS Agent Service is RUNNING",
+      "steps": [
+        "1. Check the service startup type for ManageEngine UEMS Agent Service [service_actions: get_startup]\r",
+        "2. Verify registry HKLM\\SYSTEM\\CurrentControlSet\\Services\\DCAgent Start value = 2 (Automatic) [registry_operation: read_dword]"
+      ],
+      "expected_result": "1. Service startup type is 'Automatic' (AUTO)\r\n2. Registry Start value = 2",
+      "support_files": [
+        "HKLM\\SYSTEM\\CurrentControlSet\\Services\\DCAgent",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-POSTVERIFY-002",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Post-Install Verification",
+      "title": "Verify all required registry keys after installation",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent freshly installed via any method",
+      "steps": [
+        "1. Read registry HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ServerName — should not be empty [registry_operation: read_key]\r",
+        "2. Read registry HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ServerPort — should have valid port [registry_operation: read_key]\r",
+        "3. Read registry HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\AgentVersion — should have version string [registry_operation: read_key]\r",
+        "4. Read registry HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\InstallDir — should point to install path [registry_operation: read_key]"
+      ],
+      "expected_result": "1. ServerName contains DS/server hostname\r\n2. ServerPort has valid port number\r\n3. AgentVersion has version string\r\n4. InstallDir = C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+      "support_files": [
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-POSTVERIFY-003",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Post-Install Verification",
+      "title": "Verify install directory structure after installation",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent freshly installed",
+      "steps": [
+        "1. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ exists [file_folder_operation: check_presence]\r",
+        "2. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\ exists [file_folder_operation: check_presence]\r",
+        "3. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\conf\\ exists [file_folder_operation: check_presence]\r",
+        "4. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\ exists [file_folder_operation: check_presence]\r",
+        "5. Verify DCAgentService.exe exists in bin\\ [file_folder_operation: check_presence]"
+      ],
+      "expected_result": "1. All directories exist: UEMS_Agent\\, bin\\, conf\\, logs\\\r\n2. DCAgentService.exe is present in bin\\",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-POSTVERIFY-004",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Post-Install Verification",
+      "title": "Verify agent process is running after installation",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent freshly installed",
+      "steps": [
+        "1. Verify DCAgentService.exe process is running in Task Manager [task_manager: verify_process]"
+      ],
+      "expected_result": "1. DCAgentService.exe is listed as a running process",
+      "support_files": [
+        "Task Manager",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\DCAgentService.exe"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-POSTVERIFY-005",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Post-Install Verification",
+      "title": "Verify agent log file is created after installation",
+      "category": "Functional",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent freshly installed",
+      "steps": [
+        "1. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log exists [file_folder_operation: check_presence]\r",
+        "2. Verify the log file is not empty (size > 0) [file_folder_operation: check_size]"
+      ],
+      "expected_result": "1. DCAgentService.log exists in the logs directory\r\n2. Log file has content (size > 0 bytes)",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-POSTVERIFY-006",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Post-Install Verification",
+      "title": "Verify agent service restarts automatically after being killed",
+      "category": "Retry",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent installed and service RUNNING",
+      "steps": [
+        "1. Kill the DCAgentService.exe process [task_manager: kill_process]\r",
+        "2. Wait 60 seconds [task_manager: verify_process, max_wait_time=60]\r",
+        "3. Verify ManageEngine UEMS Agent Service is RUNNING again [service_actions: status]"
+      ],
+      "expected_result": "1. After killing the process, the service auto-restarts\r\n2. ManageEngine UEMS Agent Service status returns to RUNNING within 60 seconds",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "services.msc"
+      ],
+      "remarks": "RETRY SCENARIO — Service auto-recovery",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-POSTVERIFY-007",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Post-Install Verification",
+      "title": "Verify agent service starts after system reboot",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent installed and service RUNNING\r\n2. Service startup type is Automatic",
+      "steps": [
+        "1. Restart the machine [machine_operation: restart]\r",
+        "2. After reboot, verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "3. Verify DCAgentService.exe process is running [task_manager: verify_process]"
+      ],
+      "expected_result": "1. After reboot, agent service automatically starts\r\n2. Service is RUNNING\r\n3. DCAgentService.exe is running",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-UNINSTALL-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Agent Uninstall",
+      "title": "Uninstall agent via Control Panel GUI with OTP",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent installed and RUNNING\r\n2. OTP obtained from UEMS server console (Agent > Scope of Management > Computers > View OTP)",
+      "steps": [
+        "1. Open Settings > Apps (Windows 10/11) [native_gui_operation]\r",
+        "2. Type 'UEMS-Agent' in the search box [native_gui_operation: EnterText, automationId=SearchEditBox]\r",
+        "3. Double-click 'ManageEngine UEMS - Agent' in the list [native_gui_operation: DoubleClick, automationId=ListViewSubItem-0]\r",
+        "4. Wait for Uninstall button to appear (timeout 30s) [native_gui_operation: Wait, automationId=UninstallBtn]\r",
+        "5. Click Uninstall button [native_gui_operation: ClickButton, automationId=UninstallBtn]\r",
+        "6. Enter the OTP when prompted\r",
+        "7. Wait for completion (timeout 420s) [native_gui_operation: Wait, automationId=SuccessUninstall]\r",
+        "8. Read completion text — expected: 'Agent successfully uninstalled' [native_gui_operation: ReadText, automationId=SuccessUninstall]\r",
+        "9. Verify ManageEngine UEMS Agent Service is STOPPED or not present [service_actions: status, expect=serviceStopped]\r",
+        "10. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ is removed or empty [file_folder_operation: verify_absence]\r",
+        "11. Verify registry HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ is removed [registry_operation: check_key_not_exists]"
+      ],
+      "expected_result": "1. Uninstall completes with 'Agent successfully uninstalled'\r\n2. Agent service is stopped/removed\r\n3. Install directory removed\r\n4. Registry keys removed",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-UNINSTALL-002",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Agent Uninstall",
+      "title": "Silent uninstall via command line",
+      "category": "Functional",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent installed and RUNNING",
+      "steps": [
+        "1. Run: C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\DCAgent.exe /uninstall /s [run_bat: execute]\r",
+        "2. Wait for DCAgent.exe process to complete [task_manager: verify_process, expect=processnotrunning]\r",
+        "3. Verify ManageEngine UEMS Agent Service is STOPPED or absent [service_actions: status, expect=serviceStopped]\r",
+        "4. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ is removed [file_folder_operation: verify_absence]\r",
+        "5. Verify registry HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ is removed [registry_operation: check_key_not_exists]"
+      ],
+      "expected_result": "1. Silent uninstall completes\r\n2. Agent service removed\r\n3. Install directory removed\r\n4. Registry keys removed",
+      "support_files": [
+        "services.msc",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-UNINSTALL-003",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Agent Uninstall",
+      "title": "Uninstall and verify clean re-install",
+      "category": "E2E",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent installed",
+      "steps": [
+        "1. Uninstall agent (silent method) [run_bat: execute]\r",
+        "2. Verify agent is fully removed: service, registry, install directory [service_actions: status] [registry_operation: check_key_not_exists] [file_folder_operation: verify_absence]\r",
+        "3. Re-install agent via silent EXE [run_bat: execute]\r",
+        "4. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "5. Verify all registry keys recreated [registry_operation: read_key]"
+      ],
+      "expected_result": "1. Uninstall completes cleanly\r\n2. Re-install succeeds without errors\r\n3. Agent service RUNNING after re-install\r\n4. All registry keys present after re-install",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-UNINSTALL-004",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Agent Uninstall",
+      "title": "Attempt uninstall without OTP (GUI method)",
+      "category": "Security",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent installed and RUNNING\r\n2. No OTP available",
+      "steps": [
+        "1. Open Settings > Apps\r",
+        "2. Find and click Uninstall on ManageEngine UEMS - Agent\r",
+        "3. When OTP prompt appears, enter an incorrect OTP or leave blank\r",
+        "4. Observe result"
+      ],
+      "expected_result": "1. Uninstall fails or is blocked — OTP is required\r\n2. Agent service remains RUNNING\r\n3. Agent files remain intact",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-EDGE-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Edge Cases",
+      "title": "Install agent when install directory already exists with stale files",
+      "category": "Edge",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed but C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ exists with leftover files from a previous partial install",
+      "steps": [
+        "1. Install agent via silent EXE [run_bat: execute]\r",
+        "2. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "3. Verify registry keys are correct [registry_operation: read_key]"
+      ],
+      "expected_result": "1. Installer handles existing directory gracefully\r\n2. Agent installs successfully\r\n3. Service is RUNNING",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-EDGE-002",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Edge Cases",
+      "title": "Install agent when disk space is critically low",
+      "category": "Resource Exhaustion",
+      "priority": "P3",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed\r\n2. Target drive has less than 50MB free space\r\n3. Administrator CMD",
+      "steps": [
+        "1. Attempt silent install: <BranchOfficeName>_Agent.exe /silent [run_bat: execute]\r",
+        "2. Observe the result"
+      ],
+      "expected_result": "1. Installation fails gracefully with disk space error\r\n2. No partial files left behind\r\n3. Agent service NOT installed",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-EDGE-003",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Edge Cases",
+      "title": "Install agent with very long computer name (15+ characters)",
+      "category": "Edge",
+      "priority": "P3",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Computer name set to maximum length (15 characters for NetBIOS)\r\n2. Agent NOT installed",
+      "steps": [
+        "1. Install agent via silent EXE [run_bat: execute]\r",
+        "2. Verify agent service is RUNNING [service_actions: status]\r",
+        "3. Verify registry keys contain correct computer name [registry_operation: read_key]"
+      ],
+      "expected_result": "1. Agent installs successfully\r\n2. Long computer name is handled correctly\r\n3. All registry keys populated",
+      "support_files": [
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-EDGE-004",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Edge Cases",
+      "title": "Install agent with special characters in computer name",
+      "category": "Edge",
+      "priority": "P3",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Computer name contains special characters (e.g., hyphens, underscores)\r\n2. Agent NOT installed",
+      "steps": [
+        "1. Install agent via silent EXE [run_bat: execute]\r",
+        "2. Verify agent service is RUNNING [service_actions: status]\r",
+        "3. Verify registry keys are populated correctly [registry_operation: read_key]"
+      ],
+      "expected_result": "1. Agent installs successfully\r\n2. Special characters in computer name handled\r\n3. Agent registers with server",
+      "support_files": [
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-EDGE-005",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Edge Cases",
+      "title": "Install agent with Unicode characters in OS user profile path",
+      "category": "Edge",
+      "priority": "P3",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Windows user account with Unicode characters in username (e.g., Japanese, Chinese characters)\r\n2. Agent NOT installed",
+      "steps": [
+        "1. Log in as the Unicode-named user with admin rights\r",
+        "2. Install agent via silent EXE [run_bat: execute]\r",
+        "3. Verify agent service is RUNNING [service_actions: status]"
+      ],
+      "expected_result": "1. Agent installs successfully regardless of user profile path encoding\r\n2. Service is RUNNING",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SECURITY-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Security",
+      "title": "Verify agent service runs under SYSTEM account",
+      "category": "Security",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent freshly installed",
+      "steps": [
+        "1. Check the logon account for ManageEngine UEMS Agent Service [service_actions: get_logon]"
+      ],
+      "expected_result": "1. Service logon account is 'LocalSystem' or 'NT AUTHORITY\\SYSTEM'",
+      "support_files": [
+        "services.msc",
+        "HKLM\\SYSTEM\\CurrentControlSet\\Services\\DCAgent"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SECURITY-002",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Security",
+      "title": "Verify agent install directory permissions",
+      "category": "Security",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent freshly installed",
+      "steps": [
+        "1. Check permissions on C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ [file_folder_operation: check_permission]\r",
+        "2. Verify standard users do NOT have write access to the agent directory"
+      ],
+      "expected_result": "1. Standard users have read/execute only — no write access\r\n2. SYSTEM and Administrators have full control",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-SECURITY-003",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Security",
+      "title": "Verify agent certificates are installed correctly",
+      "category": "Security",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent freshly installed",
+      "steps": [
+        "1. Verify DMRootCA-Server.crt is present in agent install directory [file_folder_operation: check_presence]\r",
+        "2. Verify DMRootCA.crt is present [file_folder_operation: check_presence]\r",
+        "3. Optionally read cert subject [certificate_operation: get_cert_value]"
+      ],
+      "expected_result": "1. Both certificate files exist\r\n2. Certificate subjects match expected UEMS CA values",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+        "certificate files"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-CONCURRENT-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Concurrency",
+      "title": "Run two installer instances simultaneously",
+      "category": "Concurrency",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed\r\n2. Two copies of <BranchOfficeName>_Agent.exe available\r\n3. Administrator access",
+      "steps": [
+        "1. Launch first installer: <BranchOfficeName>_Agent.exe /silent\r",
+        "2. Immediately launch second installer: <BranchOfficeName>_Agent.exe /silent\r",
+        "3. Wait for both to complete\r",
+        "4. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "5. Verify only one agent installation exists [registry_operation: read_key]"
+      ],
+      "expected_result": "1. Only one installation succeeds — MSI mutex prevents concurrent installs\r\n2. Agent service is RUNNING\r\n3. Single set of registry keys exists",
+      "support_files": [
+        "services.msc",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "CONCURRENCY SCENARIO",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-UPGRADE-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Upgrade",
+      "title": "Install newer agent version over existing older version",
+      "category": "Upgrade",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Older version of agent is installed and RUNNING\r\n2. Newer <BranchOfficeName>_Agent.exe downloaded",
+      "steps": [
+        "1. Note current AgentVersion from registry [registry_operation: read_key]\r",
+        "2. Run newer installer: <BranchOfficeName>_Agent.exe /silent [run_bat: execute]\r",
+        "3. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "4. Read AgentVersion from registry — should be newer [registry_operation: read_key]\r",
+        "5. Verify agent configuration (ServerName, ServerPort) preserved [registry_operation: read_key]"
+      ],
+      "expected_result": "1. Upgrade completes without errors\r\n2. Agent service is RUNNING\r\n3. AgentVersion shows newer version\r\n4. Server configuration preserved from old install",
+      "support_files": [
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-CLEANUP-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Cleanup",
+      "title": "Verify complete cleanup after uninstall — no leftover files or registry",
+      "category": "Cleanup",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent was installed and then uninstalled",
+      "steps": [
+        "1. Verify C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ does NOT exist [file_folder_operation: verify_absence]\r",
+        "2. Verify HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\ does NOT exist [registry_operation: check_key_not_exists]\r",
+        "3. Verify HKLM\\SYSTEM\\CurrentControlSet\\Services\\DCAgent does NOT exist [registry_operation: check_key_not_exists]\r",
+        "4. Verify DCAgentService.exe is NOT running [task_manager: verify_process, expect=processnotrunning]\r",
+        "5. Verify no ManageEngine UEMS Agent in Control Panel Programs list"
+      ],
+      "expected_result": "1. Install directory fully removed\r\n2. All registry keys removed (both DCAgent and Services\\DCAgent)\r\n3. No running processes\r\n4. Agent not listed in Programs and Features",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\",
+        "HKLM\\SYSTEM\\CurrentControlSet\\Services\\DCAgent"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-CLEANUP-002",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Cleanup",
+      "title": "Partial uninstall leaves stale registry — verify re-install handles it",
+      "category": "Cleanup",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent was installed\r\n2. Manually delete install directory but leave registry keys intact (simulating partial uninstall)",
+      "steps": [
+        "1. Delete C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\ directory [file_folder_operation: delete]\r",
+        "2. Verify registry keys still exist [registry_operation: check_key_exists]\r",
+        "3. Attempt fresh install via silent EXE [run_bat: execute]\r",
+        "4. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "5. Verify registry keys are updated correctly [registry_operation: read_key]"
+      ],
+      "expected_result": "1. Fresh install handles stale registry gracefully\r\n2. Agent installs successfully\r\n3. Service is RUNNING\r\n4. Registry keys point to correct new install",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\",
+        "services.msc"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-TIMING-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Timing",
+      "title": "Network disconnect during push install — server retry behavior",
+      "category": "Timing",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed on target\r\n2. Network connectivity between server and target is controllable",
+      "steps": [
+        "1. Trigger push install from server (Qengine — browser step)\r",
+        "2. Immediately disconnect network on target machine\r",
+        "3. Wait 30 seconds, then reconnect network\r",
+        "4. Wait for push install retry (timeout 600s)\r",
+        "5. Verify ManageEngine UEMS Agent Service status on target [service_actions: status]"
+      ],
+      "expected_result": "1. Initial push attempt fails due to network drop\r\n2. Server retries push after network is restored\r\n3. Agent eventually installs successfully (or push shows failed status if retry exhausted)",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-INTEGRATION-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Integration",
+      "title": "Agent registers with Distribution Server after install",
+      "category": "Integration",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent freshly installed\r\n2. Distribution Server is running and accessible",
+      "steps": [
+        "1. Verify ServerName in registry points to the correct DS [registry_operation: read_key]\r",
+        "2. Verify agent communication log shows successful connection to DS [file_folder_modification: value_should_be_present]\r",
+        "3. Verify agent appears as Active in UEMS server console (Qengine — browser step)"
+      ],
+      "expected_result": "1. Agent successfully connects to configured Distribution Server\r\n2. Log contains successful registration messages\r\n3. Agent appears Active in SOM page",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-E2E-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "E2E",
+      "title": "End-to-end: Download, install, verify, and uninstall agent",
+      "category": "E2E",
+      "priority": "P1",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Clean target machine — no agent installed\r\n2. Access to UEMS server console\r\n3. Administrator access on target",
+      "steps": [
+        "1. Download agent installer from UEMS server console (Qengine — browser step)\r",
+        "2. Copy installer to target machine\r",
+        "3. Run silent install: <BranchOfficeName>_Agent.exe /silent [run_bat: execute]\r",
+        "4. Verify ManageEngine UEMS Agent Service is RUNNING [service_actions: status]\r",
+        "5. Verify all registry keys [registry_operation: read_key]\r",
+        "6. Verify install directory [file_folder_operation: check_presence]\r",
+        "7. Verify agent appears in SOM (Qengine — browser step)\r",
+        "8. Uninstall agent silently: DCAgent.exe /uninstall /s [run_bat: execute]\r",
+        "9. Verify service removed [service_actions: status, expect=serviceStopped]\r",
+        "10. Verify registry cleaned [registry_operation: check_key_not_exists]\r",
+        "11. Verify directory removed [file_folder_operation: verify_absence]"
+      ],
+      "expected_result": "1. Full lifecycle: install → verify → uninstall succeeds\r\n2. All intermediate checks pass\r\n3. Machine returns to clean state after uninstall",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+        "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent\\",
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-RARE-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "Rare Scenarios",
+      "title": "Power failure during agent installation",
+      "category": "Rare",
+      "priority": "P3",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent NOT installed\r\n2. Ability to simulate power loss (VM snapshot or hard power off)",
+      "steps": [
+        "1. Start silent install: <BranchOfficeName>_Agent.exe /silent\r",
+        "2. During installation (within first 30 seconds), hard power off the machine\r",
+        "3. Power on the machine\r",
+        "4. Check the state: Is agent service present? Are partial files left behind?\r",
+        "5. Attempt fresh install"
+      ],
+      "expected_result": "1. Machine recovers without corruption\r\n2. Partial install may leave artifacts\r\n3. Fresh install should succeed after cleanup or MSI repair",
+      "support_files": [
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\",
+        "services.msc"
+      ],
+      "remarks": "RARE SCENARIO — Power failure mid-install",
+      "issue_id": ""
+    },
+    {
+      "id": "TC-AGENTINSTALL-STATETR-001",
+      "functionality": "AgentInstallation",
+      "sub_functionality": "State Transition",
+      "title": "Agent service stop and manual restart",
+      "category": "State Transition",
+      "priority": "P2",
+      "status": "active",
+      "version": 1,
+      "platform": "windows",
+      "os_version": "Windows 10",
+      "prerequisites": "1. Agent installed and service RUNNING",
+      "steps": [
+        "1. Stop ManageEngine UEMS Agent Service [service_actions: stop]\r",
+        "2. Verify service status is STOPPED [service_actions: status, expect=serviceStopped]\r",
+        "3. Start ManageEngine UEMS Agent Service [service_actions: start]\r",
+        "4. Verify service status is RUNNING [service_actions: status]\r",
+        "5. Verify DCAgentService.exe process is running [task_manager: verify_process]"
+      ],
+      "expected_result": "1. Service stops successfully\r\n2. Service starts back successfully\r\n3. Agent process runs after manual restart",
+      "support_files": [
+        "services.msc",
+        "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\logs\\DCAgentService.log"
+      ],
+      "remarks": "",
+      "issue_id": ""
+    }
+  ]
+}

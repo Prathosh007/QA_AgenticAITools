@@ -1,0 +1,26 @@
+Module,Issue ID,Issue Subject,Functionality,IssueStatus,Total Count,Issue Category,Issue Due To,Issue Group,Issue Type,Issue Priority,Sup Ticket Classification
+Notification Server,30501,Agent communication lost due to failing in Ip iteration,,Fixed - Released,1,Existing Issue,Others,Server,Issue,Immediate,Bug
+Notification Server,5064,Unable to take remote control for the client machines,NS Ondemand,Not Reproduced,2,Environment Issue,No Logs / No Response from customer,Server,Issue,Will Take Later,Consultation
+Notification Server,28098,NS crashed consecutively three times.,NS Crash,Not Taken,16,Root Cause Not Found,Not yet Analyze - Root cause yet to found,Server,Issue,Low,Customer - Env Troubleshooting
+Notification Server,99934,NS failed to start due to old server service not removed,Notification Server,Fixed - Released,4,Existing Issue,Environmental issue,Agent,Issue,Will Take Later,Customer - Env Troubleshooting
+Notification Server,28098,NS crashed consecutively three times.,NS Crash,Not Taken,16,Root Cause Not Found,Not yet Analyze - Root cause yet to found,Server,Issue,Low,Customer - Env Troubleshooting
+Notification Server,206264,Notification Server (NS) service is not present on the secondary server - RCA not found for this - need backup to create service if not present,Notification Server,Open,1,Environment Issue,Environmental issue,Agent,Issue,,Customer - Env Troubleshooting
+Notification Server,194483,Dcodemand exe crashed due to legacy loading in SSL context.,NS Ondemand,Fixed - Released,1,Environment Issue,Environmental issue,Agent,Issue,Medium,Bug
+Notification Server,56167,Agent - NS Connection failure when tried via WAF firewall,NS-Agent Connection,Open,1,Environment Issue,Environmental issue,Agent,Issue,Will Take Later,Customer - Env Troubleshooting
+Notification Server,194661,Dcondemand failed iterate Ip in closed network.,NS Ondemand,Fixed - Released,6,Environment Issue,Design Issue,Agent,Issue,Immediate,Bug
+Notification Server,201259,NS randomly hanged after parsing ssl error code.,Notification Server,Fixed - Released,3,Environment Issue,Environmental issue,Agent,Issue,Low,Bug
+Notification Server,95417,dcondemand handles increase gradually over time in some environments.,NS Ondemand,Fixed - Released,4,Existing Issue,Device Specific,Agent,Issue,Will Take Later,Customer - Env Troubleshooting
+Notification Server,95417,dcondemand handles increase gradually over time in some environments.,NS Ondemand,Fixed - Released,4,Existing Issue,Device Specific,Agent,Issue,Will Take Later,Bug
+Notification Server,194661,Dcondemand failed iterate Ip in closed network.,NS Ondemand,Fixed - Released,6,Environment Issue,Design Issue,Agent,Issue,Immediate,Customer - Env Troubleshooting
+Notification Server,201259,NS randomly hanged after parsing ssl error code.,Notification Server,Fixed - Released,3,Environment Issue,Environmental issue,Agent,Issue,Low,Bug
+Notification Server,194661,Dcondemand failed iterate Ip in closed network.,NS Ondemand,Fixed - Released,6,Environment Issue,Design Issue,Agent,Issue,Immediate,Bug
+Notification Server,201259,NS randomly hanged after parsing ssl error code.,Notification Server,Fixed - Released,3,Environment Issue,Environmental issue,Agent,Issue,Low,Bug
+Notification Server,192823,NS crashed - NS start failed Root cause not found,,Not Taken,4,Root Cause Not Found,Not yet Analyze - Root cause yet to found,Server,Issue,Low,Consultation - Queries
+Notification Server,3292,NS getting disabled due to consecutive 3 crashes,NS Crash,Not Reproduced,9,Known Issues before Release,No Logs / No Response from customer,Server,Issue,Will Take Later,Consultation - Queries
+Notification Server,194661,Dcondemand failed iterate Ip in closed network.,NS Ondemand,Fixed - Released,6,Environment Issue,Design Issue,Agent,Issue,Immediate,Customer - Env Troubleshooting;Bug
+Notification Server,194661,Dcondemand failed iterate Ip in closed network.,NS Ondemand,Fixed - Released,6,Environment Issue,Design Issue,Agent,Issue,Immediate,Bug
+Notification Server,28106,NS Hang Auto Restart,,Fixed - Released,6,Existing Issue,Design Issue,Server,Issue,Immediate,Customer - Env Troubleshooting
+Notification Server,194661,Dcondemand failed iterate Ip in closed network.,NS Ondemand,Fixed - Released,6,Environment Issue,Design Issue,Agent,Issue,Immediate,Bug
+Notification Server,101997,NS was running on both Primary and FOS server ( server side NS case ) - so agent failed to show green,NS Ondemand,In-Progress,3,External Dependency,Other Module,Agent,Issue,Will Take Later,Bug
+Notification Server,192823,NS crashed - NS start failed Root cause not found,,Not Taken,4,Root Cause Not Found,Not yet Analyze - Root cause yet to found,Server,Issue,Low,Bug
+Notification Server,192823,NS crashed - NS start failed Root cause not found,,Not Taken,4,Root Cause Not Found,Not yet Analyze - Root cause yet to found,Server,Issue,Low,Customer - Env Troubleshooting

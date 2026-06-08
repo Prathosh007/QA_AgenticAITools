@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UEMS Testcase Generator AI — Flow Diagram</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --primary: #0078d4;
+    --primary-dark: #005a9e;
+    --bg: #f5f6fa;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-muted: #666;
+    --border: #e2e8f0;
+    --phase0: #388e3c;
+    --phase1: #1976d2;
+    --phase2: #f57c00;
+    --phase3: #7b1fa2;
+    --phase4: #c62828;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── Header ─────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    padding: 32px 40px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.15);
+  }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .header .subtitle {
+    opacity: .85;
+    font-size: 14px;
+    margin-top: 6px;
+  }
+
+  /* ── Content ────────────────────────────── */
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  /* ── Phase Legend ────────────────────────── */
+  .legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── Diagram Card ───────────────────────── */
+  .diagram-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    margin-bottom: 32px;
+    overflow-x: auto;
+  }
+  .diagram-card h2 {
+    font-size: 18px;
+    color: var(--primary);
+    margin-bottom: 20px;
+    border-left: 4px solid var(--primary);
+    padding-left: 12px;
+  }
+  .mermaid {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ── Phase Details ──────────────────────── */
+  .phases-title {
+    font-size: 18px;
+    color: var(--primary);
+    margin-bottom: 16px;
+    border-left: 4px solid var(--primary);
+    padding-left: 12px;
+  }
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .phase-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    border-top: 4px solid var(--primary);
+    transition: transform .15s ease;
+  }
+  .phase-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,.1);
+  }
+  .phase-card.p0 { border-top-color: var(--phase0); }
+  .phase-card.p1 { border-top-color: var(--phase1); }
+  .phase-card.p2 { border-top-color: var(--phase2); }
+  .phase-card.p3 { border-top-color: var(--phase3); }
+  .phase-card.p4 { border-top-color: var(--phase4); }
+
+  .phase-card h3 {
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .phase-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: #fff;
+  }
+  .phase-badge.p0 { background: var(--phase0); }
+  .phase-badge.p1 { background: var(--phase1); }
+  .phase-badge.p2 { background: var(--phase2); }
+  .phase-badge.p3 { background: var(--phase3); }
+  .phase-badge.p4 { background: var(--phase4); }
+
+  .phase-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .phase-card li {
+    position: relative;
+    padding: 5px 0 5px 22px;
+    font-size: 13px;
+    color: #444;
+  }
+  .phase-card li::before {
+    content: '→';
+    position: absolute;
+    left: 4px;
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  .tool-tag {
+    display: inline-block;
+    font-size: 11px;
+    background: #e8f4fd;
+    color: #1a6895;
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    margin-left: 2px;
+  }
+
+  /* ── Scenario Categories ────────────────── */
+  .categories-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    margin-bottom: 32px;
+  }
+  .categories-card h2 {
+    font-size: 18px;
+    color: var(--primary);
+    margin-bottom: 16px;
+    border-left: 4px solid var(--primary);
+    padding-left: 12px;
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .cat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .cat-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  /* ── Outputs Section ────────────────────── */
+  .outputs {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    margin-bottom: 32px;
+  }
+  .outputs h2 {
+    font-size: 18px;
+    color: var(--primary);
+    margin-bottom: 16px;
+    border-left: 4px solid var(--primary);
+    padding-left: 12px;
+  }
+  .output-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .output-item {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+  }
+  .output-item .label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 4px;
+  }
+  .output-item .path {
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text);
+    word-break: break-all;
+  }
+
+  /* ── Example Prompts ────────────────────── */
+  .examples {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    margin-bottom: 32px;
+  }
+  .examples h2 {
+    font-size: 18px;
+    color: var(--primary);
+    margin-bottom: 16px;
+    border-left: 4px solid var(--primary);
+    padding-left: 12px;
+  }
+  .example-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .example-list li {
+    background: #f0f6ff;
+    border: 1px solid #cce0ff;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: #0d47a1;
+  }
+  .example-list li::before {
+    content: '💬 ';
+  }
+
+  /* ── Footer ─────────────────────────────── */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: #aaa;
+    font-size: 12px;
+  }
+
+  /* ── Print-friendly ─────────────────────── */
+  @media print {
+    body { background: #fff; }
+    .header { box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .phase-card:hover { transform: none; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  }
+
+  /* ── Quick Links Bar ─────────────────────── */
+  .quick-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .quick-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .15s ease;
+    flex: 1;
+    min-width: 200px;
+  }
+  .quick-link:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,120,212,.15);
+  }
+  .quick-link .ql-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .quick-link .ql-icon.blue { background: #e3f2fd; color: #1976d2; }
+  .quick-link .ql-icon.green { background: #e8f5e9; color: #388e3c; }
+  .quick-link .ql-icon.purple { background: #f3e5f5; color: #7b1fa2; }
+  .quick-link .ql-desc {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── How-to Guide ────────────────────────── */
+  .guide-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 28px 32px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    margin-bottom: 32px;
+  }
+  .guide-section h2 {
+    font-size: 18px;
+    color: var(--primary);
+    margin-bottom: 8px;
+    border-left: 4px solid var(--primary);
+    padding-left: 12px;
+  }
+  .guide-section .guide-intro {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .guide-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .guide-steps::before {
+    content: '';
+    position: absolute;
+    left: 22px;
+    top: 24px;
+    bottom: 24px;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--phase1), var(--phase2), var(--phase3), var(--phase4));
+    border-radius: 3px;
+  }
+
+  .guide-step {
+    display: flex;
+    gap: 20px;
+    padding: 16px 0;
+    position: relative;
+  }
+  .guide-step-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+    z-index: 1;
+    box-shadow: 0 2px 8px rgba(0,120,212,.25);
+  }
+  .guide-step-content {
+    flex: 1;
+    padding-top: 6px;
+  }
+  .guide-step-content h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .guide-step-content p {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  .guide-step-content .url-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0f6ff;
+    border: 1px solid #cce0ff;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: #0d47a1;
+    margin: 4px 0;
+    word-break: break-all;
+  }
+  .guide-step-content .url-box a {
+    color: #0d47a1;
+    text-decoration: none;
+  }
+  .guide-step-content .url-box a:hover {
+    text-decoration: underline;
+  }
+  .guide-step-content .tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: #fffde7;
+    border-left: 3px solid #f9a825;
+    border-radius: 0 6px 6px 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #5d4037;
+    margin-top: 8px;
+  }
+  .guide-step-content .tip strong {
+    color: #e65100;
+  }
+
+  .agent-pills {
+    display: flex;
+    gap: 10px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+  }
+  .agent-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .agent-pill .ap-icon {
+    font-size: 16px;
+  }
+  .agent-pill.active {
+    background: #e3f2fd;
+    border-color: #90caf9;
+    color: #0d47a1;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+  }
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .feature-item .fi-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .feature-item .fi-text {
+    font-size: 12px;
+    color: #444;
+  }
+  .feature-item .fi-text strong {
+    display: block;
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  /* ── Responsive ─────────────────────────── */
+  @media (max-width: 600px) {
+    .header { padding: 20px; }
+    .header h1 { font-size: 20px; }
+    .content { padding: 16px; }
+    .diagram-card { padding: 16px; }
+    .phases { grid-template-columns: 1fr; }
+    .cat-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    .quick-links { flex-direction: column; }
+    .guide-steps::before { left: 18px; }
+    .guide-step-num { width: 36px; height: 36px; font-size: 14px; }
+    .feature-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧪 UEMS Testcase Generator AI</h1>
+  <div class="subtitle">End-to-end automated flow — from user prompt to test cases, GOAT JSON payloads, and summary reports</div>
+</div>
+
+<div class="content">
+
+  <!-- ── Quick Links ─────────────────────── -->
+  <div class="quick-links">
+    <a class="quick-link" href="https://prathosh-14802-t/explorer/" target="_blank">
+      <div class="ql-icon blue">💬</div>
+      <div>
+        <div>Open AI Chat</div>
+        <div class="ql-desc">Generate test cases and GOAT JSON via the web UI</div>
+      </div>
+    </a>
+    <a class="quick-link" href="https://prathosh-14802-t/tc/view" target="_blank">
+      <div class="ql-icon green">📊</div>
+      <div>
+        <div>Testcase DB Viewer</div>
+        <div class="ql-desc">Browse, filter, and export generated test cases</div>
+      </div>
+    </a>
+    <a class="quick-link" href="https://prathosh-14802-t/" target="_blank">
+      <div class="ql-icon purple">🏠</div>
+      <div>
+        <div>Toolkit Home</div>
+        <div class="ql-desc">UEMS Agent AI Toolkit landing page</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- ── How to Use ───────────────────────── -->
+  <div class="guide-section">
+    <h2>How to Use — Step by Step</h2>
+    <p class="guide-intro">The Testcase Generator runs as an AI chat agent on the web at <strong>https://prathosh-14802-t</strong>. No installation needed — just open your browser, sign in, and start generating.</p>
+
+    <div class="guide-steps">
+
+      <!-- Step 1 -->
+      <div class="guide-step">
+        <div class="guide-step-num">1</div>
+        <div class="guide-step-content">
+          <h3>Open the Web Tool</h3>
+          <p>Navigate to the UEMS Agent AI Toolkit in your browser:</p>
+          <div class="url-box">
+            🌐 <a href="https://prathosh-14802-t/explorer/" target="_blank">https://prathosh-14802-t/explorer/</a>
+          </div>
+          <p>Sign in with your <strong>GitHub account</strong> (requires GitHub Copilot license). The tool authenticates via GitHub Device Flow — click "Continue with GitHub", enter the code shown, and authorize.</p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="guide-step">
+        <div class="guide-step-num">2</div>
+        <div class="guide-step-content">
+          <h3>Select the AI Agent</h3>
+          <p>In the bottom-right of the chat input area, click the <strong>agent selector dropdown</strong> to choose your agent:</p>
+          <div class="agent-pills">
+            <div class="agent-pill active"><span class="ap-icon">☑️</span> Testcase Generator</div>
+            <div class="agent-pill"><span class="ap-icon">📦</span> GOAT JSON Converter</div>
+          </div>
+          <p><strong>Testcase Generator</strong> (default) — generates test cases AND converts to GOAT JSON in one flow.<br>
+          <strong>GOAT JSON Converter</strong> — converts existing test cases to GOAT JSON payloads only.</p>
+          <div class="tip"><strong>💡 Tip:</strong> You can also select the AI model (Claude Sonnet 4.6 recommended) from the model dropdown next to the agent selector.</div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="guide-step">
+        <div class="guide-step-num">3</div>
+        <div class="guide-step-content">
+          <h3>Type Your Request</h3>
+          <p>In the chat input box, describe what test cases you need. The AI understands natural language:</p>
+          <div class="feature-grid">
+            <div class="feature-item">
+              <span class="fi-icon">📋</span>
+              <div class="fi-text">
+                <strong>Functionality-level generation</strong>
+                "Generate test cases for Agent Installation functionality"
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">🔀</span>
+              <div class="fi-text">
+                <strong>Diff-based generation</strong>
+                "Generate diff test cases between feature_win_agent_26.05 and main"
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">📦</span>
+              <div class="fi-text">
+                <strong>GOAT JSON conversion</strong>
+                "Convert test cases to GOAT JSON for AgentInstallation"
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">🔄</span>
+              <div class="fi-text">
+                <strong>Reconvert with updates</strong>
+                "Reconvert all GOAT JSON for AgentInstallation (re-read GOAT_Operations_Context.md)"
+              </div>
+            </div>
+          </div>
+          <div class="tip"><strong>💡 Tip:</strong> You can also use the suggestion chips shown in an empty chat — they provide ready-made prompts you can click to start.</div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="guide-step">
+        <div class="guide-step-num">4</div>
+        <div class="guide-step-content">
+          <h3>AI Processes Your Request Automatically</h3>
+          <p>Once you hit <strong>Send</strong>, the AI agent runs through all phases automatically — no further input needed (unless it asks a clarifying question):</p>
+          <div class="feature-grid">
+            <div class="feature-item">
+              <span class="fi-icon">🏥</span>
+              <div class="fi-text">
+                <strong>Phase 0 — DB Health Check</strong>
+                Verifies the testcase DB is online before starting
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">🔍</span>
+              <div class="fi-text">
+                <strong>Phase 1 — Collect Inputs</strong>
+                Asks for mode, functionality, and platform if not provided
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">⚙️</span>
+              <div class="fi-text">
+                <strong>Phase 2 — Generate Test Cases</strong>
+                Reads code, knowledge files, and generates exhaustive TCs
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">📦</span>
+              <div class="fi-text">
+                <strong>Phase 3 — GOAT Conversion</strong>
+                Automatically converts all TCs to GOAT JSON payloads
+              </div>
+            </div>
+          </div>
+          <p>You'll see real-time progress in the chat as the AI searches code, generates tests, and processes GOAT conversions. Look for structured log blocks (📂 REPO LOG, 📖 KNOWLEDGE LOG, etc.) for traceability.</p>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="guide-step">
+        <div class="guide-step-num">5</div>
+        <div class="guide-step-content">
+          <h3>View Results in the Testcase DB Viewer</h3>
+          <p>After generation completes, all test cases and GOAT payloads are saved to the central database. View them at:</p>
+          <div class="url-box">
+            📊 <a href="https://prathosh-14802-t/tc/view" target="_blank">https://prathosh-14802-t/tc/view</a>
+          </div>
+          <div class="feature-grid">
+            <div class="feature-item">
+              <span class="fi-icon">📋</span>
+              <div class="fi-text">
+                <strong>Test Cases tab</strong>
+                Browse all generated test cases — filter by functionality, priority, category
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">📦</span>
+              <div class="fi-text">
+                <strong>GOAT Payloads tab</strong>
+                View converted JSON payloads — copy payload JSON for each test case
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">⚠️</span>
+              <div class="fi-text">
+                <strong>Gap Reports tab</strong>
+                See which steps couldn't be mapped to GOAT operations with suggestions
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">📥</span>
+              <div class="fi-text">
+                <strong>Export to CSV</strong>
+                Download all test cases as a CSV file for spreadsheet use
+              </div>
+            </div>
+          </div>
+          <div class="tip"><strong>💡 Tip:</strong> The dashboard cards at the top show Total TCs, Converted (GOAT), Unconverted, and Gap counts. Hover on the Gaps card to see a breakdown by missing utility.</div>
+        </div>
+      </div>
+
+      <!-- Step 6 -->
+      <div class="guide-step">
+        <div class="guide-step-num">6</div>
+        <div class="guide-step-content">
+          <h3>Access Output Files</h3>
+          <p>Besides the DB, the AI also saves files locally on the server workspace:</p>
+          <div class="feature-grid">
+            <div class="feature-item">
+              <span class="fi-icon">📄</span>
+              <div class="fi-text">
+                <strong>CSV File</strong>
+                <code>&lt;Functionality&gt;_testcases.csv</code> — workspace root
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">📦</span>
+              <div class="fi-text">
+                <strong>GOAT Payloads</strong>
+                <code>testcases/&lt;Func&gt;/goat-payloads/*.js</code>
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">📊</span>
+              <div class="fi-text">
+                <strong>Summary Report</strong>
+                <code>testcases/&lt;Func&gt;/reports/summary.html</code>
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">⚠️</span>
+              <div class="fi-text">
+                <strong>Gap Report</strong>
+                <code>testcases/&lt;Func&gt;/goat-payloads/gap-report.md</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Legend ────────────────────────────── -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase0)"></div>Phase 0 — DB Health</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase1)"></div>Phase 1 — Inputs</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase2)"></div>Phase 2 — Generate TCs</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase3)"></div>Phase 3 — GOAT Convert</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--phase4)"></div>Phase 4 — Report</div>
+  </div>
+
+  <!-- ── Flow Diagram ─────────────────────── -->
+  <div class="diagram-card">
+    <h2>Flow Diagram</h2>
+    <div class="mermaid">
+flowchart TD
+    START(["🚀 User Prompt"]):::startNode --> SKILLS["Load Skills\ntestcase-generation +\ntestcase-json-converter"]
+
+    subgraph PHASE0["Phase 0 — DB Health Check"]
+        SKILLS --> DB_CFG["Read db-config.json\nGet DB URL"]
+        DB_CFG --> HEALTH{"GET /health"}
+        HEALTH -->|"❌ Fail"| ABORT["⛔ Abort\nAsk user to start DB"]:::abortNode
+        HEALTH -->|"✅ Pass"| DB_OK["✅ DB Online\nPrint existing TC count"]
+    end
+
+    subgraph PHASE1["Phase 1 — Collect Inputs"]
+        DB_OK --> ASK["Ask user:\n1. Mode — Functionality or Diff\n2. Functionality name\n3. Platform"]
+        ASK -->|"Functionality"| FUNC_MODE["Functionality Mode"]
+        ASK -->|"Diff"| DIFF_MODE["Diff Mode\n+ Branches + Repo"]
+    end
+
+    subgraph PHASE2["Phase 2 — Generate Test Cases"]
+        direction TB
+        FUNC_MODE --> EXISTING["Check DB for\nexisting test cases"]
+        DIFF_MODE --> EXISTING
+
+        EXISTING --> REPOS["Read repos.json\nResolve repos by keywords"]
+        REPOS --> VERIFY["Verify repos locally\nin Code base/"]
+        VERIFY --> SEARCH["Search codebase\nEntry points · data flows\nerror paths"]
+        SEARCH --> KNOW["Read KNOWLEDGE.md\n+ SUPPORT_TICKETS.md"]
+        KNOW --> CSV_READ["Read existing CSV files"]
+        CSV_READ -->|"Diff mode"| DIFF_GET["Get branch diff"]
+        CSV_READ -->|"Func mode"| CLASSIFY
+        DIFF_GET --> CLASSIFY["Classify features\nby complexity"]
+        CLASSIFY --> GEN["Generate test cases\n18 scenario categories\nProduct-level steps"]
+        GEN --> QA["Run quality\nverification checklist"]
+        QA --> WRITE["Write CSV\nPOST to DB\nSave local backup"]
+    end
+
+    subgraph PHASE3["Phase 3 — GOAT JSON Conversion"]
+        WRITE --> GOAT_CTX["Read\nGOAT_Operations_Context.md"]
+        GOAT_CTX --> MAP["Map each step →\noperation_type + action"]
+        MAP --> CHECK{"Step\nmappable?"}
+        CHECK -->|"✅ Yes"| JSON_OUT["Generate JSON payload\nSave to goat-payloads/"]
+        CHECK -->|"❌ No"| GAP["Add to gap report\nwith suggestion"]
+        JSON_OUT --> SAVE_ALL["POST payloads + gaps\nto DB"]
+        GAP --> SAVE_ALL
+    end
+
+    subgraph PHASE4["Phase 4 — Summary Report"]
+        SAVE_ALL --> MD["Write summary.md\nTables + metrics"]
+        MD --> HTML_R["Write summary.html\nStyled dashboard"]
+        HTML_R --> FINAL["Print final summary\nto chat"]
+    end
+
+    FINAL --> DONE(["✅ Complete"]):::doneNode
+
+    classDef startNode fill:#0078d4,color:#fff,stroke:#005a9e,stroke-width:2px
+    classDef doneNode fill:#1e7e34,color:#fff,stroke:#155724,stroke-width:2px
+    classDef abortNode fill:#c0392b,color:#fff,stroke:#922b21,stroke-width:2px
+
+    style PHASE0 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#1b5e20
+    style PHASE1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#0d47a1
+    style PHASE2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#e65100
+    style PHASE3 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c
+    style PHASE4 fill:#fce4ec,stroke:#c62828,stroke-width:2px,color:#b71c1c
+    </div>
+  </div>
+
+  <!-- ── Phase Details ────────────────────── -->
+  <h2 class="phases-title">Phase Details</h2>
+  <div class="phases">
+
+    <div class="phase-card p0">
+      <h3><span class="phase-badge p0">Phase 0</span> DB Health Check</h3>
+      <ul>
+        <li>Read <span class="tool-tag">testcases/db-config.json</span> to get DB URL</li>
+        <li>Call <span class="tool-tag">GET /health</span> on the testcase DB server</li>
+        <li>If offline → abort and show instructions to start the server</li>
+        <li>If online → print existing testcase and GOAT payload counts</li>
+      </ul>
+    </div>
+
+    <div class="phase-card p1">
+      <h3><span class="phase-badge p1">Phase 1</span> Collect Inputs</h3>
+      <ul>
+        <li><strong>Mode:</strong> Functionality-level or Diff comparison</li>
+        <li><strong>Functionality:</strong> Feature name and sub-functionalities</li>
+        <li><strong>Platform:</strong> Windows, macOS, or Linux</li>
+        <li><strong>Diff mode only:</strong> Source/target branches and repository name</li>
+      </ul>
+    </div>
+
+    <div class="phase-card p2">
+      <h3><span class="phase-badge p2">Phase 2</span> Generate Test Cases</h3>
+      <ul>
+        <li>Check DB for existing test cases — skip duplicates</li>
+        <li>Read <span class="tool-tag">repos.json</span> → resolve relevant repos by keywords</li>
+        <li>Search codebase for entry points, data flows, error paths</li>
+        <li>Read <span class="tool-tag">KNOWLEDGE.md</span>, <span class="tool-tag">SUPPORT_TICKETS.md</span>, CSV files</li>
+        <li>Generate exhaustive TCs across 18 scenario categories</li>
+        <li>Run quality checklist → write CSV → POST to DB → save backup</li>
+      </ul>
+    </div>
+
+    <div class="phase-card p3">
+      <h3><span class="phase-badge p3">Phase 3</span> GOAT JSON Conversion</h3>
+      <ul>
+        <li>Read <span class="tool-tag">GOAT_Operations_Context.md</span> — sole authoritative source</li>
+        <li>Map each test step to a GOAT <span class="tool-tag">operation_type</span> + <span class="tool-tag">action</span></li>
+        <li>Fully mappable TCs → JSON payload saved to <span class="tool-tag">goat-payloads/</span></li>
+        <li>Unmappable steps → gap report with suggested GOAT additions</li>
+        <li>POST payloads and gaps to testcase DB</li>
+      </ul>
+    </div>
+
+    <div class="phase-card p4">
+      <h3><span class="phase-badge p4">Phase 4</span> Summary Report</h3>
+      <ul>
+        <li>Write <span class="tool-tag">summary.md</span> — Markdown with tables and metrics</li>
+        <li>Write <span class="tool-tag">summary.html</span> — self-contained styled dashboard</li>
+        <li>Print final summary to chat: counts, file paths, DB links</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ── 18 Scenario Categories ───────────── -->
+  <div class="categories-card">
+    <h2>18 Scenario Categories Covered</h2>
+    <div class="cat-grid">
+      <div class="cat-item"><span class="cat-icon">✅</span> Success / Happy Path</div>
+      <div class="cat-item"><span class="cat-icon">🐛</span> Bug Scenario</div>
+      <div class="cat-item"><span class="cat-icon">🎫</span> Support Ticket Scenario</div>
+      <div class="cat-item"><span class="cat-icon">❌</span> Failure / Error</div>
+      <div class="cat-item"><span class="cat-icon">🔄</span> Retry / Recovery</div>
+      <div class="cat-item"><span class="cat-icon">⚡</span> Edge Cases</div>
+      <div class="cat-item"><span class="cat-icon">🚫</span> Negative Cases</div>
+      <div class="cat-item"><span class="cat-icon">🔀</span> Concurrency / Race</div>
+      <div class="cat-item"><span class="cat-icon">🔁</span> State Transition</div>
+      <div class="cat-item"><span class="cat-icon">⏱️</span> Timing / Timeout</div>
+      <div class="cat-item"><span class="cat-icon">💾</span> Resource Exhaustion</div>
+      <div class="cat-item"><span class="cat-icon">🔒</span> Security / Permission</div>
+      <div class="cat-item"><span class="cat-icon">🔗</span> Integration</div>
+      <div class="cat-item"><span class="cat-icon">⬆️</span> Upgrade / Migration</div>
+      <div class="cat-item"><span class="cat-icon">🧹</span> Cleanup / Uninstall</div>
+      <div class="cat-item"><span class="cat-icon">🌐</span> Cross-Environment</div>
+      <div class="cat-item"><span class="cat-icon">🔚</span> End-to-End</div>
+      <div class="cat-item"><span class="cat-icon">🎲</span> Rare / Unlikely</div>
+    </div>
+  </div>
+
+  <!-- ── Output Artifacts ─────────────────── -->
+  <div class="outputs">
+    <h2>Output Artifacts</h2>
+    <div class="output-grid">
+      <div class="output-item">
+        <div class="label">Test Case CSV</div>
+        <div class="path">&lt;Func&gt;_testcases.csv</div>
+      </div>
+      <div class="output-item">
+        <div class="label">Testcase DB</div>
+        <div class="path">localhost:3000/testcases</div>
+      </div>
+      <div class="output-item">
+        <div class="label">Local Backup</div>
+        <div class="path">testcases/&lt;Func&gt;/testcase-registry.json</div>
+      </div>
+      <div class="output-item">
+        <div class="label">GOAT Payloads</div>
+        <div class="path">testcases/&lt;Func&gt;/goat-payloads/*.js</div>
+      </div>
+      <div class="output-item">
+        <div class="label">Gap Report</div>
+        <div class="path">testcases/&lt;Func&gt;/goat-payloads/gap-report.md</div>
+      </div>
+      <div class="output-item">
+        <div class="label">Markdown Report</div>
+        <div class="path">testcases/&lt;Func&gt;/reports/summary.md</div>
+      </div>
+      <div class="output-item">
+        <div class="label">HTML Report</div>
+        <div class="path">testcases/&lt;Func&gt;/reports/summary.html</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Example Prompts ──────────────────── -->
+  <div class="examples">
+    <h2>Example Prompts</h2>
+    <ul class="example-list">
+      <li>Generate test cases for Computer Rename functionality</li>
+      <li>Generate test cases for Software Deployment &gt; Patch Installation</li>
+      <li>Generate diff comparison test cases between feature_win_agent_26.05 and main</li>
+      <li>Generate test cases for Agent Communication — source: feature_branch, target: main</li>
+      <li>Convert test cases to GOAT JSON for AgentInstallation</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="footer">
+  UEMS Agent AI Toolkit — Testcase Generator Flow Diagram<br>
+  Web Server: <a href="https://prathosh-14802-t/" target="_blank" style="color:#0078d4">https://prathosh-14802-t</a> · Testcase DB: <a href="https://prathosh-14802-t/tc/view" target="_blank" style="color:#0078d4">Viewer</a>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#e3f2fd',
+      primaryTextColor: '#1a1a2e',
+      primaryBorderColor: '#1976d2',
+      lineColor: '#666',
+      secondaryColor: '#f5f6fa',
+      tertiaryColor: '#fff',
+      fontSize: '13px',
+    },
+    flowchart: {
+      useMaxWidth: true,
+      htmlLabels: true,
+      curve: 'basis',
+      padding: 16,
+      nodeSpacing: 30,
+      rankSpacing: 40,
+    },
+  });
+</script>
+
+</body>
+</html>

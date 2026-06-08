@@ -1,0 +1,311 @@
+{
+  "cross-platform": {
+    "cmickey_utils": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/cross-platform/cmickey_utils",
+      "layer": 0,
+      "dependencies": [],
+      "description": "Legacy utility library — XML parsing and legacy logger. Do not use for new code.",
+      "isDeliverable": false
+    },
+    "uems_native_dependencies": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/uems_native_dependencies",
+      "layer": 0,
+      "dependencies": [],
+      "description": "Native dependencies and third-party libraries.",
+      "isDeliverable": false
+    },
+    "uems_go_components": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/cross-platform/uems_go_components",
+      "layer": 3,
+      "dependencies": ["dc_native"],
+      "description": "Components common for all platforms, written in Golang.",
+      "isDeliverable": false
+    },
+    "experience-agent": {
+      "gitUrl": "https://git.csez.zohocorpin.com/dc/endpoint-analytics/experience/experience-agent",
+      "layer": 4,
+      "dependencies": ["ea-base-agent", "ea-base-mac-agent"],
+      "description": "Experience scoring and device performance analytics agent.",
+      "isDeliverable": false
+    },
+    "workflow-agent": {
+      "gitUrl": "https://git.csez.zohocorpin.com/dc/endpoint-analytics/workflow/workflow-agent",
+      "layer": 4,
+      "dependencies": ["ea-base-agent", "ea-base-mac-agent"],
+      "description": "Workflow automation and orchestration agent.",
+      "isDeliverable": false
+    },
+    "sensor-agent": {
+      "gitUrl": "https://git.csez.zohocorpin.com/dc/endpoint-analytics/sensors/sensor-agent",
+      "layer": 4,
+      "dependencies": ["ea-base-agent", "ea-base-mac-agent"],
+      "description": "Sensor data collection and telemetry agent.",
+      "isDeliverable": false
+    }
+  },
+  "mac": {
+    "agent-utils": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/agent-utils.git",
+      "layer": 1,
+      "dependencies": ["cmickey_utils", "uems_native_dependencies"],
+      "description": "Shared wrappers (networking, logging, file ops, secure storage, process launching). Mandatory dependency.",
+      "isDeliverable": false
+    },
+    "configuration-framework": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/configuration-framework.git",
+      "layer": 2,
+      "dependencies": ["agent-utils", "cmickey_utils", "uems_native_dependencies"],
+      "description": "Configuration management framework.",
+      "isDeliverable": false
+    },
+    "framework-ops-suite": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/framework-ops-suite.git",
+      "layer": 3,
+      "dependencies": ["agent-utils", "configuration-framework", "cmickey_utils", "uems_native_dependencies"],
+      "description": "Operational framework suite.",
+      "isDeliverable": false
+    },
+    "patch-management": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/patch-management.git",
+      "layer": 3,
+      "dependencies": ["agent-utils", "cmickey_utils", "uems_native_dependencies"],
+      "description": "Patch management functionality.",
+      "isDeliverable": false
+    },
+    "inventory-management": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/inventory-management.git",
+      "layer": 3,
+      "dependencies": ["agent-utils", "cmickey_utils", "uems_native_dependencies"],
+      "description": "Inventory collection and management.",
+      "isDeliverable": false
+    },
+    "config-sd": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/config-sd.git",
+      "layer": 3,
+      "dependencies": ["agent-utils", "cmickey_utils", "uems_native_dependencies"],
+      "description": "Software deployment configuration.",
+      "isDeliverable": false
+    },
+    "uems_mac_agent_ra": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/uems_mac_agent_ra.git",
+      "layer": 3,
+      "dependencies": ["agent-utils", "cmickey_utils", "uems_native_dependencies"],
+      "description": "Remote access functionality.",
+      "isDeliverable": false
+    },
+    "uems-mac-agent-setup": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/uems-mac-agent-setup",
+      "layer": 4,
+      "dependencies": [
+        "agent-utils", "configuration-framework", "framework-ops-suite",
+        "patch-management", "inventory-management", "config-sd",
+        "uems_mac_agent_ra", "uems_go_components", "uems_native_dependencies"
+      ],
+      "description": "Agent installer and setup — bundles all feature repos.",
+      "isDeliverable": true
+    },
+    "application-control": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/application-control.git",
+      "layer": 3,
+      "dependencies": ["agent-utils", "cmickey_utils", "uems_native_dependencies"],
+      "description": "Application control and allowlisting.",
+      "isDeliverable": true
+    },
+    "browser-security": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/browser-security.git",
+      "layer": 3,
+      "dependencies": ["agent-utils", "cmickey_utils", "uems_native_dependencies"],
+      "description": "Browser security policies.",
+      "isDeliverable": true
+    },
+    "device-control-plus": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/mac/device-control-plus.git",
+      "layer": 3,
+      "dependencies": ["agent-utils", "cmickey_utils", "uems_native_dependencies"],
+      "description": "Device control (USB, peripherals).",
+      "isDeliverable": true
+    },
+    "ea-base-mac-agent": {
+      "gitUrl": "https://git.csez.zohocorpin.com/dc/endpoint-analytics/ea-base/ea-base-mac-agent",
+      "layer": 3,
+      "dependencies": ["agent-utils", "cmickey_utils"],
+      "description": "Endpoint Analytics base agent for macOS.",
+      "isDeliverable": false
+    }
+  },
+  "linux": {
+    "dc_native": {
+      "gitUrl": "https://git.csez.zohocorpin.com/dc/dc_native",
+      "layer": 1,
+      "dependencies": ["uems_native_dependencies"],
+      "description": "All Linux native components in a single repository.",
+      "isDeliverable": true
+    }
+  },
+  "windows": {
+    "uems_agent_utils": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/uems_agent_utils",
+      "layer": 3,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework"],
+      "description": "Shared wrappers (UEMS Agent layer utils). Mandatory dependency — all repos must use uems_agent_utils instead of direct platform APIs.",
+      "isDeliverable": false
+    },
+    "uems_agent_framework": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/uems_agent_framework",
+      "layer": 5,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils", "vmdr_agent"],
+      "description": "Core agent framework for Windows — contains agent service, registration, installation orchestration (dcagentregister, dcagentcleanup, upgrader, statusupdate, cfgUpdate). Has a cross-layer dependency on vmdr_agent.",
+      "isDeliverable": false
+    },
+    "agent-framework": {
+      "gitUrl": "https://git.csez.zohocorpin.com/me-agent/agent-framework",
+      "layer": 2,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils"],
+      "description": "Internal agent framework from the me-agent (logging, communication, register, process, etc.).",
+      "isDeliverable": false
+    },
+    "me-one-agent": {
+      "gitUrl": "https://repository.zohocorpcloud.in/zohocorp/me-agent/me-one-agent",
+      "layer": 3,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework"],
+      "description": "ME One Agent from the me-agent.",
+      "isDeliverable": false
+    },
+    "vmdr_agent": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/vmdr_agent",
+      "layer": 4,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils"],
+      "description": "Vulnerability management, detection, and response agent.",
+      "isDeliverable": false
+    },
+    "vmdr_web_dialog": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/vmdr_web_dialog",
+      "layer": 4,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils"],
+      "description": "VMDR web dialog UI component.",
+      "isDeliverable": false
+    },
+    "vmdr_quarantine_compliance": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/vmdr_quarantine_compliance",
+      "layer": 6,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils", "uems_agent_framework"],
+      "description": "VMDR quarantine and compliance enforcement.",
+      "isDeliverable": false
+    },
+    "secure_usb_configuration": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/secure_usb_configuration",
+      "layer": 4,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils"],
+      "description": "USB device control and security configuration.",
+      "isDeliverable": false
+    },
+    "uems_configurations": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/uems_configurations",
+      "layer": 4,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils"],
+      "description": "Configuration management.",
+      "isDeliverable": false
+    },
+    "inventory_mgmt": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/inventory_mgmt",
+      "layer": 4,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils"],
+      "description": "Inventory collection and management.",
+      "isDeliverable": false
+    },
+    "uems_tools": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/uems_tools",
+      "layer": 4,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils"],
+      "description": "Agent tooling and utilities.",
+      "isDeliverable": false
+    },
+    "uems_server_native": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/uems_server_native",
+      "layer": 4,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils"],
+      "description": "Native server-side components.",
+      "isDeliverable": false
+    },
+    "uems_ds": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/uems_ds",
+      "layer": 6,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils", "uems_agent_framework", "me-one-agent"],
+      "description": "Distribution server / software deployment.",
+      "isDeliverable": false
+    },
+    "uems_agent_internal": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/uems_agent_internal",
+      "layer": 4,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework", "uems_agent_utils", "me-one-agent"],
+      "description": "Internal agent components.",
+      "isDeliverable": false
+    },
+    "uems_agent_healthchecker": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/uems_agent_healthchecker",
+      "layer": 3,
+      "dependencies": ["uems_native_dependencies", "agent-framework"],
+      "description": "Agent health monitoring and self-repair.",
+      "isDeliverable": false
+    },
+    "uems_agent_driver": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/drivers/uems_agent_driver",
+      "layer": 3,
+      "dependencies": ["uems_native_dependencies"],
+      "description": "Kernel-mode driver component. Requires driver signing and WHQL certification.",
+      "isDeliverable": false
+    },
+    "uems_win_agent_setup": {
+      "gitUrl": "https://git.csez.zohocorpin.com/uems/native/windows/uems_win_agent_setup",
+      "layer": 7,
+      "dependencies": [
+        "uems_native_dependencies", "cmickey_utils", "agent-framework",
+        "uems_agent_utils", "uems_agent_framework", "me-one-agent",
+        "vmdr_agent", "vmdr_web_dialog", "vmdr_quarantine_compliance",
+        "uems_ds", "uems_configurations", "inventory_mgmt",
+        "secure_usb_configuration", "uems_tools", "uems_agent_internal",
+        "uems_agent_healthchecker", "uems_agent_driver"
+      ],
+      "description": "Agent installer and setup — bundles all components. Delivers UEMSAgent.msi, UEMSAgent.exe, UEMSDistributionServer.msi & UEMSDistributionServer.exe.",
+      "isDeliverable": true
+    },
+    "ea-base-agent": {
+      "gitUrl": "https://git.csez.zohocorpin.com/dc/endpoint-analytics/ea-base/ea-base-agent",
+      "layer": 3,
+      "dependencies": ["uems_native_dependencies", "cmickey_utils", "agent-framework"],
+      "description": "Endpoint Analytics base agent for Windows — foundation layer providing base infrastructure and core utilities.",
+      "isDeliverable": false
+    },
+    "endpoint-analytics-agent": {
+      "gitUrl": "https://git.csez.zohocorpin.com/dc/endpoint-analytics/agent/endpoint-analytics-agent",
+      "layer": 4,
+      "dependencies": ["ea-base-agent"],
+      "description": "Core Endpoint Analytics (Insights) agent — analytics engine and data collection.",
+      "isDeliverable": false
+    },
+    "timeline-agent": {
+      "gitUrl": "https://git.csez.zohocorpin.com/dc/endpoint-analytics/timeline/timeline-agent",
+      "layer": 4,
+      "dependencies": ["ea-base-agent"],
+      "description": "Event timeline and historical tracking agent.",
+      "isDeliverable": false
+    },
+    "alerts-agent": {
+      "gitUrl": "https://git.csez.zohocorpin.com/dc/endpoint-analytics/alerts/alerts-agent",
+      "layer": 4,
+      "dependencies": ["ea-base-agent"],
+      "description": "Alert generation, management, and delivery agent.",
+      "isDeliverable": false
+    },
+    "release_agent": {
+      "gitUrl": "https://git.csez.zohocorpin.com/dc/endpoint-analytics/ea-release/release_agent",
+      "layer": 5,
+      "dependencies": [
+        "ea-base-agent", "endpoint-analytics-agent", "experience-agent",
+        "alerts-agent", "workflow-agent", "sensor-agent", "timeline-agent"
+      ],
+      "description": "DEX release agent — master orchestrator that bundles all EA agent components into a unified deliverable.",
+      "isDeliverable": true
+    }
+  }
+}

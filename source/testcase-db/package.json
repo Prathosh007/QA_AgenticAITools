@@ -1,0 +1,13 @@
+{
+  "name": "testcase-db",
+  "version": "1.0.0",
+  "description": "Lightweight SQLite HTTP API for UEMS testcase management",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0"
+  }
+}

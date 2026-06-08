@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Testcase Report — AgentInstallation</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: #f5f6fa; color: #222; }
+  .header { background: #0078d4; color: #fff; padding: 24px 32px; }
+  .header h1 { margin: 0; font-size: 22px; }
+  .header .meta { opacity: .8; font-size: 13px; margin-top: 4px; }
+  .content { padding: 24px 32px; }
+  .cards { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+  .card { background: #fff; border-radius: 8px; padding: 18px 22px; min-width: 140px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .card .num { font-size: 32px; font-weight: 700; color: #0078d4; }
+  .card .label { font-size: 12px; color: #666; margin-top: 4px; }
+  table { border-collapse: collapse; width: 100%; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 24px; }
+  th { background: #0078d4; color: #fff; padding: 10px 14px; text-align: left; font-size: 13px; }
+  td { padding: 9px 14px; border-bottom: 1px solid #eee; font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f0f6ff; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-ok { background: #e6f4ea; color: #1e7e34; }
+  .badge-gap { background: #fff3cd; color: #856404; }
+  .badge-p1 { background: #fde8e8; color: #c0392b; }
+  .badge-p2 { background: #fff3cd; color: #856404; }
+  .badge-p3 { background: #e8f4fd; color: #1a6895; }
+  h2 { font-size: 16px; color: #333; margin: 24px 0 12px; border-left: 3px solid #0078d4; padding-left: 10px; }
+  .gap-block { background: #fff8e1; border-left: 4px solid #f39c12; padding: 12px 16px; border-radius: 4px; margin-bottom: 12px; font-size: 13px; }
+  .footer { text-align: center; padding: 16px; color: #aaa; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Testcase Generation Report — AgentInstallation</h1>
+  <div class="meta">Generated: 2026-04-23 &nbsp;|&nbsp; Mode: Functionality-level &nbsp;|&nbsp; Platform: Windows</div>
+</div>
+<div class="content">
+
+  <h2>Sources &amp; Context Used</h2>
+  <table>
+    <tr><th>Source</th><th>Detail</th><th>Status</th></tr>
+    <tr><td>Repository</td><td>uems_win_agent_setup</td><td><span class="badge badge-ok">Cloned</span></td></tr>
+    <tr><td>Files analyzed</td><td>0 files (search empty — KNOWLEDGE.md used)</td><td></td></tr>
+    <tr><td>Functions gathered</td><td>0 entry points</td><td></td></tr>
+    <tr><td>Knowledge file</td><td>testcases/AgentInstallation/KNOWLEDGE.md</td><td><span class="badge badge-ok">Found</span></td></tr>
+    <tr><td>Support tickets</td><td>testcases/AgentInstallation/SUPPORT_TICKETS.md</td><td><span class="badge badge-gap">Not found</span></td></tr>
+    <tr><td>CSV test cases</td><td>(folder empty)</td><td>0 rows</td></tr>
+    <tr><td>Existing DB TCs</td><td>0 test cases (first-generation run)</td><td></td></tr>
+  </table>
+
+  <h2>Discovered Artifacts</h2>
+  <table>
+    <tr><th>Type</th><th>Values</th></tr>
+    <tr><td>Config keys</td><td><code>ServerName</code>, <code>ServerPort</code>, <code>AgentVersion</code>, <code>InstallDir</code></td></tr>
+    <tr><td>Registry paths</td><td><code>HKLM\SOFTWARE\AdventNet\DesktopCentral\DCAgent\</code>, <code>HKLM\SYSTEM\CurrentControlSet\Services\DCAgent</code></td></tr>
+    <tr><td>Log files</td><td><code>C:\Program Files (x86)\ManageEngine\UEMS_Agent\logs\DCAgentService.log</code></td></tr>
+    <tr><td>Services</td><td><code>ManageEngine UEMS Agent Service</code> (DCAgent)</td></tr>
+  </table>
+
+  <div class="cards">
+    <div class="card"><div class="num">59</div><div class="label">Test Cases</div></div>
+    <div class="card"><div class="num">53</div><div class="label">GOAT Converted</div></div>
+    <div class="card"><div class="num">6</div><div class="label">GOAT Gaps</div></div>
+    <div class="card"><div class="num">25</div><div class="label">P1 Cases</div></div>
+  </div>
+
+  <h2>Coverage by Sub-Functionality</h2>
+  <table>
+    <tr><th>Sub-Functionality</th><th>Total</th><th>P1</th><th>P2</th><th>P3</th><th>GOAT</th><th>Status</th></tr>
+    <tr><td>Manual GUI Install</td><td>7</td><td>3</td><td>4</td><td>0</td><td>5</td><td><span class="badge badge-gap">2 gaps</span></td></tr>
+    <tr><td>Silent EXE Install</td><td>6</td><td>2</td><td>4</td><td>0</td><td>6</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>Silent MSI Install</td><td>6</td><td>3</td><td>3</td><td>0</td><td>6</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>Zip Install</td><td>4</td><td>2</td><td>2</td><td>0</td><td>4</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>Push Install</td><td>8</td><td>5</td><td>3</td><td>0</td><td>8</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>Post-Install Verification</td><td>7</td><td>4</td><td>3</td><td>0</td><td>7</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>Agent Uninstall</td><td>4</td><td>2</td><td>2</td><td>0</td><td>3</td><td><span class="badge badge-gap">1 gap</span></td></tr>
+    <tr><td>Edge Cases</td><td>5</td><td>0</td><td>2</td><td>3</td><td>4</td><td><span class="badge badge-gap">1 gap</span></td></tr>
+    <tr><td>Security</td><td>3</td><td>0</td><td>3</td><td>0</td><td>3</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>Concurrency</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>Upgrade</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>Cleanup</td><td>2</td><td>1</td><td>1</td><td>0</td><td>2</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>Timing</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td><span class="badge badge-gap">1 gap</span></td></tr>
+    <tr><td>Integration</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>E2E</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td><span class="badge badge-ok">All converted</span></td></tr>
+    <tr><td>Rare Scenarios</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td><span class="badge badge-gap">1 gap</span></td></tr>
+    <tr><td>State Transition</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td><span class="badge badge-ok">All converted</span></td></tr>
+  </table>
+
+  <h2>All Test Cases</h2>
+  <table>
+    <tr><th>Testcase ID</th><th>Sub-Functionality</th><th>Title</th><th>Priority</th><th>Category</th><th>GOAT</th></tr>
+    <tr><td>TC-AGENTINSTALL-MANUALGUI-001</td><td>Manual GUI Install</td><td>Fresh manual GUI installation via EXE wizard</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-MANUALGUI-002</td><td>Manual GUI Install</td><td>Manual GUI install with invalid CAPTCHA entry</td><td><span class="badge badge-p1">P1</span></td><td>Negative</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-MANUALGUI-003</td><td>Manual GUI Install</td><td>Manual GUI install with corrupt installer EXE</td><td><span class="badge badge-p2">P2</span></td><td>Negative</td><td><span class="badge badge-gap">Gap</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-MANUALGUI-004</td><td>Manual GUI Install</td><td>Manual GUI install without admin privileges</td><td><span class="badge badge-p1">P1</span></td><td>Negative</td><td><span class="badge badge-gap">Gap</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-MANUALGUI-005</td><td>Manual GUI Install</td><td>Manual GUI install on Windows 11</td><td><span class="badge badge-p2">P2</span></td><td>Cross-Environment</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-MANUALGUI-006</td><td>Manual GUI Install</td><td>Manual GUI install on Windows Server 2019</td><td><span class="badge badge-p2">P2</span></td><td>Cross-Environment</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-MANUALGUI-007</td><td>Manual GUI Install</td><td>Manual GUI re-install over existing agent</td><td><span class="badge badge-p2">P2</span></td><td>Edge</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTEXE-001</td><td>Silent EXE Install</td><td>Fresh silent EXE installation</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTEXE-002</td><td>Silent EXE Install</td><td>Silent EXE without admin privileges</td><td><span class="badge badge-p1">P1</span></td><td>Negative</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTEXE-003</td><td>Silent EXE Install</td><td>Silent EXE with invalid argument</td><td><span class="badge badge-p2">P2</span></td><td>Negative</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTEXE-004</td><td>Silent EXE Install</td><td>Silent EXE with corrupt installer</td><td><span class="badge badge-p2">P2</span></td><td>Negative</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTEXE-005</td><td>Silent EXE Install</td><td>Silent EXE install on Windows 11</td><td><span class="badge badge-p2">P2</span></td><td>Cross-Environment</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTEXE-006</td><td>Silent EXE Install</td><td>Silent EXE install on Windows Server 2019</td><td><span class="badge badge-p2">P2</span></td><td>Cross-Environment</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTMSI-001</td><td>Silent MSI Install</td><td>Fresh silent MSI installation</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTMSI-002</td><td>Silent MSI Install</td><td>MSI install with missing MST transform</td><td><span class="badge badge-p1">P1</span></td><td>Failure</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTMSI-003</td><td>Silent MSI Install</td><td>MSI install with missing certificates</td><td><span class="badge badge-p2">P2</span></td><td>Failure</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTMSI-004</td><td>Silent MSI Install</td><td>MSI install without admin privileges</td><td><span class="badge badge-p1">P1</span></td><td>Negative</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTMSI-005</td><td>Silent MSI Install</td><td>MSI install interrupted mid-way</td><td><span class="badge badge-p2">P2</span></td><td>Failure</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SILENTMSI-006</td><td>Silent MSI Install</td><td>MSI install with corrupt MSI file</td><td><span class="badge badge-p2">P2</span></td><td>Negative</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-ZIPINSTALL-001</td><td>Zip Install</td><td>Fresh install via setup.bat from zip</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-ZIPINSTALL-002</td><td>Zip Install</td><td>Zip install with missing MST</td><td><span class="badge badge-p1">P1</span></td><td>Failure</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-ZIPINSTALL-003</td><td>Zip Install</td><td>Zip install from corrupt archive</td><td><span class="badge badge-p2">P2</span></td><td>Negative</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-ZIPINSTALL-004</td><td>Zip Install</td><td>Silent EXE from extracted zip</td><td><span class="badge badge-p2">P2</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-PUSHINSTALL-001</td><td>Push Install</td><td>Automatic push installation</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-PUSHINSTALL-002</td><td>Push Install</td><td>Push via UEMSRemoteInstaller only</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-PUSHINSTALL-003</td><td>Push Install</td><td>Push via WMI only</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-PUSHINSTALL-004</td><td>Push Install</td><td>Push via Remcom only</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-PUSHINSTALL-005</td><td>Push Install</td><td>Push fails — all methods disabled</td><td><span class="badge badge-p1">P1</span></td><td>Failure</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-PUSHINSTALL-006</td><td>Push Install</td><td>Push with invalid admin credentials</td><td><span class="badge badge-p1">P1</span></td><td>Negative</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-PUSHINSTALL-007</td><td>Push Install</td><td>Push with firewall blocking</td><td><span class="badge badge-p2">P2</span></td><td>Failure</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-PUSHINSTALL-008</td><td>Push Install</td><td>Push with low-privilege credentials</td><td><span class="badge badge-p2">P2</span></td><td>Negative</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-POSTVERIFY-001</td><td>Post-Install Verification</td><td>Service startup type is Automatic</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-POSTVERIFY-002</td><td>Post-Install Verification</td><td>All required registry keys present</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-POSTVERIFY-003</td><td>Post-Install Verification</td><td>Install directory structure correct</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-POSTVERIFY-004</td><td>Post-Install Verification</td><td>Agent process is running</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-POSTVERIFY-005</td><td>Post-Install Verification</td><td>Log file created and non-empty</td><td><span class="badge badge-p2">P2</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-POSTVERIFY-006</td><td>Post-Install Verification</td><td>Service auto-restart after kill</td><td><span class="badge badge-p2">P2</span></td><td>Retry</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-POSTVERIFY-007</td><td>Post-Install Verification</td><td>Service starts after reboot</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-UNINSTALL-001</td><td>Agent Uninstall</td><td>GUI uninstall via Control Panel with OTP</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-UNINSTALL-002</td><td>Agent Uninstall</td><td>Silent uninstall via command line</td><td><span class="badge badge-p1">P1</span></td><td>Functional</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-UNINSTALL-003</td><td>Agent Uninstall</td><td>Uninstall and clean re-install</td><td><span class="badge badge-p1">P1</span></td><td>E2E</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-UNINSTALL-004</td><td>Agent Uninstall</td><td>Uninstall without OTP</td><td><span class="badge badge-p2">P2</span></td><td>Security</td><td><span class="badge badge-gap">Gap</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-EDGE-001</td><td>Edge Cases</td><td>Install over stale directory</td><td><span class="badge badge-p2">P2</span></td><td>Edge</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-EDGE-002</td><td>Edge Cases</td><td>Install with critically low disk space</td><td><span class="badge badge-p3">P3</span></td><td>Resource Exhaustion</td><td><span class="badge badge-gap">Gap</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-EDGE-003</td><td>Edge Cases</td><td>Install with long computer name</td><td><span class="badge badge-p3">P3</span></td><td>Edge</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-EDGE-004</td><td>Edge Cases</td><td>Install with special char computer name</td><td><span class="badge badge-p3">P3</span></td><td>Edge</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-EDGE-005</td><td>Edge Cases</td><td>Install with Unicode user profile path</td><td><span class="badge badge-p3">P3</span></td><td>Edge</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SECURITY-001</td><td>Security</td><td>Service runs under SYSTEM</td><td><span class="badge badge-p2">P2</span></td><td>Security</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SECURITY-002</td><td>Security</td><td>Install directory permissions</td><td><span class="badge badge-p2">P2</span></td><td>Security</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-SECURITY-003</td><td>Security</td><td>Certificates installed correctly</td><td><span class="badge badge-p2">P2</span></td><td>Security</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-CONCURRENT-001</td><td>Concurrency</td><td>Two installer instances simultaneously</td><td><span class="badge badge-p2">P2</span></td><td>Concurrency</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-UPGRADE-001</td><td>Upgrade</td><td>Newer version over existing</td><td><span class="badge badge-p1">P1</span></td><td>Upgrade</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-CLEANUP-001</td><td>Cleanup</td><td>Complete cleanup after uninstall</td><td><span class="badge badge-p1">P1</span></td><td>Cleanup</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-CLEANUP-002</td><td>Cleanup</td><td>Stale registry re-install</td><td><span class="badge badge-p2">P2</span></td><td>Cleanup</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-TIMING-001</td><td>Timing</td><td>Network disconnect during push</td><td><span class="badge badge-p2">P2</span></td><td>Timing</td><td><span class="badge badge-gap">Gap</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-INTEGRATION-001</td><td>Integration</td><td>Agent registers with DS</td><td><span class="badge badge-p1">P1</span></td><td>Integration</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-E2E-001</td><td>E2E</td><td>Full lifecycle: install, verify, uninstall</td><td><span class="badge badge-p1">P1</span></td><td>E2E</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-RARE-001</td><td>Rare Scenarios</td><td>Power failure during install</td><td><span class="badge badge-p3">P3</span></td><td>Rare</td><td><span class="badge badge-gap">Gap</span></td></tr>
+    <tr><td>TC-AGENTINSTALL-STATETR-001</td><td>State Transition</td><td>Service stop and manual restart</td><td><span class="badge badge-p2">P2</span></td><td>State Transition</td><td><span class="badge badge-ok">&#10003;</span></td></tr>
+  </table>
+
+  <h2>GOAT Gap Report</h2>
+  <div class="gap-block">
+    <strong>TC-AGENTINSTALL-MANUALGUI-003</strong> — Missing util: <code>corrupt_file_simulation</code><br>
+    Step: "Attempt to launch the corrupted EXE and observe system response"
+  </div>
+  <div class="gap-block">
+    <strong>TC-AGENTINSTALL-MANUALGUI-004</strong> — Missing util: <code>uac_interaction</code><br>
+    Step: "If UAC prompts, click No or do not enter admin credentials"
+  </div>
+  <div class="gap-block">
+    <strong>TC-AGENTINSTALL-UNINSTALL-004</strong> — Missing util: <code>otp_dialog_interaction</code><br>
+    Step: "When OTP prompt appears, enter an incorrect OTP or leave blank"
+  </div>
+  <div class="gap-block">
+    <strong>TC-AGENTINSTALL-EDGE-002</strong> — Missing util: <code>disk_space_simulation</code><br>
+    Step: "Target drive has less than 50MB free space"
+  </div>
+  <div class="gap-block">
+    <strong>TC-AGENTINSTALL-RARE-001</strong> — Missing util: <code>power_failure_simulation</code><br>
+    Step: "During installation, hard power off the machine"
+  </div>
+  <div class="gap-block">
+    <strong>TC-AGENTINSTALL-TIMING-001</strong> — Missing util: <code>network_disconnect_simulation</code><br>
+    Step: "Immediately disconnect network on target machine"
+  </div>
+
+</div>
+<div class="footer">UEMS Agent Testcase Generator &middot; 2026-04-23</div>
+</body>
+</html>

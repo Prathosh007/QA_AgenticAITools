@@ -1,0 +1,369 @@
+TEST CASE ID,Module,Type,TEST CASE DESCRIPTION,Steps,EXPECTED RESULT,Remark,Actusl result -OP,Actual result -Cloud
+TC_001,Agent Fw,Install,Agent Fresh Install on Mac,"1. Take a clean Mac machine with no prior agent installed
+2. Copy the new SSMK build agent installer .pkg to the Mac
+3. Double-click the .pkg and follow the installer prompts
+4. Wait for installation to complete
+5. Open Web Console and check if the Mac appears under managed computers",Agent installs successfully. In Web Console the Mac shows as managed with status Online. On the Mac run ""ps aux | grep dcagentservice"" in Terminal to confirm the agent service process is running,"CCA enable & CCA disabled
+TC",,
+TC_002,Agent Fw,Install,Agent Push Install on Mac,"1. Open console
+2. Go to Agent > Computers and click Add Computer
+3. Enter the target Mac IP/hostname and credentials
+4. Click Install to push agent remotely
+5. Wait for push install to complete",Mac appears in Web Console as managed. On the Mac Terminal run ""ps aux | grep dcagentservice"" to confirm agent is running. No manual intervention was needed on the Mac,"CCA enable & CCA disabled
+TC",,
+TC_003,Agent Fw,Proxy,Mac Agent Communication via Proxy,"1. Configure proxy in server
+2. Install Mac agent on this machine using the new build
+3. Open Web Console and check if the Mac appears as managed
+4. On the Mac open computer.log to check proxy-related log entries",Agent communicates using the proxy. In agent logs you should see no connection errors. In Web Console the Mac shows Online. If proxy auth is configured the log should NOT show ""Failed to read proxy credential from vault"","CCA enable & CCA disabled
+TC",,
+TC_004,Agent Fw,Proxy,Agent Communication via Proxy v2,"1. Configure proxy settings on mac agent through settings.
+2. Verify outbound calls are successful
+3. Check logs for proxy usage",Agent communicates via proxy successfully with no connection failures,"CCA enable & CCA disabled
+TC",,
+TC_005,Agent Fw,WFA,Mac Agent Install with WFA Enabled,"1. In Web Console and enable Waiting For Approval (WFA)
+2. Fresh install Mac agent on a new Mac
+3. In Web Console check Computers > Waiting For Approval section
+4. Verify the Mac appears in the WFA list",Agent installs and shows in WFA list in Web Console. Agent does NOT appear in the managed computers list yet. On the Mac open Terminal and check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i approval"" - should show ""Requesting server for Approval Status"","CCA enable & CCA disabled
+TC",,
+TC_006,Agent Fw,WFA,Mac Agent Install with WFA Disabled,"1. In Web Console ensure WFA is disabled under Agent > Settings
+2. Fresh install Mac agent on a new Mac
+3. In Web Console check if Mac appears directly in managed computers",Agent installs and appears directly as managed in Web Console without any approval step. Logs should show ""Authtoken Response Success"" indicating direct token exchange succeeded,"CCA enable & CCA disabled
+TC",,
+TC_007,Agent Fw,WFA,Mac Agent Upgrade with WFA Enabled,"1. Have a Mac agent on an older build already approved and communicating with DS
+2. Enable WFA on DS
+3. Upgrade the Mac agent to the new SSMK build
+4. In Web Console verify the Mac is still in managed computers (not moved back to WFA)",Agent upgrades successfully. The Mac remains in managed computers list and does NOT get moved to WFA queue. Agent continues communicating normally. Check Mac logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i upgrade"" should show ""Agent Upgrade occured. Proceeding to check and handle post update actions"","CCA enable & CCA disabled
+TC",,
+TC_008,Agent Fw,WFA,Mac Agent Upgrade with WFA Disabled,"1. Have a Mac agent on an older build
+2. Ensure WFA is disabled on DS
+3. Upgrade Mac agent to new build
+4. Verify agent communicates normally",Agent upgrades and resumes DS communication. No WFA flow triggered,"CCA enable & CCA disabled
+TC",,
+TC_009,Agent Fw,Config,Verify ds-server-infoV2.xml IP Scope on Mac,"1. In console configure IP scope settings
+2. On the Mac agent trigger a refresh by running ""sudo /Library/ManageEngine/UEMS_Agent/bin/cfgupdate"" in Terminal
+3. Look for ds-server-infoV2.xml getting processed in logs",IP Scope gets applied correctly,"CCA enable & CCA disabled
+TC",,
+TC_010,Agent Fw,Security,Verify binaries-checksumV2.json Signature Verification on Mac,"1. Upgrade Mac agent to the new SSMK build
+2. On the Mac open Terminal and check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/computer.log | grep -i checksum""
+3. Look for verification-related entries",Logs should show ""Checksum Validated Successfully"".,"CCA enable & CCA disabled
+TC",,
+TC_011,Agent Fw,Credential,Credential Manager Push Module on Mac,"1. In Web Console configure a credential for a target Mac (e.g. for software deployment)
+2. Trigger a push operation (like software install) that uses this credential
+4. Verify the push operation completes",Push operation completes successfully on the Mac. In the logs there should be NO ""Failed to decrypt password with FRAMEWORK or master key"" error.,"CCA enable & CCA disabled
+TC",,
+TC_012,Agent Fw,Movement,RO Movement on Mac,"1. In Web Console go to Remote Office settings
+2. Move the Mac device to a different Remote Office scope
+3. On the Mac wait for the agent to detect the RO change (up to one refresh cycle)
+4. Check agent log
+5. In Web Console verify the Mac now communicates with the new DS/RO",Agent detects the RO change. Logs should show ""Remote office ID has to be changed"" followed by ""ProcessRemoteOfficeXML: Remote Office ID has been updated"". In Web Console the Mac now shows under the new Remote Office,"CCA enable & CCA disabled
+TC",,
+TC_013,Agent Fw,Certificate,csr Normal Flow on Mac,"1. Fresh install or restart the Mac agent
+2. On the Mac open Terminal and check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i cert""
+3. Verify certificate is downloaded",Logs should show ""Cert already downloaded"" on subsequent runs or certificate download success on first run. The log should NOT show ""Error in certificate dictionary parameter"" or ""Error in response decryption"","CCA enable & CCA disabled
+TC",,
+TC_014,Agent Fw,Auth,APIVersion=v1.1 in Auth Requests on Mac,"1. perform fresh install
+2. Check agent logs: network access
+3. Inspect the logged URL",The logged authPropsURL should contain ""APIVersion=v1.1"" as a parameter in the URL string,"CCA enable & CCA disabled
+TC",,
+TC_015,Agent Fw,WFA,Mac Device Moved to WFA Then Re-approved,"1. In Web Console move a managed Mac device to WFA state - by deleting authtoken
+2. Wait a few seconds then approve the device again from Web Console > Waiting For Approval
+3. On the Mac check agent logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i KeyShare""
+4. Verify agent resumes normal communication",After re-approval the Mac agent should show ""KeyShare: Initiating key share request"" in logs indicating it fetched new service keys. The agent should then resume normal communication and appear as Online in Web Console,"CCA enable & CCA disabled
+TC",,
+TC_016,Agent Fw,WFA,Mac Device Approved Before Agent Detects WFA,"1. In Web Console move Mac device to WFA -  by deleting authtoken
+2. Immediately approve the device from console before the agent has checked its approval status
+3. Wait for the next agent refresh cycle
+4. Verify in Web Console the Mac is managed and Online",Agent handles the approval seamlessly. No stuck state. Mac shows as managed and communicating in Web Console,"CCA enable & CCA disabled
+TC",,
+TC_017,Agent Fw,KeyShare,Service Key Download After Fresh Install,"1. Fresh install Mac agent on new SSMK build
+2. Wait for agent to register, check Web Console for the Mac appearing)
+3. On the Mac check logs: for ""KeyShare""",Logs should show in this order: (a) ""KeyShare: Initiating key share request for X key(s)"" (b) ""KeyShare: Sending request to <servlet_url>"" (c) ""KeyShare: Received response of X byte(s)"" (d) ""KeyShare response: ..."" with no errors. There should be NO ""KeyShare: Failed to persist shared keys"" or ""KeyShare: response Decryption failed"" errors,"CCA enable & CCA disabled
+TC",,
+TC_018,Agent Fw,KeyShare,Service Key Download After Upgrade,"1. Have a Mac agent on pre-SSMK old build fully communicating with DS
+2. Upgrade to the new SSMK build
+3. Wait for agent to complete post-upgrade sync
+3. On the Mac check logs: for ""KeyShare""",After upgrade the agent should download service keys. Logs show ""KeyShare: Initiating key share request"" and ""KeyShare: Received response of X byte(s)"". No ""KeyShare: Failed to persist shared keys"" errors,"CCA enable & CCA disabled
+TC",,
+TC_019,Agent Fw,Auth,Auth Token Migration from Plist to Vault on Upgrade,"1. Have Mac agent on old build (tokens stored in plist) fully communicating with DS
+2. Upgrade Mac agent to new SSMK build
+3. Wait for upgrade to complete
+4. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i 'Token migration'""
+5. Verify agent still communicates with DS (check Web Console - Mac should be Online)",Logs should show ""Token migration:"" messages. There should be NO ""Token migration: failed to open vault"" errors. If a token was not present it should show ""Token migration: <tokenName> not present in server info - skipping"" at info level (this is normal). After migration agent communicates with DS successfully,"CCA enable & CCA disabled
+TC",,
+TC_020,Agent Fw,Auth,Auth Token Storage After Fresh Install,"1. Fresh install Mac agent on new SSMK build
+2. Wait for agent to complete registration with DS
+3. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i 'Authtoken'""
+4. In Web Console verify the Mac is Online and managed",Logs should show ""Fetching Auth token"" followed by ""AuthProps POST succeeded"" and ""Authtoken Response Success"". The Mac should show Online in Web Console. There should be NO ""Auth properties missing"" or ""Authtoken Response error"" in the logs,"CCA enable & CCA disabled
+TC",,
+TC_021,Agent Fw,Auth,Approval Token Retrieval on Mac,"1. Have a registered Mac agent on new build
+2. From Web Console trigger an action that requires the agent to present its approval token - ex. cloud ondemand 
+3. On Mac check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i 'Approval'""",Logs should show ""Approval Token set"" indicating the approval token was found and ready. There should be NO ""Approval Token pair missing"" or ""Unable to get approval token"" errors. The triggered action should complete successfully,"CCA enable & CCA disabled
+TC",,
+TC_022,Agent Fw,Proxy,Proxy Credential Migration on Upgrade,"1. On old build Mac agent configure proxy with username and password in Web Console
+2. Verify agent communicates through proxy on old build
+3. Upgrade Mac agent to new SSMK build
+4. After upgrade verify agent still communicates through proxy
+5. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i 'Proxy credential'""",Logs should show ""Proxy credential migrated to vault successfully"" followed later by ""ProxyCredentialMigration: PROXYPASSWORD removed from plist"". Agent should continue communicating through proxy. There should be NO ""Failed to decrypt proxy password; skipping migration"" error,"CCA enable & CCA disabled
+TC",,
+TC_023,Agent Fw,Proxy,Proxy Communication After Fresh Install on New Build,"1. Configure proxy settings in Web Console for the target Mac
+2. Fresh install new SSMK build agent on the Mac
+3. Verify Mac appears in Web Console as managed
+4. From Web Console trigger a config push to the Mac
+5. Check that the operation succeeds",Agent communicates through proxy. Config push succeeds. There should be no ""Failed to read proxy credential from vault"" in dcondemand logs (check: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i proxy""),"CCA enable & CCA disabled
+TC",,
+TC_024,Agent Fw,Credential,Credential Decryption After Upgrade - Old Credentials Fallback,"1. On old build Mac agent configure credentials for a software deployment via Web Console
+2. Run the deployment to verify credentials work on old build
+3. Upgrade Mac agent to new SSMK build
+4. Without re-configuring credentials trigger the same deployment again from Web Console
+5. Check if deployment succeeds on the Mac","Deployment should succeed using the old stored credentials. In Mac logs (""cat /Library/ManageEngine/UEMS_Agent/logs/dcconfig.log | grep -i credential"") you should see ""FRAMEWORK decryption failed, attempting master key fallback"" (this is expected for old credentials) followed by successful credential retrieval. There should be NO ""Failed to decrypt password with FRAMEWORK or master key"" which would indicate total failure","CCA enable & CCA disabled
+TC",,
+TC_025,Agent Fw,Credential,Credential Decryption on New Build - FRAMEWORK Key,"1. On Mac agent running the new SSMK build go to Web Console and configure a new credential for deployment
+2. Trigger a software deployment using this new credential
+3. Verify deployment succeeds on the Mac
+4. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcconfig.log | grep -i credential""",Deployment succeeds. without any ""FRAMEWORK decryption failed"" or ""Failed to decrypt password"" errors since the credential was created with the new FRAMEWORK key,"CCA enable & CCA disabled
+TC",,
+TC_026,Agent Fw,KeyShare,Key Rotation - Server Rotates Service Module Key,"1. Have a working Mac agent on new build
+2. From the server side trigger a key rotation for a service module (this is a server admin action)
+3. Wait for the Mac agent to perform its next sync cycle (or force a refresh: ""sudo /Library/ManageEngine/UEMS_Agent/bin/dcconfig refresh"")
+4. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i KeyShare""",Logs should show the agent detected a new UUID and initiated a key share request. Should see ""KeyShare: Initiating key share request for X key(s)"" and ""KeyShare: Received response of X byte(s)"". After key rotation any operation that uses the rotated module key should still work,"CCA enable & CCA disabled
+TC",,
+TC_027,Agent Fw,KeyShare,Key Rotation at Adaption Stage,"1. Have a working Mac agent on new build
+2. Server triggers key rotation with the adaption flag (key at adaption stage meaning UUID-only rotation)
+3. Wait for agent sync
+4. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i 'transition\|adaption'""","Logs should show ""KeyShare: Module <moduleName> is in transition, retaining existing key under new UUID"". This means the agent kept the existing key under the new UUID without fetching a new key from the servlet. No ""KeyShare: Incomplete key information"" errors should appear","CCA enable & CCA disabled
+TC",,
+TC_028,Agent Fw,KeyShare,Agent Skips Non-Local Module UUIDs,"1. Have a Mac agent on new build where only certain modules are active
+2. Ensure the server has UUIDs for modules not installed on this Mac (other than SOM / FRAMEWORK)
+3. Trigger agent sync
+4. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i 'not mapped'""","Logs should show ""KeyShare: UUID <uuid> is not mapped to a local module, skipping"" for UUIDs that do not correspond to modules active on this Mac. The agent should NOT make servlet calls for these skipped UUIDs","CCA enable & CCA disabled
+TC",,
+TC_029,Agent Fw,KeyShare,UUID Timestamp Not Committed on Key Fetch Failure,"1. Install Mac agent on new build
+2. Before the agent can reach the keyshareServlet block network access to the server (e.g. disconnect WiFi or block the port)
+3. Wait for the agent to attempt key download
+4. Restore network access
+5. Wait for next sync cycle
+6. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i KeyShare""","During the blocked period logs should show ""Error fetching Key share response"" or similar error. After network is restored the agent should retry and eventually show ""KeyShare: Received response of X byte(s)"". The key point is the agent retried - if timestamps were committed prematurely it would have skipped the UUIDs showing ""UUID <uuid> is up to date, skipping"" which should NOT appear before the keys are successfully stored","CCA enable & CCA disabled
+TC",,
+TC_030,Agent Fw,KeyShare,Service Key Validation After Upgrade,"1. Upgrade Mac agent from pre-SSMK build to new build
+2. Wait for post-upgrade sync
+3. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcconfig.log | grep -i 'service-master-keys\|KeyShare\|validateServiceKeys'""",After upgrade the agent should validate service keys. If keys are missing or invalid the agent re-downloads them. Logs should eventually show successful key storage with no persistent ""KeyShare: Failed to persist shared keys"" errors,"CCA enable & CCA disabled
+TC",,
+TC_031,Agent Fw,CSR,CSR Encryption with Approval Key,"1. Trigger a client certificate request on the Mac agent (this happens during initial install)
+2. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcagentservice.log | grep -i CSR""",Logs should show ""Proceeding to request CSR..."" followed by ""Encrypting CSR requesting"" then ""Request encrypted"". There should be NO ""Error in encryption"" (critical) or ""Error in CSR generation"" (critical). After the server responds logs should show ""Proceeding to decrypt response"" and ""Certificate import successful"","CCA enable & CCA disabled
+TC",,
+TC_032,Agent Fw,Security,Binary Checksum ECDSA Verification on Mac,"1. Upgrade Mac agent to new build
+2. Wait for upgrade to complete
+3. Check upgrader logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/macAgentUpgrader.log | grep -i checksum""",Logs should show ""Agent Checksum validation succeeded"". There should be NO ""Agent Checksum validation failed"" or ""ECDSA signature verification failed for binaries-checksumV2.json"" or ""Error parsing binaries-checksumV2.json structure"" errors,"CCA enable & CCA disabled
+TC",,
+TC_033,Agent Fw,Security,Tampered Binary Checksum Rejected,"1. Before upgrading the Mac agent manually tamper with the binaries-checksumV2.json file on the server or intercept and modify it
+2. Trigger agent upgrade
+3. Check upgrader logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/macAgentUpgrader.log | grep -i checksum""",Upgrade should FAIL. Logs should show ""ECDSA signature verification failed for binaries-checksumV2.json"" or ""Agent Checksum validation failed"". The agent should NOT proceed with installing tampered binaries,"CCA enable & CCA disabled
+TC",,
+TC_034,Agent Fw,Security,Upgrader Copies Public Key Before Checksum Verification,"1. Trigger Mac agent upgrade from Web Console
+2. Check upgrader logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/macAgentUpgrader.log | grep -i 'public key\|Public key'""",Logs should show either ""Public key already present in serverinfo handler"" or ""Public key copied from downloaded serverinfo plist to serverinfo handler"". This must appear BEFORE any checksum validation log entries. There should be NO ""Public key not found in downloaded serverinfo plist either"" error,"CCA enable & CCA disabled
+TC",,
+TC_035,Agent Fw,Movement,RO Movement Uses V2 Server Info XML,"1. In Web Console move a Mac agent to a different Remote Office
+2. Wait for agent to process the RO change
+3. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcconfig.log | grep -i 'ProcessRemoteOfficeXML\|Remote office'""
+4. Verify agent communicates with the new DS",Logs should show ""ProcessRemoteOfficeXML"" entries processing the V2 XML. Should show ""Remote office ID has to be changed"" followed by ""Remote Office ID has been updated"". Agent should then communicate with the new DS (verify Mac shows Online in Web Console under new RO),"CCA enable & CCA disabled
+TC",,
+TC_036,Agent Fw,Movement,RO Movement Token Storage,"1. In Web Console move Mac agent to a different Remote Office
+2. Wait for agent to complete the RO transition
+3. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcconfig.log | grep -i 'ApprovalKey\|force'""
+4. Verify agent authenticates with the new DS",During RO movement logs should show ""ApprovalKey force-updated in vault"" (or similar force-store messages). There should be NO ""ApprovalKey decryption failed"" (critical) errors. After the move agent should authenticate with the new DS successfully (Web Console shows Mac Online under new RO),"CCA enable & CCA disabled
+TC",,
+TC_037,Agent Fw,Auth,Migration Skips Already-Migrated Tokens,"1. Upgrade Mac agent to new SSMK build and let migration complete
+2. Restart the agent service: ""sudo launchctl stop com.manageengine.dcagentservice && sudo launchctl start com.manageengine.dcagentservice""
+3. Check logs if migration gets skipped.",After restart the migration check should show ""Token migration: vault already populated - skipping"" indicating it detected tokens are already in the vault and did not attempt to re-migrate them,"CCA enable & CCA disabled
+TC",,
+TC_038,Agent Fw,Upgrade,Full Upgrade Preserves All Auth State,"1. Have a Mac agent on old pre-SSMK build that is fully enrolled communicating with DS and has proxy configured
+2. Upgrade to new SSMK build
+3. After upgrade wait for agent to sync
+4. In Web Console verify Mac is Online
+5. Trigger an on-demand scan from Web Console
+6. Trigger a software deployment that uses credentials",After upgrade: Mac remains Online in Web Console without re-enrollment. On-demand scan executes successfully. Software deployment using stored credentials succeeds. Proxy communication continues working. Check logs for ""Agent Upgrade occured. Proceeding to check and handle post update actions"" and ""Migrating to vault"" and ""Token migration"" entries confirming migration ran,"CCA enable & CCA disabled
+TC",,
+TC_039,Agent Fw,OnDemand,dcondemand WebSocket Connection,"1. Install or upgrade Mac agent to new build - Cloud
+2. On the Mac verify dcondemand is running: ""ps aux | grep dcondemand""
+3. Ensure ondemand connectivity",dcondemand process should be running. Logs should show ""Starting WebSocket connection to <host>:<port>"" followed by ""DMS authentication successful - UID: <partial_uid>***"" and ""Auth success - starting background tasks"". There should be NO ""Failed to load configuration"" or ""Failed to generate auth token"" errors,"CCA enable & CCA disabled
+TC",,
+TC_040,Agent Fw,OnDemand,dcondemand Reconnects After Network Drop,"1. Have Mac agent running with dcondemand connected
+2. Temporarily disconnect the Mac from the network (turn off WiFi or unplug Ethernet)
+3. Wait 30 seconds then reconnect the network
+4. Ensure ondemand connectivity",After network restore logs should show the agent retrying connections: ""Trying DC <host> with proxy mode: <mode>..."" and eventually ""DMS authentication successful"". The on-demand scan triggered from Web Console should execute on the Mac,"CCA enable & CCA disabled
+TC",,
+TC_041,Agent Fw,OnDemand,dcondemand Failover to Secondary DC,"1. Have Mac agent connected to primary DC via dcondemand
+2. Make the primary DC unreachable (e.g. block its IP on the Mac firewall or shut down primary DC)
+3. Wait for dcondemand to detect the failure and failover
+4. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'failed\|Trying\|next DC\|proxy mode'""","Logs should show connection failure to primary DC followed by ""All proxy modes failed for <primary_host>, trying next DC"" and then ""Trying DC <secondary_host> with proxy mode: <mode>..."" eventually followed by ""DMS authentication successful"" on the secondary DC","CCA enable & CCA disabled
+TC",,
+TC_042,Agent Fw,OnDemand,dcondemand TCP Server,"1. Install Mac Agent in OP setup
+2. Ensure ondemand connectivity","Logs should show ""TCPEndpoint: server address = <hostname>, port = <port>, TLS = <true/false>"" and ""Connection started."" for TCP path. If a notification is sent logs should show ""Received new message"" and ""Acknowledgement Received.""","CCA enable & CCA disabled
+TC",,
+TC_043,Agent Fw,OnDemand,dcondemand Proxy Fallback Chain,"1. Configure a server-level proxy for the Mac agent in Web Console
+2. Start Mac agent and verify dcondemand connects through server proxy
+3. Remove the server proxy setting and restart the agent
+4. Verify dcondemand falls back to system proxy (if configured) or direct connection
+5. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'proxy mode'""",Logs should show the proxy mode being used. When server proxy is configured: ""Trying DC <host> with proxy mode: serverProxy"". When server proxy is removed: agent should fall back to ""systemProxy"" or ""noProxy"". There should be NO ""Server proxy enabled but port invalid"" errors if proxy was configured correctly,"CCA enable & CCA disabled
+TC",,
+TC_044,Agent Fw,OnDemand,On-Demand Inventory Scan on Mac,"1. Have Mac agent running with dcondemand connected
+2. From Web Console go to the Mac computer entry
+3. Click Scan Now or trigger Inventory Collection
+4. Wait for collection to complete
+5. Check dcondemand logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'collection\|dcconfig'""",On the Mac side logs should show ""Inside InitiateCollectionTask Method"" followed by ""dcconfig returned: 0"" (return code 0 means success). In Web Console the inventory data for the Mac should be updated with fresh information,"CCA enable & CCA disabled
+TC",,
+TC_045,Agent Fw,OnDemand,On-Demand Patch Scan on Mac,"1. Have Mac agent running
+2. From Web Console trigger a patch scan on the Mac
+3. Wait for scan to complete
+4. Check dcondemand logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'PatchScan\|patch'""","Logs should show ""Inside InitiatePatchScan"" with task ID and ""End InitiatePatchScan, retCode: 0"". In Web Console the patch status for the Mac should update","CCA enable & CCA disabled
+TC",,
+TC_046,Agent Fw,OnDemand,On-Demand Shutdown on Mac,"1. Have Mac agent running
+2. From Web Console trigger a remote shutdown on the Mac
+3. Observe Mac behavior
+4. Before shutdown check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'shutdown\|power'""",Logs should show ""Inside InitiateShutdownTask Method"" and ""Shutdown/Restart task called"" with the action details. The Mac should shut down (or restart depending on the action chosen). There should be NO ""RemoteShutdownTaskDetails is empty"" or ""Missing or invalid operation"" errors,"CCA enable & CCA disabled
+TC",,
+TC_047,Agent Fw,OnDemand,On-Demand Remote Desktop Session on Mac,"1. Have Mac agent running
+2. From Web Console initiate a Remote Desktop session to the Mac
+3. Wait for RDS to initialize
+4. Check dcondemand logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'RDS\|remote'""",Logs should show ""Request for RDS services initiated..."" and eventually ""-----Native RDS started-----"". The remote desktop window should open. If the user prompt is configured logs may show prompt-related entries. There should be NO ""Failed to initialize RDSUtil"" errors,"CCA enable & CCA disabled
+TC",,
+TC_048,Agent Fw,OnDemand,On-Demand Remote Office Move via On-Demand,"1. From Web Console trigger a Move to Remote Office action for the Mac
+2. Wait for agent to process
+3. Check dcondemand logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'MoveToRemoteOffice\|Remote Office'""",Logs should show ""Inside MoveToRemoteOffice method"" and ""Current Remote Office: <old_id>"" and ""Target Remote Office: <new_id>"" followed by ""Executed dcconfig with return code: 0"" and ""Changed RemoteOfficeName: <new_name>"". There should be NO ""Required parameters to change are null or zero"" errors,"CCA enable & CCA disabled
+TC",,
+TC_049,Agent Fw,OnDemand,dcondemand Works Without ondemandHelper,"1. On Mac agent with new build check if ondemandHelper binary exists: ""ls /Library/ManageEngine/UEMS_Agent/bin/ondemandHelper"" (it should NOT exist)
+2. Verify dcondemand is running: ""ps aux | grep dcondemand""
+3. Trigger any on-demand action from Web Console (scan or collection or shutdown)
+4. Verify the action completes",ondemandHelper binary should NOT exist on the new build. dcondemand should be running on its own. The triggered action should complete successfully proving dcondemand works independently,"CCA enable & CCA disabled
+TC",,
+TC_050,Agent Fw,OnDemand,dcondemand TLS Certificate Validation,"1. Have Mac agent dcondemand connect to DMS server over TLS
+2. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'trust\|TLS\|certificate'""",Logs should show ""Evaluating server trust"" followed by ""Trust evaluation success"". There should be NO ""Trust evaluation failed"" or ""Failed to get server trust object"" errors,"CCA enable & CCA disabled
+TC",,
+TC_051,Agent Fw,OnDemand,dcondemand Ping-Pong Keep-Alive,"1. Have Mac agent dcondemand connected and idle for several minutes
+2. Check logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'ping\|pong'""",Logs should show periodic ""Ping #<number>"" entries followed by ""Pong received"" entries. There should be NO ""Ping timeout - no pong received after ping #<number>"" errors which would indicate connection issues,"CCA enable & CCA disabled
+TC",,
+TC_052,Agent Fw,OnDemand,On-Demand Agent Uninstall,"1. From Web Console trigger agent uninstall on Mac
+2. Check dcondemand logs before uninstall happens: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'uninstall'""",Logs should show ""Invoke ondemand uninstall"". The agent uninstall should proceed. After completion the agent processes should no longer be running on the Mac,"CCA enable & CCA disabled
+TC",,
+TC_053,Agent Fw,OnDemand,On-Demand Log Upload,"1. From Web Console trigger a support log upload for the Mac agent
+2. Wait for upload to complete
+3. Check dcondemand logs: ""cat /Library/ManageEngine/UEMS_Agent/logs/dcondemand.log | grep -i 'SupportLogUpload\|log upload'""",Logs should show ""Inside processSupportLogUploadTask"" followed by ""File Write Completed"". There should be NO ""Could not get component ID"" or ""componentID is not applicable"" errors,"CCA enable & CCA disabled
+TC",,
+TC_054,Agent Fw,E2E,Full Lifecycle - Fresh Install to On-Demand,"1. Take a clean Mac
+2. Fresh install new SSMK build agent
+3. In Web Console verify Mac appears as managed
+4. Wait 2-3 minutes for full sync (keys + tokens)
+5. From Web Console trigger an on-demand inventory scan
+6. Verify scan data appears in Web Console",Mac registers successfully. Service keys are downloaded (check logs for ""KeyShare: Received response""). Auth tokens are stored (check logs for ""Authtoken Response Success""). On-demand scan completes (check logs for ""dcconfig returned: 0""). Web Console shows updated inventory,"CCA enable & CCA disabled
+TC",,
+TC_055,Agent Fw,E2E,Full Lifecycle - Upgrade from Pre-SSMK Build,"1. Start with Mac agent on old pre-SSMK build fully enrolled with proxy and credentials configured
+2. Upgrade to new SSMK build
+3. Verify Mac stays Online in Web Console
+4. Trigger on-demand scan - verify it works
+5. Trigger software deployment using stored credentials - verify it works
+6. Verify proxy communication still works","All operations succeed post-upgrade. Logs show token migration (""Token migration"" entries), proxy migration (""Proxy credential migrated to vault successfully""), service key download (""KeyShare: Received response""), and successful operations. No re-enrollment needed","CCA enable & CCA disabled
+TC",,
+TC_056,Agent Fw,E2E,Key Rotation End-to-End,"1. Have Mac agent on new build fully operational
+2. From server side trigger a service key rotation
+3. Wait for agent to sync (or force refresh)
+4. From Web Console trigger a configuration push that requires module encryption
+5. Verify the push succeeds",Agent picks up new key (logs show ""KeyShare: Initiating key share request"" and ""KeyShare: Received response""). The configuration push using the rotated key succeeds. No ""Failed to encrypt for <module>"" or ""Failed to decrypt for <module>"" errors in logs,"CCA enable & CCA disabled
+TC",,
+TC_057,Agent Fw,E2E,RO Movement End-to-End with SSMK,"1. Have Mac agent on new build communicating with DS1
+2. In Web Console move the Mac to a Remote Office served by DS2
+3. Wait for agent to process the move
+4. Verify Mac appears Online under the new RO in DS2 console
+5. Trigger an on-demand action from DS2
+6. Verify the action executes",Agent processes RO move (logs show ""Remote Office ID has been updated""). Agent stores new tokens (logs show ""ApprovalKey force-updated in vault""). Agent communicates with DS2 and shows Online. On-demand action from DS2 executes successfully,"CCA enable & CCA disabled
+TC",,
+TC_058,Agent Fw,E2E,WFA Full Flow with SSMK,"1. Enable WFA on server
+2. Move an existing managed Mac agent to WFA state
+3. Verify Mac moves to WFA list in Web Console
+4. Approve the Mac from Web Console
+5. Verify Mac returns to managed state
+6. Trigger an on-demand action and verify it works",After approval logs show ""KeyShare: Initiating key share request"" (agent fetches fresh keys). Agent returns to managed Online state. On-demand action succeeds. Full WFA cycle works end-to-end with SSMK keys,"CCA enable & CCA disabled
+TC",,
+,
+,
+,,,,Agent installation,"After install, agent should communicate fine","CCA enable & CCA disabled
+TC",,
+,,,,Agent uninstallation,"Uninstall agent with uninstaller.app
+All folder except logs folder must be removed
+services must be removed
+Addons should be removed
+SSP Shortcut deletion","CCA enable & CCA disabled
+TC",,
+,,,,Agent uninstallation - TOTP,"1. TOTP UI - retry count should reflect on failure even after closing
+correct and incorrect totp case
+2. TOTP via terminal case
+
+3. Delete temp data folder and try totp ui","CCA enable & CCA disabled
+TC",,
+,,,,Addon installtion,"After agent installed, Addon must be installed and work well","CCA enable & CCA disabled
+TC",,
+,,,,MDM Enrollment,"Configure NAT and apns
+once agent installed, MDM prompt should happen and Mac should be enrolled on clicking enroll","CCA enable & CCA disabled
+TC",,
+,,,,Push install,,"CCA enable & CCA disabled
+TC",,
+,,,,Push uninstall,,"CCA enable & CCA disabled
+TC",,
+,,,,Agent install via MDM,,"CCA enable & CCA disabled
+TC",,
+,,,,Move between remote office,,"CCA enable & CCA disabled
+TC",,
+,,,,ipscope,,"CCA enable & CCA disabled
+TC",,
+,,,,Run cfgupdate,check if refresh triggered,"CCA enable & CCA disabled
+TC",,
+,,,,Trayion actions,"apply config
+inv scan
+patch scan
+SDP
+archive logs","CCA enable & CCA disabled
+TC",,
+,,,,SOM Removal,Remove mac from SOM. It should be uninstalled,"CCA enable & CCA disabled
+TC",,
+,,,,Agent upgrade,change agent version in dupserverinfo and check if upgrade happens over new build too,"CCA enable & CCA disabled
+TC",,
+,,,On prem,ppm from 2300 to new build,,"CCA enable & CCA disabled
+TC",,
+,,,,ppm from 2300 to 2310 (rebranding) then to new build,,"CCA enable & CCA disabled
+TC",,
+,,,cloud,Run ISU,,"CCA enable & CCA disabled
+TC",,
+,,,,Agent upgrade failure cases,"checksum
+file missing
+install fail
+download fail","CCA enable & CCA disabled
+TC",,
+,,,,Torubleshoot executable case,check if exec is downloaded once everyday,"CCA enable & CCA disabled
+TC",,
+,,,,check post migration (Migration),"check if below list removed
+1. identity.p12
+2. ems_info.plist
+3. inventory.db
+4. binaries-checksum.json
+
+TrayLastModifiedTime in dcconfig_data.plist
+totp details in dcagentsettings.plist
+
+these will be migrated to vault","CCA enable & CCA disabled
+TC",,
+,,,,RestrictUninstall key in vault,Ensure Uninstall not restricted till machine approved,"CCA enable & CCA disabled
+TC",,
+,,,,"Verfiy Encryption/Decryption in op, cloud dev, cloud prod","masterkey moved to swift. 
+Build changes were made","CCA enable & CCA disabled
+TC",,
+,,,,Verify if dcutils.dylib and UEMSCrypt.dylib is access only by zoho signed exe,,"CCA enable & CCA disabled
+TC",,
+,,,cloud,check if encapi trimmed in urls,,"CCA enable & CCA disabled
+TC",,
+,,,,Check localisation,,"CCA enable & CCA disabled
+TC",,
+,,,,Check if Client cert is fetch and stored in Vault,"Vault name: Agent 
+Table: Security
+key: ClientAuthIdentity","CCA enable & CCA disabled
+TC",,
+,,,,Cli cert renewal,,"CCA enable & CCA disabled
+TC",,

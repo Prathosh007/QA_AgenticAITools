@@ -1,0 +1,473 @@
+openapi: 3.0.3
+info:
+  title: UEMS Agent Explorer API
+  description: |
+    REST API for UEMS Agent Explorer. Provides GitHub Device Flow
+    authentication, Copilot LLM proxy, MCP tool invocation, health probes,
+    and operational endpoints.
+
+    The server runs in three modes:
+    - **http** (standalone) — full MCP + Copilot proxy + auth
+    - **bridge** — proxies chat/tool calls to a VS Code HTTP bridge
+    - **stdio** — MCP over stdin/stdout (no HTTP; not covered here)
+  version: 0.1.0
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://localhost:443
+    description: Local development (default)
+
+tags:
+  - name: Auth
+    description: GitHub Device Flow OAuth endpoints
+  - name: Chat
+    description: Copilot LLM proxy (streaming SSE)
+  - name: Tools
+    description: MCP tool listing and invocation
+  - name: Config
+    description: Server configuration and version info
+  - name: Health
+    description: Liveness and readiness probes
+  - name: Observability
+    description: Prometheus metrics
+  - name: Data
+    description: Repository metadata
+
+paths:
+  # ── Auth ──────────────────────────────────────────────────────
+  /auth/initiate:
+    post:
+      tags: [Auth]
+      summary: Start GitHub Device Flow login
+      description: |
+        Returns a device code and user verification URI. The frontend
+        displays these so the user can authorise on github.com.
+      responses:
+        "200":
+          description: Device code issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceCodeResponse"
+        "500":
+          description: GitHub API error
+
+  /auth/poll:
+    post:
+      tags: [Auth]
+      summary: Poll for completed Device Flow login
+      description: |
+        The frontend calls this repeatedly until the user completes
+        authorisation on github.com. On success a session cookie is set.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [device_code]
+              properties:
+                device_code:
+                  type: string
+                  description: The device_code from /auth/initiate
+      responses:
+        "200":
+          description: Auth succeeded — session cookie set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  login:
+                    type: string
+                    example: octocat
+        "202":
+          description: Still waiting for user authorisation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: pending
+        "400":
+          description: Missing or invalid device_code
+        "500":
+          description: Token exchange error
+
+  /auth/status:
+    get:
+      tags: [Auth]
+      summary: Check current auth status
+      description: Returns whether the caller has a valid session cookie.
+      responses:
+        "200":
+          description: Auth status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated:
+                    type: boolean
+                  login:
+                    type: string
+                    example: octocat
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Clear the session
+      description: Deletes the session cookie, revoking access.
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: logged out
+
+  # ── Chat (Copilot Proxy) ──────────────────────────────────────
+  /copilot/chat/completions:
+    post:
+      tags: [Chat]
+      summary: Proxy a chat completion request to Copilot
+      description: |
+        Reverse proxy to `api.business.githubcopilot.com`. The response
+        is an SSE stream (`text/event-stream`). Requires a valid session
+        cookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: OpenAI-compatible chat completion request body
+              properties:
+                model:
+                  type: string
+                  example: gpt-4o
+                messages:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      role:
+                        type: string
+                        enum: [system, user, assistant, tool]
+                      content:
+                        type: string
+                stream:
+                  type: boolean
+                  default: true
+                tools:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/ToolDef"
+      responses:
+        "200":
+          description: SSE stream of chat completion chunks
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        "401":
+          description: Not authenticated
+
+  # ── Tools ─────────────────────────────────────────────────────
+  /api/tools:
+    get:
+      tags: [Tools]
+      summary: List available MCP tools
+      description: |
+        Returns tool definitions in OpenAI function-calling format.
+        The frontend includes these in Copilot chat requests so the
+        model can decide which tools to invoke.
+      responses:
+        "200":
+          description: Array of tool definitions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ToolDef"
+
+  /api/tool:
+    post:
+      tags: [Tools]
+      summary: Invoke a single MCP tool
+      description: |
+        Calls the named tool on the MCP server with the given arguments.
+        Subject to the configured tool timeout.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ToolInvokeRequest"
+      responses:
+        "200":
+          description: Tool output
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolInvokeResponse"
+        "400":
+          description: Invalid request or missing tool name
+
+  # ── Data ──────────────────────────────────────────────────────
+  /api/repos:
+    get:
+      tags: [Data]
+      summary: List configured UEMS repositories
+      description: Returns the contents of repos.json.
+      responses:
+        "200":
+          description: Repository metadata array
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: Repository metadata object
+        "500":
+          description: repos.json could not be read
+
+  # ── Config ────────────────────────────────────────────────────
+  /api/mode:
+    get:
+      tags: [Config]
+      summary: Server mode
+      description: Returns the current server mode (`standalone` or `bridge`).
+      responses:
+        "200":
+          description: Mode info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mode:
+                    type: string
+                    enum: [standalone, bridge]
+
+  /api/version:
+    get:
+      tags: [Config]
+      summary: Build version information
+      description: Returns version, commit SHA, and build timestamp (injected via ldflags).
+      responses:
+        "200":
+          description: Version info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionInfo"
+
+  /api/config:
+    get:
+      tags: [Config]
+      summary: Tunable configuration values
+      description: |
+        Returns server-side tunable limits that the frontend uses for
+        context compaction, tool output truncation, and search limits.
+      responses:
+        "200":
+          description: Config values
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TunableConfig"
+
+  # ── Health ────────────────────────────────────────────────────
+  /health:
+    get:
+      tags: [Health]
+      summary: Liveness probe
+      description: Returns 200 if the server process is running.
+      responses:
+        "200":
+          description: Server is alive
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /readyz:
+    get:
+      tags: [Health]
+      summary: Readiness probe
+      description: |
+        Checks critical dependencies (repos dir, ripgrep, git).
+        In bridge mode also verifies the VS Code bridge is reachable.
+      responses:
+        "200":
+          description: All checks pass
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ready
+        "503":
+          description: One or more checks failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: not ready
+                  problems:
+                    type: array
+                    items:
+                      type: string
+
+  # ── Observability ─────────────────────────────────────────────
+  /metrics:
+    get:
+      tags: [Observability]
+      summary: Prometheus metrics
+      description: |
+        Returns Prometheus-compatible metrics in text exposition format.
+        Includes uptime, HTTP request counts/durations, and tool invocation
+        stats.
+      responses:
+        "200":
+          description: Prometheus text exposition
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: |
+                  # HELP uems_uptime_seconds Server uptime in seconds
+                  uems_uptime_seconds 3600
+                  # HELP uems_http_requests_total Total HTTP requests
+                  uems_http_requests_total{method="GET",status="200"} 42
+
+  # ── MCP (Streamable HTTP) ─────────────────────────────────────
+  /sse:
+    post:
+      tags: [Tools]
+      summary: MCP Streamable HTTP endpoint
+      description: |
+        Exposes the MCP server over HTTP using the Streamable HTTP
+        transport. Used by MCP-aware clients that connect programmatically.
+        Only available in standalone (http) mode.
+      responses:
+        "200":
+          description: MCP session established
+
+components:
+  schemas:
+    DeviceCodeResponse:
+      type: object
+      properties:
+        device_code:
+          type: string
+          description: Opaque code used in poll requests
+        user_code:
+          type: string
+          description: Short code the user enters on github.com
+        verification_uri:
+          type: string
+          format: uri
+          example: https://github.com/login/device
+        verification_uri_complete:
+          type: string
+          format: uri
+          description: Verification URI with user_code pre-filled (skips manual code entry)
+          example: https://github.com/login/device?user_code=ABCD-1234
+        expires_in:
+          type: integer
+          description: Seconds until the device code expires
+        interval:
+          type: integer
+          description: Minimum polling interval in seconds
+
+    ToolDef:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [function]
+        function:
+          type: object
+          properties:
+            name:
+              type: string
+              example: search-repos
+            description:
+              type: string
+            parameters:
+              type: object
+              description: JSON Schema for the tool's input
+
+    ToolInvokeRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          description: Tool name (e.g. search-repos)
+        arguments:
+          type: object
+          description: Tool arguments as key/value pairs
+
+    ToolInvokeResponse:
+      type: object
+      properties:
+        output:
+          type: string
+          description: Tool execution result (may be JSON-encoded)
+
+    VersionInfo:
+      type: object
+      properties:
+        version:
+          type: string
+          example: "1.0.0"
+        commit:
+          type: string
+          example: abc1234
+        buildTime:
+          type: string
+          example: "2025-01-15T10:00:00Z"
+
+    TunableConfig:
+      type: object
+      properties:
+        searchMaxResults:
+          type: integer
+          description: Max ripgrep matches per search
+          example: 200
+        toolOutputLimit:
+          type: integer
+          description: Max characters in tool output
+          example: 8000
+        toolTimeout:
+          type: integer
+          description: Tool invocation timeout in seconds
+          example: 120
+        contextTokenLimit:
+          type: integer
+          description: Client-side context compaction threshold
+          example: 120000

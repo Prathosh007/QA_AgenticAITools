@@ -1,0 +1,2927 @@
+{
+  "functionality": "Agent Installation",
+  "schema_note": "Operation types & params reconstructed from KNOWLEDGE.md; validate against GOAT_Operations_Context.md before execution.",
+  "total_testcases": 102,
+  "payloads": [
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-001",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push install on Local Office agent (x64) - happy path",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 4
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-002",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push install on Remote Office agent - Direct Communication (x64)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Cross-Environment",
+      "component": "$BranchOffice1_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 3
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-003",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push install on Remote Office agent - via Distribution Server (x64)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Cross-Environment",
+      "component": "$BranchOffice1_DS",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 3
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-004",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Force push via UEMSRemoteInstaller only (method isolation)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Retry / Recovery",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "rename",
+          "source": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\remcom.exe",
+          "destination": "remcom.exe.bak"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "rename",
+          "source": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\remcom64.exe",
+          "destination": "remcom64.exe.bak"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "stop",
+          "service_name": "winmgmt"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "rename",
+          "source": "<source>",
+          "destination": "<destination>"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "start",
+          "service_name": "winmgmt"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-005",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Force push via WMI only (method isolation)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Retry / Recovery",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "rename",
+          "source": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\UEMSRemoteInstaller.exe",
+          "destination": ".bak"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "rename",
+          "source": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\remcom.exe",
+          "destination": ".bak"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "start",
+          "service_name": "winmgmt"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "rename",
+          "source": "<source>",
+          "destination": "<destination>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-006",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Force push via Remcom only (method isolation)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Retry / Recovery",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "rename",
+          "source": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\UEMSRemoteInstaller.exe",
+          "destination": ".bak"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "stop",
+          "service_name": "winmgmt"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "rename",
+          "source": "<source>",
+          "destination": "<destination>"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "start",
+          "service_name": "winmgmt"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-007",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push fallback chain - UEMSRemoteInstaller fails then WMI succeeds",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Retry / Recovery",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "rename",
+          "source": "UEMSRemoteInstaller.exe",
+          "destination": ".bak)"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "rename",
+          "source": "<source>",
+          "destination": "<destination>"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-008",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push install - x86 (32-bit) path and registry verification",
+      "platform": "windows",
+      "os_version": "Windows 10 (x86)",
+      "priority": "P2",
+      "category": "Cross-Environment",
+      "component": "$LocalOffice_WinAgent_x86_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-009",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push install - ARM64 under emulation",
+      "platform": "windows",
+      "os_version": "Windows 11 (ARM64)",
+      "priority": "P2",
+      "category": "Cross-Environment",
+      "component": "$LocalOffice_WinAgent_ARM64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-010",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push install fails with invalid admin credentials",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 3
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-011",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push install fails with low-privilege credentials",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Security / Permission",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 3
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-012",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push fails when File & Printer Sharing / network discovery disabled",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 3
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-013",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push install on unsupported OS (below Windows 7)",
+      "platform": "windows",
+      "os_version": "Below Windows 7",
+      "priority": "P3",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-014",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push install on unsupported Windows Server (below 2008 R2)",
+      "platform": "windows",
+      "os_version": "Windows Server < 2008 R2",
+      "priority": "P3",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-015",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push fails when required ports blocked by firewall",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Failure / Error Handling",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-016",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Concurrent push to many machines",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Concurrency / Race Conditions",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-017",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push fails - DS has not yet replicated binaries (Access Denied)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Support Ticket Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 4
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-018",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push fails - All pipes are busy via UEMSRemoteInstaller",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Support Ticket Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-019",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Push install causes endpoint blackscreen on builds 2540.01-2540.07",
+      "platform": "windows",
+      "os_version": "Build 2540.01-2540.07",
+      "priority": "P1",
+      "category": "Bug Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-PUSHINSTALL-020",
+      "functionality": "Agent Installation",
+      "sub_functionality": "PUSHINSTALL",
+      "title": "Pre-install cleanup before push (clean-state baseline)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Cleanup / Uninstall",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\DCAgent.exe",
+          "arguments": "/uninstall /s"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "not_running"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-001",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Manual GUI wizard install - Local Office (x64) happy path",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<OfficeName>_Agent.exe"
+        },
+        {
+          "operation_type": "native_gui_operation",
+          "gui_operations": [
+            {
+              "automationId": "3",
+              "action": "ReadText"
+            },
+            {
+              "automationId": "6",
+              "action": "EnterText",
+              "text": "<captcha_text>"
+            },
+            {
+              "automationId": "7",
+              "action": "Click"
+            },
+            {
+              "automationId": "2018",
+              "action": "Wait",
+              "timeout_seconds": 10
+            },
+            {
+              "automationId": "2018",
+              "action": "Click"
+            },
+            {
+              "automationId": "2018",
+              "action": "Click"
+            },
+            {
+              "automationId": "2023",
+              "action": "Wait",
+              "timeout_seconds": 30
+            },
+            {
+              "automationId": "2023",
+              "action": "ReadText",
+              "expected_text": "Installation Complete"
+            },
+            {
+              "automationId": "2075",
+              "action": "Click"
+            }
+          ]
+        },
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-002",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Manual GUI install - Remote Office via DS",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Cross-Environment",
+      "component": "$BranchOffice1_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<OfficeName>_Agent.exe"
+        },
+        {
+          "operation_type": "native_gui_operation",
+          "gui_operations": [
+            {
+              "automationId": "3",
+              "action": "ReadText"
+            },
+            {
+              "automationId": "6",
+              "action": "EnterText",
+              "text": "<captcha_text>"
+            },
+            {
+              "automationId": "7",
+              "action": "Click"
+            },
+            {
+              "automationId": "2018",
+              "action": "Wait",
+              "timeout_seconds": 10
+            },
+            {
+              "automationId": "2018",
+              "action": "Click"
+            },
+            {
+              "automationId": "2018",
+              "action": "Click"
+            },
+            {
+              "automationId": "2023",
+              "action": "Wait",
+              "timeout_seconds": 30
+            },
+            {
+              "automationId": "2023",
+              "action": "ReadText",
+              "expected_text": "Installation Complete"
+            },
+            {
+              "automationId": "2075",
+              "action": "Click"
+            }
+          ]
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-003",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Manual GUI install - x86 path/registry verification",
+      "platform": "windows",
+      "os_version": "Windows 10 (x86)",
+      "priority": "P2",
+      "category": "Cross-Environment",
+      "component": "$LocalOffice_WinAgent_x86_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<OfficeName>_Agent.exe"
+        },
+        {
+          "operation_type": "native_gui_operation",
+          "gui_operations": [
+            {
+              "automationId": "3",
+              "action": "ReadText"
+            },
+            {
+              "automationId": "6",
+              "action": "EnterText",
+              "text": "<captcha_text>"
+            },
+            {
+              "automationId": "7",
+              "action": "Click"
+            },
+            {
+              "automationId": "2018",
+              "action": "Wait",
+              "timeout_seconds": 10
+            },
+            {
+              "automationId": "2018",
+              "action": "Click"
+            },
+            {
+              "automationId": "2018",
+              "action": "Click"
+            },
+            {
+              "automationId": "2023",
+              "action": "Wait",
+              "timeout_seconds": 30
+            },
+            {
+              "automationId": "2023",
+              "action": "ReadText",
+              "expected_text": "Installation Complete"
+            },
+            {
+              "automationId": "2075",
+              "action": "Click"
+            }
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-004",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Download agent EXE from server console",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-005",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Copy installer to target machine",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Integration",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-006",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Manual install fails on invalid CAPTCHA",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 3
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-007",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Manual install fails with corrupt installer",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-008",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Manual install without administrator rights",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Security / Permission",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-009",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Manual wizard encounters an undocumented GUI element",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Edge Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-010",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Network drop during manual installer download",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Timing / Timeout",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 3
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-011",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Manual installation logged as 'upgrade' in SOM log",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Support Ticket Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<OfficeName>_Agent.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-012",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Manual install fails - TEMP directory points to invalid path",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Support Ticket Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-013",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Manual installation failure - miscellaneous reasons",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Failure / Error Handling",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-014",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Installer crash - NULL service tag (heap corruption)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Bug Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-015",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Installer crash - NULL resource string used by strcpy",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Bug Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-016",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Installer crash - dynamic key is null",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Bug Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-017",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Installer crash - processing agent-security-settings.json (GetAttemptData)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Bug Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MANUALGUI-018",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MANUALGUI",
+      "title": "Post-install validation - architecture-aware",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-SILENTINSTALL-001",
+      "functionality": "Agent Installation",
+      "sub_functionality": "SILENTINSTALL",
+      "title": "Silent EXE install (/silent) - Local Office (x64) happy path",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<OfficeName>_Agent.exe",
+          "arguments": "/silent"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-SILENTINSTALL-002",
+      "functionality": "Agent Installation",
+      "sub_functionality": "SILENTINSTALL",
+      "title": "Silent EXE install - Remote Office via DS",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Cross-Environment",
+      "component": "$BranchOffice1_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<RemoteOfficeName>_Agent.exe",
+          "arguments": "/silent"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-SILENTINSTALL-003",
+      "functionality": "Agent Installation",
+      "sub_functionality": "SILENTINSTALL",
+      "title": "Silent EXE install - x86",
+      "platform": "windows",
+      "os_version": "Windows 10 (x86)",
+      "priority": "P2",
+      "category": "Cross-Environment",
+      "component": "$LocalOffice_WinAgent_x86_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<OfficeName>_Agent.exe",
+          "arguments": "/silent"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-SILENTINSTALL-004",
+      "functionality": "Agent Installation",
+      "sub_functionality": "SILENTINSTALL",
+      "title": "Silent EXE install without admin rights",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Security / Permission",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<OfficeName>_Agent.exe",
+          "arguments": "/silent"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-SILENTINSTALL-005",
+      "functionality": "Agent Installation",
+      "sub_functionality": "SILENTINSTALL",
+      "title": "Silent EXE install with wrong argument",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<OfficeName>_Agent.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-SILENTINSTALL-006",
+      "functionality": "Agent Installation",
+      "sub_functionality": "SILENTINSTALL",
+      "title": "Silent EXE install with corrupt executable",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>",
+          "arguments": "/silent"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-SILENTINSTALL-007",
+      "functionality": "Agent Installation",
+      "sub_functionality": "SILENTINSTALL",
+      "title": "EXE installer returns success without proper error code (OSD impact)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Integration",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-SILENTINSTALL-008",
+      "functionality": "Agent Installation",
+      "sub_functionality": "SILENTINSTALL",
+      "title": "Silent EXE deployed via GPO",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Integration",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-SILENTINSTALL-009",
+      "functionality": "Agent Installation",
+      "sub_functionality": "SILENTINSTALL",
+      "title": "Silent EXE deployed via OSD image",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Integration",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-001",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "MSI silent install (x64) happy path",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-002",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "Download MSI zip (Command Line option) from console",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-003",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "Unzip MSI package and verify all required files present",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-004",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "MSI silent install - Remote Office via DS",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Cross-Environment",
+      "component": "$BranchOffice1_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-005",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "MSI install fails when UEMSAgent.mst is missing",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-006",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "MSI install fails / cert validation when .crt files missing",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-007",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "MSI install with corrupt zip",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-008",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "MSI install without administrator rights",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Security / Permission",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-009",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "Interrupt MSI install mid-way - rollback",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "State Transition",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-010",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "Machine restarts mid-install - MSI gets reverted",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Support Ticket Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-011",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "MSI install stuck for a long time",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Timing / Timeout",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-012",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "All MSI installs fail due to corrupted Windows Installer engine",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Failure / Error Handling",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-013",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "Crash after decrypting Agent-settings.xml (heap corruption)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Bug Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-014",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "Verify Agentinstalllog.txt troubleshooting log generated",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Edge Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-015",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "MSI install - x86",
+      "platform": "windows",
+      "os_version": "Windows 10 (x86)",
+      "priority": "P2",
+      "category": "Cross-Environment",
+      "component": "$LocalOffice_WinAgent_x86_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-MSIINSTALL-016",
+      "functionality": "Agent Installation",
+      "sub_functionality": "MSIINSTALL",
+      "title": "Power failure during install - partial write recovery",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Rare / Unlikely",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-ZIPINSTALL-001",
+      "functionality": "Agent Installation",
+      "sub_functionality": "ZIPINSTALL",
+      "title": "Zip setup.bat install - Local Office (x64) happy path",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Installers\\ZipExtract\\"
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "setup.bat"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-ZIPINSTALL-002",
+      "functionality": "Agent Installation",
+      "sub_functionality": "ZIPINSTALL",
+      "title": "Zip setup.bat install - Remote Office via DS",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Cross-Environment",
+      "component": "$BranchOffice1_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "setup.bat"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-ZIPINSTALL-003",
+      "functionality": "Agent Installation",
+      "sub_functionality": "ZIPINSTALL",
+      "title": "Download agent zip from Agent Installation tab",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-ZIPINSTALL-004",
+      "functionality": "Agent Installation",
+      "sub_functionality": "ZIPINSTALL",
+      "title": "Zip install fails when UEMSAgent.mst missing from extracted folder",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "setup.bat"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-ZIPINSTALL-005",
+      "functionality": "Agent Installation",
+      "sub_functionality": "ZIPINSTALL",
+      "title": "Zip install - missing .crt files cause cert validation failure",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "setup.bat"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-ZIPINSTALL-006",
+      "functionality": "Agent Installation",
+      "sub_functionality": "ZIPINSTALL",
+      "title": "Zip alternate method - GUI EXE from extracted zip",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-ZIPINSTALL-007",
+      "functionality": "Agent Installation",
+      "sub_functionality": "ZIPINSTALL",
+      "title": "Zip alternate method - silent EXE from extracted zip",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<OfficeName>_Agent.exe",
+          "arguments": "/silent"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-ZIPINSTALL-008",
+      "functionality": "Agent Installation",
+      "sub_functionality": "ZIPINSTALL",
+      "title": "Zip install with disk full / low disk space",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Resource Exhaustion",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "setup.bat"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-ZIPINSTALL-009",
+      "functionality": "Agent Installation",
+      "sub_functionality": "ZIPINSTALL",
+      "title": "Zip extract to path with Unicode / very long path",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Edge Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "setup.bat"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-DSINSTALL-001",
+      "functionality": "Agent Installation",
+      "sub_functionality": "DSINSTALL",
+      "title": "Manual DS install on a remote office machine - happy path",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$BranchOffice1_DS",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        },
+        {
+          "operation_type": "exe_install",
+          "file_path": "<installer_path>"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Distribution Server",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_DS"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-DSINSTALL-002",
+      "functionality": "Agent Installation",
+      "sub_functionality": "DSINSTALL",
+      "title": "Automatic DS install (push from console)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$BranchOffice1_DS",
+      "operations": [
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Distribution Server",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_DS"
+        }
+      ],
+      "gap_count": 4
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-DSINSTALL-003",
+      "functionality": "Agent Installation",
+      "sub_functionality": "DSINSTALL",
+      "title": "DS post-install verification",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$BranchOffice1_DS",
+      "operations": [
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Distribution Server",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_DS"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-DSINSTALL-004",
+      "functionality": "Agent Installation",
+      "sub_functionality": "DSINSTALL",
+      "title": "DS install on a machine without a static IP",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Negative Cases",
+      "component": "$BranchOffice1_DS",
+      "operations": [
+        {
+          "operation_type": "exe_install",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-DSINSTALL-005",
+      "functionality": "Agent Installation",
+      "sub_functionality": "DSINSTALL",
+      "title": "Automatic DS/WAN install when target not reachable from server (cloud/MSP)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$BranchOffice1_DS",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-DSINSTALL-006",
+      "functionality": "Agent Installation",
+      "sub_functionality": "DSINSTALL",
+      "title": "DS upgrade fails with 1638 error from scheduler",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Support Ticket Scenario",
+      "component": "$BranchOffice1_DS",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-DSINSTALL-007",
+      "functionality": "Agent Installation",
+      "sub_functionality": "DSINSTALL",
+      "title": "DS replication to remote-office agents",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Integration",
+      "component": "$BranchOffice1_DS",
+      "operations": [],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-DSINSTALL-008",
+      "functionality": "Agent Installation",
+      "sub_functionality": "DSINSTALL",
+      "title": "DS install on Windows client OS (not Server)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Cross-Environment",
+      "component": "$BranchOffice1_DS",
+      "operations": [
+        {
+          "operation_type": "exe_install",
+          "file_path": "<installer_path>"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Distribution Server",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_DS"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-WANAGENT-001",
+      "functionality": "Agent Installation",
+      "sub_functionality": "WANAGENT",
+      "title": "WAN agent automatic installation via DS",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$BranchOffice1_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 5
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-WANAGENT-002",
+      "functionality": "Agent Installation",
+      "sub_functionality": "WANAGENT",
+      "title": "WAN agent manual installation (Windows .exe)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Success / Happy Path",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": ".exe"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        },
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "running"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "Start"
+          ]
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-WANAGENT-003",
+      "functionality": "Agent Installation",
+      "sub_functionality": "WANAGENT",
+      "title": "WAN agent auto install fails when devices unreachable (cloud/MSP)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-WANAGENT-004",
+      "functionality": "Agent Installation",
+      "sub_functionality": "WANAGENT",
+      "title": "Verify WAN agent communicates via DS (ServerName = DS IP)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Integration",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName"
+          ]
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-AGENTUNINSTALL-001",
+      "functionality": "Agent Installation",
+      "sub_functionality": "AGENTUNINSTALL",
+      "title": "Uninstall agent from server console",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Cleanup / Uninstall",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-AGENTUNINSTALL-002",
+      "functionality": "Agent Installation",
+      "sub_functionality": "AGENTUNINSTALL",
+      "title": "Manual uninstall via Control Panel with OTP (GUI flow)",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Cleanup / Uninstall",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "native_gui_operation",
+          "gui_operations": [
+            {
+              "automationId": "SearchEditBox",
+              "action": "EnterText",
+              "text": "UEMS-Agent"
+            },
+            {
+              "automationId": "ListViewSubItem-0",
+              "action": "DoubleClick"
+            },
+            {
+              "automationId": "UninstallBtn",
+              "action": "Wait",
+              "timeout_seconds": 30
+            },
+            {
+              "automationId": "UninstallBtn",
+              "action": "Click"
+            },
+            {
+              "automationId": "SuccessUninstall",
+              "action": "Wait",
+              "timeout_seconds": 420
+            },
+            {
+              "automationId": "SuccessUninstall",
+              "action": "ReadText",
+              "expected_text": "Agent successfully uninstalled"
+            }
+          ]
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-AGENTUNINSTALL-003",
+      "functionality": "Agent Installation",
+      "sub_functionality": "AGENTUNINSTALL",
+      "title": "Silent uninstall via DCAgent.exe /uninstall /s",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Cleanup / Uninstall",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin\\DCAgent.exe",
+          "arguments": "/uninstall /s"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-AGENTUNINSTALL-004",
+      "functionality": "Agent Installation",
+      "sub_functionality": "AGENTUNINSTALL",
+      "title": "Post-uninstall cleanup verification",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Cleanup / Uninstall",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "service_actions",
+          "action": "status",
+          "service_name": "ManageEngine UEMS Agent Service",
+          "expected_status": "not_running"
+        },
+        {
+          "operation_type": "task_manager",
+          "action": "verify_process",
+          "process_name": "DCAgentService.exe"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-AGENTUNINSTALL-005",
+      "functionality": "Agent Installation",
+      "sub_functionality": "AGENTUNINSTALL",
+      "title": "TOTP uninstall fails - local time not in sync with server",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Support Ticket Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-AGENTUNINSTALL-006",
+      "functionality": "Agent Installation",
+      "sub_functionality": "AGENTUNINSTALL",
+      "title": "Third-party tool uninstall bypasses TOTP restriction",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Security / Permission",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 3
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-AGENTUNINSTALL-007",
+      "functionality": "Agent Installation",
+      "sub_functionality": "AGENTUNINSTALL",
+      "title": "Reinstalled agents in WFA get uninstalled automatically",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "State Transition",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-AGENTUNINSTALL-008",
+      "functionality": "Agent Installation",
+      "sub_functionality": "AGENTUNINSTALL",
+      "title": "Manual uninstall with wrong OTP",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Negative Cases",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-UPGRADE-001",
+      "functionality": "Agent Installation",
+      "sub_functionality": "UPGRADE",
+      "title": "Agent upgrade to a newer build - happy path",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Upgrade / Migration",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "AgentVersion"
+          ]
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-UPGRADE-002",
+      "functionality": "Agent Installation",
+      "sub_functionality": "UPGRADE",
+      "title": "Agent upgradation failure",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Support Ticket Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-UPGRADE-003",
+      "functionality": "Agent Installation",
+      "sub_functionality": "UPGRADE",
+      "title": "Agent upgrade fails - MSI signature could not be verified",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Security / Permission",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-UPGRADE-004",
+      "functionality": "Agent Installation",
+      "sub_functionality": "UPGRADE",
+      "title": "Upgrade leaves dcagentservice.exe / dcagentregister.exe not replaced",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Bug Scenario",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent\\bin"
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-UPGRADE-005",
+      "functionality": "Agent Installation",
+      "sub_functionality": "UPGRADE",
+      "title": "New install must clean up older agent registry keys",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Cleanup / Uninstall",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        },
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-UPGRADE-006",
+      "functionality": "Agent Installation",
+      "sub_functionality": "UPGRADE",
+      "title": "SDP key not deleted after install - machine falls under SDP",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "Cleanup / Uninstall",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_bat",
+          "action": "execute",
+          "file_path": "<installer_path>"
+        },
+        {
+          "operation_type": "registry_operation",
+          "action": "read_key",
+          "key_path": "HKLM\\SOFTWARE\\WOW6432Node\\AdventNet\\DesktopCentral\\DCAgent",
+          "value_names": [
+            "ServerName",
+            "ServerPort",
+            "AgentVersion",
+            "InstallDir"
+          ]
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-UPGRADE-007",
+      "functionality": "Agent Installation",
+      "sub_functionality": "UPGRADE",
+      "title": "Delay updating Actual Agent version from DCAgentServerInfo.json after SSDF refresh",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P2",
+      "category": "Timing / Timeout",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "file_folder_operation",
+          "action": "check_presence",
+          "path": "<path>"
+        }
+      ],
+      "gap_count": 1
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-UPGRADE-008",
+      "functionality": "Agent Installation",
+      "sub_functionality": "UPGRADE",
+      "title": "Backward-compat - MSI command for builds below vs above 10.1.2220.1",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P3",
+      "category": "Upgrade / Migration",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        },
+        {
+          "operation_type": "run_command",
+          "command": "<command>"
+        }
+      ],
+      "gap_count": 0
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-E2E-001",
+      "functionality": "Agent Installation",
+      "sub_functionality": "E2E",
+      "title": "E2E Local Office lifecycle - install, verify, upgrade, uninstall",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "E2E",
+      "component": "$LocalOffice_WinAgent_x64_1",
+      "operations": [
+        {
+          "operation_type": "run_command",
+          "command": "wmic os get osarchitecture"
+        }
+      ],
+      "gap_count": 2
+    },
+    {
+      "testcase_id": "TC-AGENTINSTALL-E2E-002",
+      "functionality": "Agent Installation",
+      "sub_functionality": "E2E",
+      "title": "E2E Remote Office lifecycle - add office, DS install, WAN agent, verify via DS, uninstall",
+      "platform": "windows",
+      "os_version": "Windows 11 (x64)",
+      "priority": "P1",
+      "category": "E2E",
+      "component": "$BranchOffice1_WinAgent_x64_1",
+      "operations": [],
+      "gap_count": 1
+    }
+  ]
+}

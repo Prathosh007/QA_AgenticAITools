@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UEMS Agent AI Toolkit</title>
+  <link rel="icon" type="image/png" href="/icon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap">
+  <link rel="stylesheet" href="/home.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- Loading overlay (visible by default, hidden once auth resolves) -->
+  <div id="loading-screen" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0d1117;z-index:9999;transition:opacity .3s ease">
+    <img src="/icon.png" alt="" width="48" height="48" style="animation:pulse-logo 1.8s ease-in-out infinite">
+    <div style="width:24px;height:24px;margin-top:20px;border:2.5px solid rgba(255,255,255,.15);border-top-color:#58a6ff;border-radius:50%;animation:spin-loader .7s linear infinite"></div>
+  </div>
+  <style>
+    @keyframes pulse-logo{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}
+    @keyframes spin-loader{to{transform:rotate(360deg)}}
+  </style>
+
+  <!-- Zoho OAuth Login Screen (hidden until auth check completes) -->
+  <div id="zoho-login-screen" class="zoho-login-screen hidden">
+    <div class="zoho-login-card">
+      <div class="zoho-login-logo">
+        <img src="/icon.png" alt="UEMS" width="56" height="56">
+      </div>
+      <h1 class="zoho-login-title">UEMS Agent AI Toolkit</h1>
+      <p class="zoho-login-subtitle">Sign in with your Zoho account to access the toolkit. Only authorised team members can log in.</p>
+      <button id="zoho-login-btn" class="zoho-login-btn">
+        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="48" height="48" rx="8" fill="white"/>
+          <path d="M10 14h28v4H10z" fill="#E42527"/>
+          <path d="M10 22h20v4H10z" fill="#0D6FBF"/>
+          <path d="M10 30h14v4H10z" fill="#F5A623"/>
+        </svg>
+        Continue with Zoho
+      </button>
+      <div id="zoho-error-box" class="zoho-error-box hidden"></div>
+    </div>
+  </div>
+
+  <!-- Main content (hidden until authenticated) -->
+  <div id="home-main" class="home-container hidden">
+    <!-- Header -->
+    <header class="home-header">
+      <div class="home-brand">
+        <img src="/icon.png" alt="UEMS" width="32" height="32">
+        <span>UEMS Agent AI Toolkit</span>
+      </div>
+      <!-- Logged-in user pill -->
+      <div id="home-user-pill" class="home-user-pill hidden">
+        <img id="home-user-avatar" src="" alt="User" width="24" height="24">
+        <span id="home-user-name" class="user-name"></span>
+        <button id="home-logout-btn" class="home-logout-btn" title="Sign out">
+          <span class="material-symbols-rounded">logout</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="hero-title">UEMS Agent AI Toolkit</h1>
+      <p class="hero-subtitle">AI-powered development tooling for UEMS Endpoint Central — explore codebases, automate SDLC workflows, and ship features faster across macOS, Linux, and Windows.</p>
+    </section>
+
+    <!-- Primary Actions -->
+    <section class="primary-cards">
+
+      <a href="/explorer/" class="card card-primary card-explorer">
+        <div class="card-icon">
+          <span class="material-symbols-rounded">explore</span>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">UEMS Agent Explorer</h2>
+          <p class="card-desc">Explore codebases, trace workflows, debug logs, and understand architecture across all native agent repositories — right in your browser.</p>
+          <div class="card-action">
+            <span>Open Explorer</span>
+            <span class="material-symbols-rounded">arrow_forward</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/docs/source/uems-agent-chat" class="card card-primary card-extension">
+        <div class="card-icon">
+          <span class="material-symbols-rounded">extension</span>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">UEMS Agent for VS Code</h2>
+          <p class="card-desc">Full SDLC pipeline inside your editor — plan, architect, develop, review, and test with specialized AI agents powered by GitHub Copilot.</p>
+          <div class="card-action">
+            <span>Setup Guide</span>
+            <span class="material-symbols-rounded">arrow_forward</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/tc/view" class="card card-primary card-testcases">
+        <div class="card-icon">
+          <span class="material-symbols-rounded">checklist</span>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">Testcase DB</h2>
+          <p class="card-desc">Browse, filter, and manage QA test cases generated by the Testcase Generator agent. View GOAT payloads, gap reports, and export to CSV.</p>
+          <div class="card-action">
+            <span>Open Viewer</span>
+            <span class="material-symbols-rounded">arrow_forward</span>
+          </div>
+        </div>
+      </a>
+
+    </section>
+
+    <!-- Getting Started -->
+    <section class="getting-started">
+      <h2 class="section-title">
+        <span class="material-symbols-rounded">rocket_launch</span>
+        Getting Started
+      </h2>
+
+      <!-- Workflow picker tabs -->
+      <div class="workflow-tabs">
+        <button class="workflow-tab active" data-tab="explorer">
+          <span class="material-symbols-rounded">explore</span>
+          UEMS Agent Explorer
+        </button>
+        <button class="workflow-tab" data-tab="extension">
+          <span class="material-symbols-rounded">extension</span>
+          UEMS Agent for VS Code
+        </button>
+      </div>
+
+      <!-- Explorer steps -->
+      <div class="steps workflow-steps active" id="steps-explorer">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Open the Explorer</h3>
+            <p>Click <a href="/explorer/">Open Explorer</a> — no installs, no setup. Requires <strong>GitHub Copilot</strong> with an active license. Works in any browser.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Ask about the codebase</h3>
+            <p>Start typing your question. The Explorer understands the full codebase and can help with:</p>
+            <ul class="step-bullets">
+              <li>Trace function calls and data flow across repos</li>
+              <li>Understand update, install, and communication workflows</li>
+              <li>Debug log sequences and error patterns</li>
+              <li>Compare platform-specific implementations (macOS vs Linux vs Windows)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Search and explore</h3>
+            <p>The Explorer searches across all 38 repositories automatically. It can:</p>
+            <ul class="step-bullets">
+              <li>Search code patterns across multiple repos simultaneously</li>
+              <li>List classes, structs, protocols, and interfaces</li>
+              <li>Map dependencies between repos and layers</li>
+              <li>Read and explain source files in context</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- VS Code Extension steps -->
+      <div class="steps workflow-steps" id="steps-extension">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Install the extension</h3>
+            <p>Download the <a href="/api/download/source/uems-agent-chat/releases/uems-agent-chat.vsix">VSIX</a> and install it <span class="step-hint">(<a href="/docs/source/uems-agent-chat/getting-started.md">getting started guide</a>)</span>:</p>
+            <ul class="step-bullets">
+              <li>Terminal: <code>code --install-extension uems-agent-chat.vsix</code></li>
+              <li>Or VS Code: Extensions (<code>⇧⌘X</code>) → <code>···</code> → Install from VSIX…</li>
+              <li>Requires <strong>GitHub Copilot</strong> with an active license</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Open Copilot Chat and select an agent</h3>
+            <p>Open Copilot Chat and select <strong>UEMS Agent</strong> from the participant dropdown. Then choose an agent for your task:</p>
+            <ul class="step-bullets">
+              <li><strong>Orchestrator</strong> — end-to-end SDLC: plan → architect → develop → review → test</li>
+              <li><strong>Explorer</strong> — read-only codebase investigation and architecture analysis</li>
+              <li><strong>Delta Reviewer</strong> — diff-based code review between branches</li>
+              <li><strong>Document Generator</strong> — create and update AI-navigable repo documentation</li>
+              <li><strong>QA</strong> — generate structured manual test cases from code changes</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Describe your task</h3>
+            <p>Tell the agent what you need in plain language. The <strong>Orchestrator</strong> automatically delegates to specialized sub-agents:</p>
+            <ul class="step-bullets">
+              <li><strong>Planner</strong> analyses requirements and cross-repo dependencies</li>
+              <li><strong>Architect</strong> designs the solution with checklist compliance</li>
+              <li><strong>Developer</strong> generates production-ready code</li>
+              <li><strong>Reviewer</strong> verifies correctness, security, and standards</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Documentation -->
+    <section class="docs-section">
+      <h2 class="section-title">
+        <span class="material-symbols-rounded">menu_book</span>
+        Documentation
+      </h2>
+      <div class="docs-grid">
+        <a href="/docs/agents" class="doc-link">
+          <span class="material-symbols-rounded">smart_toy</span>
+          <div>
+            <strong>Agents</strong>
+            <span>Orchestrator, Planner, Architect, Developer, Reviewer, QA, and more</span>
+          </div>
+        </a>
+        <a href="/docs/guidelines" class="doc-link">
+          <span class="material-symbols-rounded">gavel</span>
+          <div>
+            <strong>Guidelines</strong>
+            <span>Engineering standards, security rules, coding conventions</span>
+          </div>
+        </a>
+        <a href="/docs/skills" class="doc-link">
+          <span class="material-symbols-rounded">psychology</span>
+          <div>
+            <strong>Skills</strong>
+            <span>Symbol tracing, change analysis, checkpoints, test generation</span>
+          </div>
+        </a>
+        <a href="/docs/README.md" class="doc-link">
+          <span class="material-symbols-rounded">description</span>
+          <div>
+            <strong>Project Overview</strong>
+            <span>Architecture, deployment, API reference, bridge mode config</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="home-footer">
+      <span>UEMS Agent AI Toolkit</span>
+      <span class="footer-sep">·</span>
+      <span>Zoho Corp</span>
+    </footer>
+  </div>
+
+  <!-- Docs viewer (hidden by default, shown on /docs/* routes) -->
+  <div class="docs-container hidden" id="docs-container">
+    <header class="home-header">
+      <div class="home-brand">
+        <a href="/" class="home-brand-link">
+          <img src="/icon.png" alt="UEMS" width="32" height="32">
+          <span>UEMS Agent AI Toolkit</span>
+        </a>
+      </div>
+      <nav class="docs-breadcrumb" id="docs-breadcrumb"></nav>
+    </header>
+    <div class="docs-layout">
+      <aside class="docs-sidebar" id="docs-sidebar"></aside>
+      <main class="docs-content" id="docs-content">
+        <div class="docs-loading"><div class="spinner"></div></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Feedback FAB + Modal -->
+  <button class="feedback-fab" id="feedback-fab" title="Share Feedback">
+    <span class="material-symbols-rounded">rate_review</span>
+    <span class="feedback-fab-label">Feedback</span>
+  </button>
+
+  <div class="feedback-overlay hidden" id="feedback-overlay">
+    <div class="feedback-modal">
+      <div class="feedback-header">
+        <h3>
+          <span class="material-symbols-rounded">rate_review</span>
+          Share Feedback
+        </h3>
+        <button class="feedback-close" id="feedback-close">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <p class="feedback-hint">Tell us what worked, what didn't, or what you'd like to see.</p>
+      <div class="feedback-field">
+        <label for="feedback-name">Name</label>
+        <input type="text" id="feedback-name" placeholder="Your name" autocomplete="name">
+      </div>
+      <div class="feedback-field">
+        <label for="feedback-category">Category</label>
+        <select id="feedback-category">
+          <option value="General">General</option>
+          <option value="Explorer">Explorer</option>
+          <option value="VS Code Extension">VS Code Extension</option>
+          <option value="Documentation">Documentation</option>
+          <option value="Bug Report">Bug Report</option>
+          <option value="Feature Request">Feature Request</option>
+        </select>
+      </div>
+      <div class="feedback-field">
+        <label for="feedback-text">Your feedback</label>
+        <textarea id="feedback-text" rows="5" placeholder="What's on your mind?"></textarea>
+      </div>
+      <button class="feedback-submit" id="feedback-submit">
+        <span class="material-symbols-rounded">send</span>
+        Send Feedback
+      </button>
+    </div>
+  </div>
+
+  <script src="/js/tabs.js"></script>
+  <script src="/js/docs.js"></script>
+  <script type="module">import { initFeedback } from '/js/feedback.js'; initFeedback();</script>
+  <script type="module">import { initZohoAuth } from '/js/zoho-auth.js'; initZohoAuth();</script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+TEST CASE ID,Module,Type,TEST CASE DESCRIPTION,Steps
+TC-INSTALL-001,dcregister (Fresh Install),Functional,Verify fresh agent installation creates vault database files,"1. Perform fresh agent installation using dcregister binary
+2. Navigate to agent install directory /data/datavault/
+3. Verify agent.db exists under /data/datavault/storage/
+4. Verify m_vault.db exists under /data/datavault/vault/
+5. Verify both files have 0600 permissions (owner read/write only)"
+TC-INSTALL-002,dcregister (Fresh Install),Functional,Verify agent install time is stored in vault on fresh install,"1. Perform fresh agent installation
+2. After registration completes check agent logs for 'StoreAgentInstallTime' entry
+3. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/storage/agent.db ""SELECT * FROM auth WHERE key='agent_install_time'""
+4. Verify the stored value is a valid epoch timestamp close to current time"
+TC-INSTALL-003,dcregister (Fresh Install),Functional,Verify auth tokens are stored in vault DB during registration,"1. Perform fresh agent registration (OP or Cloud)
+2. Verify no auth-props.json or approval-props.json files are created under /data/
+3. Check dcregister logs for 'Stored approval_token' and 'Stored auth_token' entries
+4. Verify /data/datavault/vault/m_vault.db is non-empty (encrypted data present)"
+TC-INSTALL-004,dcregister (Fresh Install),Functional,Verify CSR private key and client cert stored in vault not files,"1. Perform fresh agent registration with server that issues CSR
+2. Verify /data/certificates/certpk.crt file is NOT created
+3. Verify /data/certificates/clientcert.crt file is NOT created
+4. Check dcregister logs for 'csr_private_key' and 'csr_client_cert' vault store entries"
+TC-INSTALL-005,dcregister (Fresh Install),Functional,Verify proxy password stored in vault DB during registration,"1. Configure agent with proxy server (proxy with authentication)
+2. Perform fresh agent registration through proxy
+3. Verify proxy_password is not stored in server-info.json (M_proxyPassword should be empty or absent)
+4. Verify agent connects through proxy successfully after registration (proves password loaded from vault)"
+TC-INSTALL-006,dcregister (Fresh Install),Functional,Verify provisioning key stored in vault on cloud registration,"1. Perform cloud agent registration
+2. Check dcregister logs for 'prov_key' vault store entry
+3. Verify server-info.json does not contain decrypted provisioning key
+4. Verify agent can communicate with server post-registration"
+TC-INSTALL-007,dcregister (Fresh Install),Functional,Verify vault DB files not world-readable,"1. Perform fresh agent installation
+2. Run: ls -la /data/datavault/storage/ and /data/datavault/vault/
+3. Verify all .db files have permissions -rw------- (0600)
+4. Verify datavault directories have permissions drwx------ (0700)"
+TC-UPG-001,dcupgrader (Upgrade),Functional,Verify upgrade from pre-vault version migrates auth data to vault DB,"1. Install agent with version < 11.5.2620.01.L (e.g. 11.5.2606.01.L)
+2. Verify auth-props.json and approval-props.json exist under /data/
+3. Trigger agent upgrade to latest version (via server push or manual)
+4. Wait for dcupgrader to complete
+5. Verify vault DB files created under /data/datavault/
+6. Check dcupgrader logs for 'Migrated approval_token' and 'Migrated auth_token' entries
+7. Verify agent communicates with server successfully after upgrade (proves migrated tokens work)"
+TC-UPG-002,dcupgrader (Upgrade),Functional,Verify upgrade migrates approval_token from approval-props.json,"1. Install old agent version with approval-props.json containing M_value1 and M_value2
+2. Trigger upgrade
+3. Check dcupgrader logs for 'Migrated approval_token to vault DB'
+4. After upgrade verify agent WFA (Waiting For Approval) flow works correctly"
+TC-UPG-003,dcupgrader (Upgrade),Functional,Verify upgrade migrates auth_token from auth-props.json,"1. Install old agent version with auth-props.json containing M_value1 and M_value2
+2. Trigger upgrade
+3. Check dcupgrader logs for 'Migrated auth_token to vault DB'
+4. After upgrade verify agent server communication works (auth token used in HTTP headers)"
+TC-UPG-004,dcupgrader (Upgrade),Functional,Verify upgrade migrates provisioning key from server-info,"1. Install old cloud agent with prov_key in server-info.json (M_value1/M_value2)
+2. Trigger upgrade
+3. Check dcupgrader logs for 'Migrated prov_key to vault DB'
+4. Verify agent re-registration or server communication succeeds post-upgrade"
+TC-UPG-005,dcupgrader (Upgrade),Functional,Verify upgrade migrates proxy_password from server-info,"1. Install old agent with proxy configured (M_proxyPassword in server-info.json)
+2. Trigger upgrade
+3. Check dcupgrader logs for 'Migrated proxy_password to vault DB'
+4. Verify agent can communicate through proxy after upgrade"
+TC-UPG-006,dcupgrader (Upgrade),Functional,Verify upgrade migrates CSR private key from certpk.crt,"1. Install old agent that has /data/certificates/certpk.crt
+2. Trigger upgrade
+3. Check dcupgrader logs for 'Migrated csr_private_key to vault DB'
+4. Verify HTTPS client cert authentication works after upgrade"
+TC-UPG-007,dcupgrader (Upgrade),Functional,Verify upgrade migrates client certificate from clientcert.crt,"1. Install old agent that has /data/certificates/clientcert.crt
+2. Trigger upgrade
+3. Check dcupgrader logs for 'Migrated csr_client_cert to vault DB'
+4. Verify TLS mutual auth works after upgrade"
+TC-UPG-008,dcupgrader (Upgrade),Functional,Verify upgrade migrates ds_auth_token when DS auth is enabled,"1. Install old agent with dsAuthEnabled=true in approval-props.json and M_value10 set
+2. Trigger upgrade
+3. Check dcupgrader logs for 'Migrated ds_auth_token to vault DB from approval-props'
+4. Verify DS communication works after upgrade"
+TC-UPG-009,dcupgrader (Upgrade),Functional,Verify upgrade migrates agentInstallTime from SystemDetails.json,"1. Install old agent with AgentInstallTime set in SystemDetails.json
+2. Trigger upgrade
+3. Check dcupgrader logs for 'Migrated agentInstallTime to plain vault DB'
+4. Verify vault encryption works post-upgrade (install time used as salt)"
+TC-UPG-010,dcupgrader (Upgrade),Functional,Verify upgrade from already-vault version skips migration,"1. Install agent with version >= 11.5.2614.03.L
+2. Trigger upgrade to newer version
+3. Check dcupgrader logs for 'Skipping auth data migration to vault DB'
+4. Verify existing vault data is untouched"
+TC-UPG-011,dcupgrader (Upgrade),Functional,Verify upgrade handles missing approval-props.json gracefully,"1. Install old agent without approval-props.json (agent not yet approved)
+2. Trigger upgrade
+3. Verify dcupgrader does not crash or panic
+4. Verify auth-props.json is used as fallback source
+5. Check logs for appropriate messages"
+TC-UPG-012,dcupgrader (Upgrade),Functional,Verify upgrade handles missing auth-props.json gracefully,"1. Install old agent without auth-props.json
+2. Trigger upgrade
+3. Verify no crash or panic in dcupgrader
+4. Verify other migration steps (prov_key/proxy/certs) still complete"
+TC-UPG-013,dcupgrader (Upgrade),Functional,Verify upgrade migrates dynamic_key and approval_key from file value2 fields,"1. Install old agent with auth-props.json (M_value2) and approval-props.json (M_value2)
+2. Trigger upgrade
+3. Check dcupgrader logs for dynamic_key and approval_key storage
+4. Verify post-upgrade communication uses decrypted dynamic key from vault"
+TC-UPG-014,dcupgrader (Upgrade),Functional,Verify binary checksum cleared on installer checksum mismatch,"1. Tamper with the downloaded installer binary checksum
+2. Trigger upgrade
+3. Verify dcupgrader logs show checksum mismatch error
+4. Verify binary_checksum entry is cleared from vault
+5. Verify error status posted to server
+6. On next upgrade attempt verify fresh binary checksum is downloaded"
+TC-UPG-015,dcupgrader (Upgrade),Functional,Verify old renamed binary files are removed during upgrade from < 2606.01,"1. Install agent version < 11.5.2606.01.L with old binary names (dcrdsagent etc.)
+2. Trigger upgrade
+3. Verify StartSelfServicePortal.sh removed
+4. Verify dcrdsagent removed
+5. Verify dctoolsNotification removed
+6. Verify SelfServicePortal removed"
+TC-CONFIG-001,dcconfig (Scheduler),Functional,Verify dcconfig downloads and processes service-master-keys metadata,"1. Configure server with service-mkeys.json under /client-data/ with SOM and FRAMEWORK UUIDs
+2. Add customer-meta-data.json entry with meta_data_key=service-master-keys
+3. Wait for dcconfig refresh cycle or trigger manual refresh
+4. Check dcconfig logs for 'ProcessServiceMasterKeys: starting'
+5. Verify keyShareRequest is sent to server (check server access logs)
+6. Check dcconfig logs for 'stored key for keyUUID' entries"
+TC-CONFIG-002,dcconfig (Scheduler),Functional,Verify service-master-keys retry on decryption failure,"1. Set up service-mkeys.json with valid UUIDs on server
+2. Temporarily make the dynamic key invalid (or corrupt vault)
+3. Trigger dcconfig refresh
+4. Verify logs show 'unable to decrypt keyShareRequest response'
+5. Verify metadata version is NOT updated for service-master-keys
+6. Restore correct dynamic key
+7. Trigger next refresh cycle
+8. Verify keys are fetched and stored successfully on retry"
+TC-CONFIG-003,dcconfig (Scheduler),Functional,Verify only applicable module keys are stored (SOM and FRAMEWORK),"1. Configure server service-mkeys.json with UUIDs for SOM FRAMEWORK PATCH EDR
+2. Trigger dcconfig refresh
+3. Verify logs show 'skipping non-applicable module: PATCH' and 'skipping non-applicable module: EDR'
+4. Verify only SOM and FRAMEWORK keys are stored in vault
+5. Verify SSMK_ID_SOM and SSMK_ID_FRAMEWORK mappings created"
+TC-CONFIG-004,dcconfig (Scheduler),Functional,Verify Invalid module entry in keyShareRequest response is skipped,"1. Configure server to return a response containing an entry with moduleName=Invalid
+2. Trigger dcconfig refresh
+3. Verify logs show 'no actionable data for keyUUID' for the Invalid entry
+4. Verify processing continues for other valid entries
+5. Verify overall processing succeeds"
+TC-CONFIG-005,dcconfig (Scheduler),Functional,Verify NotApplicable module entry in keyShareRequest response is skipped,"1. Configure server to return a response with moduleName=NotApplicable
+2. Trigger dcconfig refresh
+3. Verify logs show 'skipping non-applicable module: NotApplicable'
+4. Verify the NotApplicable keyUUID is not stored in vault
+5. Verify other applicable keys are processed normally"
+TC-CONFIG-006,dcconfig (Scheduler),Functional,Verify isKeyAtAdaptionStage=true uses static master key as service key,"1. Configure server keyShareRequest response with isKeyAtAdaptionStage=true for FRAMEWORK
+2. Trigger dcconfig refresh
+3. Verify logs show 'key at adaption stage for keyUUID'
+4. Verify FRAMEWORK key stored successfully in vault
+5. Verify the stored key value is the static master key (validate by comparing encrypted operations)"
+TC-CONFIG-007,dcconfig (Scheduler),Functional,Verify timestamp updated only on successful key processing,"1. Configure server with 3 keyUUIDs: SOM (valid) FRAMEWORK (invalid serviceKey) SOM2 (valid)
+2. Trigger dcconfig refresh
+3. Verify SOM timestamp updated in smkeys_last_contact table
+4. Verify FRAMEWORK timestamp NOT updated (decryption failed)
+5. Verify overall ProcessServiceMasterKeys returns false (partial failure)
+6. Verify metadata version NOT updated"
+TC-CONFIG-008,dcconfig (Scheduler),Functional,Verify first-time service-master-keys requests all keyUUIDs,"1. Fresh agent with no prior service-master-keys processing
+2. Set up service-mkeys.json with 3 keyUUIDs
+3. Trigger dcconfig refresh
+4. Verify keyShareRequest contains all 3 keyUUIDs in the POST body
+5. Verify logs show 'first run — requesting all keyUUIDs'"
+TC-CONFIG-009,dcconfig (Scheduler),Functional,Verify changed createdTime triggers re-request for that keyUUID only,"1. Process service-master-keys successfully (all timestamps stored)
+2. Update service-mkeys.json on server with changed createdTime for one keyUUID
+3. Trigger dcconfig refresh
+4. Verify keyShareRequest only contains the changed keyUUID
+5. Verify logs show 'createdTime changed for keyUUID'"
+TC-CONFIG-010,dcconfig (Scheduler),Functional,Verify unchanged service-mkeys does not trigger keyShareRequest,"1. Process service-master-keys successfully
+2. Trigger dcconfig refresh again without any server-side changes
+3. Verify logs show 'no keys need requesting. All up to date'
+4. Verify no keyShareRequest sent to server"
+TC-CONFIG-011,dcconfig (Scheduler),Functional,Verify new applicable module addition triggers request for unresolved keys,"1. Successfully process service-master-keys with SOM and FRAMEWORK
+2. Add a new module (e.g. PATCH) to applicableModules in a future version
+3. Update service-mkeys.json with a new keyUUID for PATCH
+4. Trigger dcconfig refresh
+5. Verify the new PATCH keyUUID is requested
+6. Verify existing unchanged keys are not re-requested"
+TC-AUTH-001,Auth Flow (General),Functional,Verify agent-server communication uses auth token from vault,"1. Complete agent registration
+2. Verify auth token is in vault DB (check logs)
+3. Trigger any server communication (e.g. dcconfig refresh)
+4. Verify HTTP request includes auth token in headers
+5. Verify server responds successfully (token accepted)"
+TC-AUTH-002,Auth Flow (General),Functional,Verify Waiting For Approval flow works with vault-based tokens,"1. Register agent with WFA enabled on server
+2. Verify approval_token stored in vault (check dcregister logs)
+3. Verify agent polls for approval status
+4. Approve agent from server console
+5. Verify agent receives auth_token and dynamic_key
+6. Verify both stored in vault (check logs)
+7. Verify agent communicates normally after approval"
+TC-AUTH-003,Auth Flow (General),Functional,Verify auth token refresh stores new token in vault,"1. Agent running with valid auth token in vault
+2. Trigger auth token refresh from server (AuthProps GET)
+3. Verify new auth_token and dynamic_key stored in vault
+4. Verify old tokens replaced
+5. Verify agent continues communication with new token"
+TC-AUTH-004,Auth Flow (General),Functional,Verify DS auth token stored in vault when dsAuth is enabled,"1. Configure server with DS auth enabled
+2. Register agent
+3. Verify ds_auth_enabled stored as 'true' in vault
+4. Verify ds_auth_token stored in encrypted vault
+5. Verify DS communication uses the stored ds_auth_token"
+TC-AUTH-005,Auth Flow (General),Functional,Verify clear auth tokens removes tokens from vault on re-registration,"1. Agent registered and running with tokens in vault
+2. Trigger re-registration or token invalidation from server
+3. Verify auth_token and dynamic_key cleared from vault
+4. Verify agent re-authenticates and gets new tokens"
+TC-AUTH-006,Auth Flow (General),Functional,Verify clear approval data removes all approval entries,"1. Agent in WFA state with approval_token approval_key ds_auth_token ds_auth_enabled in vault
+2. Trigger approval data clear (e.g. agent decline from server)
+3. Verify all four keys removed from vault
+4. Verify agent re-enters registration flow"
+TC-AUTH-007,Auth Flow (General),Functional,Verify APIVersion v1.1 query param sent in AuthProps requests,"1. Register agent (new version)
+2. Capture HTTP traffic or check server logs for AuthProps request
+3. Verify query parameter APIVersion=v1.1 is present in AuthProps POST and GET requests"
+TC-CERT-001,Certificate (CSR),Functional,Verify CSR request encrypted with approval key + salt,"1. Register new agent
+2. Monitor CSR request from agent to server
+3. Verify CSR body is encrypted using approval_key + salt (not static master key)
+4. Verify server decrypts and responds with certificate
+5. Verify certificate stored in vault"
+TC-CERT-002,Certificate (CSR),Functional,Verify CSR renewal uses approval key + salt,"1. Agent running with valid client certificate
+2. Trigger certificate renewal
+3. Verify renewal request encrypted with approval_key + salt
+4. Verify new certificate stored in vault
+5. Verify agent uses new certificate for subsequent requests"
+TC-CERT-003,Certificate (CSR),Functional,Verify client certificate loaded from vault for HTTPS communication,"1. Agent running with client cert in vault
+2. Trigger any HTTPS request to server
+3. Verify TLS handshake uses client certificate
+4. Verify server accepts the connection (mutual TLS)"
+TC-PROXY-001,Proxy,Functional,Verify proxy password loaded from vault for server communication,"1. Configure agent with authenticated proxy
+2. Register agent
+3. Verify proxy_password stored in vault (not in server-info.json)
+4. Restart agent
+5. Verify agent communicates through proxy (password loaded from vault on startup)"
+TC-PROXY-002,Proxy,Functional,Verify proxy password migration from server-info on upgrade,"1. Old agent with proxy_password in server-info.json M_proxyPassword
+2. Trigger upgrade
+3. Verify proxy_password migrated to vault
+4. Verify agent communicates through proxy after upgrade"
+TC-UNINSTALL-001,Uninstall,Functional,Verify agent uninstall completes without crash or SIGSEGV,"1. Install and register agent
+2. Trigger agent uninstall via dcregister -u or server push
+3. Verify uninstall process completes without segmentation fault
+4. Verify no fatal error in uninstall logs
+5. Verify agent files and vault DB cleaned up"
+TC-UNINSTALL-002,Uninstall,Functional,Verify vault DB files removed on clean uninstall,"1. Install and register agent (vault DB files exist)
+2. Trigger clean uninstall
+3. Verify /data/datavault/ directory and all contents removed
+4. Verify no residual .db files left behind"
+TC-RESTART-001,Service Restart,Functional,Verify agent restarts and loads all tokens from vault correctly,"1. Install and register agent
+2. Stop agent service (dcservice -p)
+3. Start agent service
+4. Verify agent communicates with server successfully on restart
+5. Verify no token-related errors in dcconfig or dcservice logs
+6. Verify no file-based auth fallback (no auth-props.json read)"
+TC-RESTART-002,Service Restart,Functional,Verify long-running agent process does not lose vault access,"1. Install and register agent
+2. Let agent run for extended period (24+ hours)
+3. Trigger dcconfig refresh multiple times
+4. Verify each refresh successfully reads tokens from vault
+5. Verify no memory-related crashes (no SIGSEGV in logs)"
+TC-CONCURRENT-001,Concurrency,Functional,Verify simultaneous dcconfig and dcpatchscan do not corrupt vault,"1. Install and register agent
+2. Trigger dcconfig refresh and dcpatchscan simultaneously
+3. Verify both processes complete without error
+4. Verify vault DB not corrupted (agent continues to function)
+5. Verify no deadlock (both processes complete within timeout)"
+TC-CONCURRENT-002,Concurrency,Functional,Verify multiple vault readers do not cause deadlock,"1. Agent running with multiple scheduled tasks (dcconfig dcinventory dcpatchscan)
+2. Trigger all tasks near-simultaneously
+3. Verify all tasks complete without deadlock
+4. Verify agent logs show no mutex-related timeout or error"
+TC-BUILD-001,Build (go.mod),Build,Verify Linux agent builds successfully with go mod vendor,"1. Run full linux_build.sh
+2. Verify all binaries produced: dcregister dcconfig dcupgrader dcservice dcinventory dcpatchscan NativeUIHandler
+3. Verify no 'package not in std' errors
+4. Verify no 'import lookup disabled by -mod=vendor' errors
+5. Verify build completes for both AMD64 and ARM64 architectures"
+TC-BUILD-002,Build (go.mod),Build,Verify meaap binary builds with GOPATH fallback,"1. Run linux_build.sh meaap compilation step
+2. Verify meaap binary produced
+3. Verify no type mismatch errors between meaap (GOPATH) and agent (go mod) packages
+4. Verify meaap can execute basic operations"
+TC-BUILD-003,Build (go.mod),Build,Verify NativeUIHandler builds for ARM32 architecture,"1. Run linux_build.sh with ARM32 target
+2. Verify NativeUIHandler binary produced for ARM32
+3. Verify no missing package errors
+4. Verify uemsondemand package references resolve correctly"
+TC-BUILD-004,Build (vendor),Build,Verify vendor directory contains all required third-party packages,"1. Check vendor/modules.txt exists and lists all dependencies
+2. Verify golang.org/x/crypto (v0.36.0) present with pbkdf2 sub-package
+3. Verify modernc.org/sqlite and sub-packages (vtab libc/sys/types libc/uuid/uuid) present
+4. Verify github.com/expr-lang/expr and sub-packages present
+5. Verify no 'missing from vendor/modules.txt' warnings during build"
+TC-BUILD-005,Build (vendor),Build,Verify nuihresourcecompiler builds with vendor crypto,"1. Run nuihresourcecompiler.sh
+2. Verify crypto package resolves from extracted archive
+3. Verify no missing golang.org/x/crypto errors
+4. Verify output binary produced"
+TC-BUILD-006,Build (go.mod),Build,Verify go unit tests pass in build pipeline,"1. Run go test -v -tags='UEMS AMD netgo' ./... for go_agent_test
+2. Verify db_test passes all tests including concurrency tests
+3. Verify uemsdatavault_test passes all tests
+4. Verify no test timeout or deadlock
+5. Verify uemsconfigdatatypes tests pass"
+TC-BUILD-007,Build (Package Rename),Build,Verify renamed packages compile correctly,"1. Verify dcondemand to uemsondemand rename: no import references to old name
+2. Verify dcrds to uemsrds rename: no import references to old name
+3. Verify datavault to db rename: all imports use db package
+4. Verify all binaries compile without package resolution errors"
+TC-SEC-001,Security,Security,Verify vault DB files not accessible by non-root users,"1. Install agent as root
+2. Switch to non-root user
+3. Attempt to read /data/datavault/vault/m_vault.db
+4. Verify permission denied
+5. Attempt to read /data/datavault/storage/agent.db
+6. Verify permission denied"
+TC-SEC-002,Security,Security,Verify encrypted vault data not readable as plaintext,"1. Install and register agent with auth tokens in vault
+2. Run strings command on m_vault.db file
+3. Verify no plaintext auth tokens or keys visible
+4. Verify no plaintext passwords visible"
+TC-SEC-003,Security,Security,Verify no secrets logged in agent log files,"1. Perform full agent lifecycle: install register refresh upgrade
+2. Search all log files under /logs/ for auth_token dynamic_key approval_key proxy_password values
+3. Verify no actual secret values appear in logs
+4. Verify only masked/redacted references or key names appear"
+TC-SEC-004,Security,Security,Verify master key is not retained in memory after use,"1. Install and register agent
+2. Monitor process memory during auth operations (if feasible via /proc/PID/maps)
+3. Verify master key is wiped after decryption operations
+4. Verify no residual key material in process memory dumps"
+TC-SEC-005,Security,Security,Verify vault DB SQL injection not possible via crafted config data,"1. Attempt to inject SQL via config key names containing SQL characters
+2. Verify agent handles gracefully without executing injected SQL
+3. Verify vault DB integrity maintained"
+TC-COMPAT-001,Backward Compatibility,Compatibility,Verify upgraded agent communicates with non-upgraded server during interim,"1. Upgrade agent to new version (with vault DB and SSMK support)
+2. Connect to server that has not yet been upgraded
+3. Verify agent falls back gracefully (uses existing auth flow)
+4. Verify no communication failures"
+TC-COMPAT-002,Backward Compatibility,Compatibility,Verify old agent binary communicates with upgraded server,"1. Keep agent at old version (pre-vault)
+2. Upgrade server with SSMK support
+3. Verify old agent still communicates using master key flow
+4. Verify server handles both old and new agent versions (30-day interim)"
+TC-COMPAT-003,Backward Compatibility,Compatibility,Verify server-info.json retains backward compatible fields after upgrade,"1. Upgrade agent from old to new version
+2. Open server-info.json
+3. Verify all existing fields preserved
+4. Verify new agent version reflected in M_linuxAgentVersion
+5. Verify domain and SDP fields retained"
+TC-DISTRO-001,Cross-Distribution,Compatibility,Verify vault DB works on Ubuntu LTS,"1. Install agent on Ubuntu 20.04/22.04/24.04 LTS
+2. Complete registration
+3. Verify vault DB created and functional
+4. Verify all auth operations succeed"
+TC-DISTRO-002,Cross-Distribution,Compatibility,Verify vault DB works on RHEL/CentOS,"1. Install agent on RHEL 8/9 or CentOS Stream
+2. Complete registration
+3. Verify vault DB created and functional
+4. Verify all auth operations succeed"
+TC-DISTRO-003,Cross-Distribution,Compatibility,Verify vault DB works on Debian,"1. Install agent on Debian 11/12
+2. Complete registration
+3. Verify vault DB created and functional
+4. Verify all auth operations succeed"
+TC-DISTRO-004,Cross-Distribution,Compatibility,Verify vault DB works on older kernel versions,"1. Install agent on system with older kernel (e.g. RHEL 7 / Ubuntu 18.04)
+2. Complete registration
+3. Verify SQLite-based vault works on older glibc/kernel
+4. Verify no missing syscall or library errors"
+TC-EDGE-001,Edge Case,Functional,Verify agent handles corrupt vault DB gracefully,"1. Install and register agent
+2. Stop agent service
+3. Corrupt m_vault.db file (truncate or overwrite with random bytes)
+4. Start agent service
+5. Verify agent logs appropriate error (not crash/SIGSEGV)
+6. Verify agent attempts recovery or re-registration"
+TC-EDGE-002,Edge Case,Functional,Verify agent handles missing vault DB gracefully,"1. Install and register agent
+2. Stop agent service
+3. Delete /data/datavault/ directory entirely
+4. Start agent service
+5. Verify agent recreates vault or enters re-registration flow
+6. Verify no fatal crash"
+TC-EDGE-003,Edge Case,Functional,Verify agent handles disk full scenario for vault writes,"1. Install and register agent
+2. Fill disk to near capacity
+3. Trigger dcconfig refresh (which writes to vault)
+4. Verify agent logs write failure gracefully
+5. Verify agent does not crash
+6. Free disk space and verify agent recovers"
+TC-EDGE-004,Edge Case,Functional,Verify agent handles empty keyShareRequest response,"1. Configure server to return empty response for keyShareRequest
+2. Trigger dcconfig service-master-keys processing
+3. Verify logs show 'empty response from keyShareRequest'
+4. Verify metadata version NOT updated
+5. Verify agent continues normal operation"
+TC-EDGE-005,Edge Case,Functional,Verify agent handles network timeout during keyShareRequest,"1. Configure network to timeout on keyShareRequest servlet
+2. Trigger dcconfig service-master-keys processing
+3. Verify request fails gracefully with timeout error
+4. Verify metadata version NOT updated
+5. Verify retry on next refresh cycle"
+TC-EDGE-006,Edge Case,Functional,Verify agent handles all keyUUIDs returning NotApplicable,"1. Configure server to return NotApplicable for all keyUUIDs
+2. Trigger dcconfig service-master-keys processing
+3. Verify all entries skipped
+4. Verify processing returns success (no applicable failures)
+5. Verify metadata version updated (nothing failed)"
+TC-PERF-001,Performance,Performance,Verify vault DB operations do not significantly increase binary size,"1. Compare old agent binary sizes with new vault-enabled binaries
+2. Verify size increase is within acceptable range (< 5MB increase for SQLite addition)
+3. Document binary size for dcregister dcconfig dcupgrader"
+TC-PERF-002,Performance,Performance,Verify vault DB read/write latency is acceptable,"1. Install and register agent
+2. Trigger 100 consecutive dcconfig refreshes
+3. Measure average time for auth token retrieval from vault
+4. Verify no noticeable delay compared to file-based retrieval
+5. Verify no increasing latency over repeated operations"
+TC-NS-001,Notification Server,Functional,Verify NS (DMS) WebSocket reconnect works with vault-based tokens,"1. Install and register agent with DMS/NS connection
+2. Verify WebSocket connection established successfully
+3. Simulate network disconnect
+4. Verify reconnect succeeds using tokens from vault
+5. Verify ping-pong messaging resumes after reconnect"
+TC-NS-002,Notification Server,Functional,Verify long-running NS connection does not lose token access,"1. Install agent and establish NS WebSocket connection
+2. Let connection run for 24+ hours
+3. Monitor for any token-related errors during rebind cycles
+4. Verify no DNS or token lookup failures due to vault access issues"
+TC-DCTT-001,dctroubleshootingtool (DB Query),Functional,Verify dctroubleshootingtool --db lists tables from plain vault,"1. Install and register agent
+2. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/storage/agent.db ""SELECT name FROM sqlite_master WHERE type='table'""
+3. Verify output shows 'auth' and 'smkeys_last_contact' tables
+4. Verify column header and row separator printed correctly"
+TC-DCTT-002,dctroubleshootingtool (DB Query),Functional,Verify dctroubleshootingtool --db reads plain vault data,"1. Install and register agent
+2. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/storage/agent.db ""SELECT * FROM auth""
+3. Verify output shows agent_install_time key with valid epoch value
+4. Verify row count printed at bottom"
+TC-DCTT-003,dctroubleshootingtool (DB Query),Functional,Verify dctroubleshootingtool --db shows encrypted vault tables,"1. Install and register agent
+2. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/vault/agent.db ""SELECT name FROM sqlite_master WHERE type='table'""
+3. Verify output shows 'auth' table (encrypted values stored)
+4. Values shown are encrypted hex strings (not plaintext)"
+TC-DCTT-004,dctroubleshootingtool (DB Query),Functional,Verify dctroubleshootingtool --db shows master vault mod_keys,"1. Install and register agent
+2. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/vault/m_vault.db ""SELECT name FROM sqlite_master WHERE type='table'""
+3. Verify output shows 'mod_keys' table
+4. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/vault/m_vault.db ""SELECT * FROM mod_keys""
+5. Verify module 'agent' key exists with encrypted ModuleInfo JSON"
+TC-DCTT-005,dctroubleshootingtool (DB Query),Functional,Verify dctroubleshootingtool --db shows smkeys_last_contact after SSMK processing,"1. Agent with service-master-keys processed successfully
+2. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/storage/agent.db ""SELECT * FROM smkeys_last_contact""
+3. Verify keyUUIDs are listed with their createdTime timestamps
+4. Verify only applicable module keyUUIDs (SOM/FRAMEWORK) have entries"
+TC-DCTT-006,dctroubleshootingtool (DB Query),Functional,Verify dctroubleshootingtool --db handles invalid path gracefully,"1. Run: dctroubleshootingtool --db /nonexistent/path.db ""SELECT 1""
+2. Verify error message printed (not crash/panic)
+3. Verify log entry written for the failed query"
+TC-DCTT-007,dctroubleshootingtool (DB Query),Functional,Verify dctroubleshootingtool --db handles invalid SQL gracefully,"1. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/storage/agent.db ""INVALID SQL SYNTAX""
+2. Verify error message printed (query execution failed)
+3. Verify no crash or panic"
+TC-DCTT-008,dctroubleshootingtool (DB Query),Functional,Verify dctroubleshootingtool --db can execute DELETE/DROP queries,"1. Create a test table: dctroubleshootingtool --db /tmp/test.db ""CREATE TABLE test(key TEXT, value TEXT)""
+2. Insert data: dctroubleshootingtool --db /tmp/test.db ""INSERT INTO test VALUES('k1','v1')""
+3. Verify data: dctroubleshootingtool --db /tmp/test.db ""SELECT * FROM test""
+4. Delete: dctroubleshootingtool --db /tmp/test.db ""DELETE FROM test WHERE key='k1'""
+5. Verify empty: dctroubleshootingtool --db /tmp/test.db ""SELECT * FROM test""
+6. Verify (0 rows) shown"
+TC-BCHK-001,Binary Checksum (Vault),Functional,Verify binary checksum JSON stored in encrypted vault DB,"1. Install and register agent
+2. Trigger dcconfig refresh or dcupgrader (which downloads binary checksum)
+3. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/vault/agent.db ""SELECT * FROM auth WHERE key='binary_checksum'""
+4. Verify encrypted value exists for binary_checksum key
+5. Verify BinaryChecksum.json file is NOT used"
+TC-BCHK-002,Binary Checksum (Vault),Functional,Verify binary checksum cleared from vault on installer checksum mismatch,"1. Agent with binary_checksum in vault
+2. Tamper with installer binary to cause checksum mismatch
+3. Trigger dcupgrader
+4. Verify logs show checksum mismatch
+5. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/vault/agent.db ""SELECT * FROM auth WHERE key='binary_checksum'""
+6. Verify binary_checksum entry is removed"
+TC-BCHK-003,Binary Checksum (Vault),Functional,Verify server 304 Not Modified uses vault cached binary checksum,"1. Agent with binary_checksum stored in vault
+2. Trigger binary checksum download (server returns 304)
+3. Verify logs show 'server returned unmodified. Loading from vault DB'
+4. Verify binary checksum loaded successfully from vault cache"
+TC-DS-001,DS Server Info,Functional,Verify ds-server-infoV2.xml is downloaded instead of ds-server-info.xml,"1. Agent with DS enabled
+2. Trigger dcconfig refresh
+3. Verify request URL contains 'ds-server-infoV2.xml' (not ds-server-info.xml)
+4. Verify DS server details updated correctly from V2 format"
+TC-SSMK-012,Service Master Keys,Functional,Verify ClearServiceMKeysLastContact removes all lastcontact entries on re-approval,"1. Agent with service-master-keys processed (smkeys_last_contact has entries)
+2. Trigger agent re-approval flow (approval token refresh)
+3. Verify ClearServiceMKeysLastContact called (check logs)
+4. Run: dctroubleshootingtool --db /usr/local/manageengine/uems_agent/data/datavault/storage/agent.db ""SELECT * FROM smkeys_last_contact""
+5. Verify table is empty (0 rows)
+6. On next refresh verify all applicable keyUUIDs re-requested"
+TC-SSMK-013,Service Master Keys,Functional,Verify partial SSMK failure deletes all SSMK tables for full retry,"1. Configure server with 2 applicable keys (SOM valid FRAMEWORK invalid serviceKey)
+2. Trigger dcconfig service-master-keys processing
+3. Verify ProcessServiceMasterKeys returns false
+4. Verify smkeys smkeysUUID and smkeys_last_contact tables deleted
+5. Verify logs show 'partial failure — will retry on next refresh'
+6. On next cycle verify all keys re-requested from scratch"
+TC-SSMK-014,Service Master Keys,Functional,Verify only keyUUIDs with changed createdTime are re-requested (not non-applicable),"1. Process service-master-keys successfully (SOM + FRAMEWORK stored 3 other non-applicable skipped)
+2. Update service-mkeys.json with changed createdTime for non-applicable keyUUID only
+3. Trigger dcconfig refresh
+4. Verify keyShareRequest is NOT sent (no applicable key changed)
+5. Verify logs show 'no keys need requesting. All up to date'"
+TC-CRYPTO-001,Vault Crypto,Functional,Verify EncryptWithApprovalKey encrypts CSR data correctly,"1. Register agent (approval_key stored in vault)
+2. Trigger CSR generation
+3. Verify CSR data encrypted with approval_key from vault (not static master key)
+4. Verify server can decrypt and issue certificate"
+TC-CRYPTO-002,Vault Crypto,Functional,Verify DecryptWithDynamicKey uses vault dynamic_key,"1. Agent registered with dynamic_key in vault
+2. Trigger metadata download that requires dynamic key decryption
+3. Verify decryption succeeds using dynamic_key from vault
+4. Verify no fallback to file-based dynamic key"
+TC-CRYPTO-003,Vault Crypto,Functional,Verify GetProvKey retrieves provisioning key from vault for HTTP auth,"1. Agent registered with prov_key in vault
+2. Trigger HTTP communication to cloud server
+3. Verify auth token generated using prov_key from vault
+4. Verify server accepts the auth token (200 response)"
+TC-CRYPTO-004,Vault Crypto,Functional,Verify GetProxyPassword retrieves proxy password from vault,"1. Agent with proxy configured and proxy_password in vault
+2. Trigger HTTP request through proxy
+3. Verify proxy authentication succeeds
+4. Verify no proxy_password read from server-info.json"
+TC-ROTATION-001,Key Rotation,Functional,Verify RotateAll re-encrypts master and module vaults,"1. Agent running with vault DB containing auth tokens
+2. Trigger key rotation (RotateAll with new master key)
+3. Verify master vault re-encrypted with new key
+4. Verify all module vaults re-encrypted
+5. Verify agent continues to read/write after rotation"
+TC-ACCESSLOG-001,DB Access Log,Functional,Verify vault operations logged in dcagentdbaccess log,"1. Install and register agent
+2. Trigger dcconfig refresh (vault reads/writes occur)
+3. Check /logs/dcagentdbaccess*.txt exists
+4. Verify log entries have format: date time changedBy operation module submodule key status remarks
+5. Verify timestamps include milliseconds (5 digits)"
+TC-ACCESSLOG-002,DB Access Log,Functional,Verify m_vault.db operations logged in dcagentdbaccess log,"1. Agent running with protected vault
+2. Trigger Store/Retrieve operations
+3. Verify STORE and RETRIEVE entries appear in dcagentdbaccess log
+4. Verify module and submodule columns show correct DB/Table names"
+TC-BUG-001,dcregister (Bug),Bug,Verify duplicate AGENT_SECURITY_SETTING assignment does not cause issues,"1. Trigger agent uninstall with TOTP enabled
+2. Verify uninstall flow does not crash despite duplicate assignment on line 383-384
+3. Verify TOTP verification works correctly
+4. NOTE: Duplicate line should be removed in next commit"
+TC-RENAME-001,Package Rename,Build,Verify ds-server-info.xml renamed to ds-server-infoV2.xml in metadata constants,"1. Build dcconfig binary
+2. Verify DS_SERVER_INFO_XML_FILENAME constant is 'ds-server-infoV2.xml'
+3. Verify dcconfig requests ds-server-infoV2.xml from server
+4. Verify backward compatibility — server serves both V1 and V2 during interim"
+TC-HTTPAUTH-001,HTTP Auth (403),Functional,Verify checkForRequestHeaderErrors handles 403 correctly,"1. Agent registered with auth token in vault
+2. Simulate server returning 403 with client cert error header
+3. Verify agent distinguishes between auth token error and cert error
+4. On auth token error: verify tokens cleared from vault and re-fetched
+5. On cert error: verify certificate regeneration triggered"

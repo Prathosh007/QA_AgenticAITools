@@ -1,0 +1,163 @@
+/* ── Zoho OAuth login overlay ─────────────────────────────────── */
+
+.zoho-login-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  z-index: 2000;
+}
+
+.zoho-login-screen.hidden {
+  display: none;
+}
+
+.zoho-login-card {
+  text-align: center;
+  padding: 48px 40px;
+  max-width: 420px;
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+}
+
+.zoho-login-logo {
+  margin-bottom: 20px;
+}
+
+.zoho-login-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.zoho-login-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.zoho-login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--accent-blue);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.zoho-login-btn:hover {
+  background: #79c0ff;
+}
+
+.zoho-login-btn:active {
+  transform: scale(0.98);
+}
+
+.zoho-login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.zoho-login-btn svg {
+  flex-shrink: 0;
+}
+
+/* Spinner inside the button */
+.zoho-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: zoho-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes zoho-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error banner */
+.zoho-error-box {
+  margin-top: 20px;
+  padding: 10px 14px;
+  background: rgba(248, 81, 73, 0.1);
+  border: 1px solid rgba(248, 81, 73, 0.4);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #f85149;
+  text-align: left;
+}
+
+.zoho-error-box.hidden {
+  display: none;
+}
+
+/* ── Header user pill ─────────────────────────────────────────── */
+
+.home-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 4px 12px 4px 6px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.home-user-pill img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.home-user-pill .user-name {
+  color: var(--text-primary);
+  font-weight: 500;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-user-pill.hidden {
+  display: none;
+}
+
+.home-logout-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+  font-size: 16px;
+}
+
+.home-logout-btn:hover {
+  color: var(--text-primary);
+}

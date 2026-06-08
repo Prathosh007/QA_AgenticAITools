@@ -1,0 +1,282 @@
+TEST CASE ID,Module,Type,TEST CASE DESCRIPTION,Prerequisite,Steps,EXPECTED RESULT,Remark
+TC-SSMK-KEYSHARE-001,uems_agent_utils,Functional,Fresh agent registration negotiates per-module SSMK keys with DS,DS reachable; clean Windows endpoint,"1. Install agent fresh against SSMK-enabled DS
+2. Wait for registration to complete
+3. Inspect agent logs for KeyShare exchange
+4. Inspect agent vault store for per-module keys",Registration succeeds; vault contains a distinct key entry for every active service module (AGENT_UTILS, FRAMEWORK, PATCH, INVENTORY, DCP, ACP, DMS); no single legacy master key present,Happy path
+TC-SSMK-KEYSHARE-002,uems_agent_utils,Functional,Key Share servlet returns per-module keys with valid AES-GCM material,DS + agent registered,"1. From DS, force key share by triggering rotation API
+2. On agent, watch the KeyShare HTTP call
+3. Verify each returned key length and key id (UUID) in vault",All returned keys are 32 bytes; each has a unique UUID; vault rows have non-empty isActive and modified time,Happy path
+TC-SSMK-KEYSHARE-003,uems_agent_utils,Negative,Key Share servlet returns HTTP 401 unauthorized,Agent registered,"1. Manually revoke agent token on DS so /keyShareRequest returns 401
+2. Trigger key share from agent
+3. Observe agent behavior",Agent logs Unauthorized; does NOT retry in tight loop; falls back to existing valid keys; no crash; status shows ""auth needed"",BUG SCENARIO B2
+TC-SSMK-KEYSHARE-004,uems_agent_utils,Negative,Key Share servlet returns HTTP 403 rejected,Agent registered,"1. Configure DS rule to reject this agent UUID
+2. Trigger key share
+3. Observe behavior over 10 minutes",Agent logs ""key share servlet rejected"" once; backs off; no infinite retry; persistent counter incremented in registry,BUG SCENARIO B2
+TC-SSMK-KEYSHARE-005,uems_agent_utils,Negative,Key Share servlet returns malformed JSON,Agent registered,"1. Use proxy to mangle /keyShareRequest response body
+2. Trigger key share
+3. Inspect agent",Agent logs JSON parse error with safe truncation; vault unchanged; previous keys retained,FAILURE SCENARIO
+TC-SSMK-KEYSHARE-006,uems_agent_utils,Retry,Key Share servlet transient 503 then 200,Agent registered,"1. Simulate DS returning 503 on first 2 attempts then 200
+2. Trigger key share
+3. Inspect retry interval",Agent retries with backoff (>= 30s gap); 3rd attempt succeeds; new keys stored,RETRY SCENARIO
+TC-SSMK-KEYSHARE-007,uems_agent_utils,Functional,Fallback for dynamic key retrieval when primary fetch fails,Agent registered; vault has cached keys,"1. Block /keyShareRequest at the firewall
+2. Restart agent
+3. Use cached vault for decrypt of stored cred",Agent uses cached keys; decryption of existing creds succeeds; logs ""fallback to cached"",Happy path (post-fix)
+TC-SSMK-KEYROT-001,uems_agent_utils,Functional,Key rotation: Active -> Adaption -> Active completes,Agent + DS healthy,"1. Trigger rotation from DS for FRAMEWORK module
+2. Confirm key now Adaption on agent
+3. After adaption window, verify new key promoted to Active
+4. Verify old key removed",FRAMEWORK row in vault shows new UUID; isActive=true; previous UUID purged; modified time updated,State Transition
+TC-SSMK-KEYROT-002,uems_agent_utils,Negative,Service key modified time resets correctly on cleanup,Agent has rotated key once,"1. Restart agent
+2. Trigger another rotation
+3. Verify modified time of cleanup keys is reset, not stale",modified time of cleaned-up keys is current; no orphan rows with old timestamp,BUG SCENARIO B1
+TC-SSMK-KEYROT-003,uems_agent_utils,Edge,Rotation triggered while a long upload is in flight,Agent uploading inventory,"1. Begin inventory upload (>30s)
+2. Mid-flight, force rotation
+3. Verify upload completes and next call uses new key",Active upload completes with prior key; subsequent calls use new key; no resend storm,Concurrency
+TC-SSMK-KEYROT-004,uems_agent_utils,Rare,Agent crashes during rotation between Active and Adaption write,Crash injector available,"1. Inject crash after Adaption row written but before Active flag updated
+2. Restart agent
+3. Verify recovery",On startup agent detects partial state and re-runs rotation; no decrypt failure for any module,RARE SCENARIO
+TC-SSMK-KEYROT-005,uems_agent_utils,State,isKeyAtAdaptionStage flag transitions correctly,DS issues rotation,"1. Mark FRAMEWORK as adaption on DS
+2. Pull /keyShareRequest
+3. Force isKeyAtAdaptionStage true
+4. Then complete and observe transition to false",Vault row shows isAdaption=1 then 0; both old and new keys readable while in adaption,State transition
+TC-SSMK-VAULT-001,uems_agent_utils,Functional,Cert private key stored encrypted under AGENT_UTILS key,Agent registered,"1. Open vault store
+2. Inspect cert key entry",Entry encrypted; AAD references AGENT_UTILS module id; cannot be decrypted with FRAMEWORK key,Security
+TC-SSMK-VAULT-002,uems_agent_utils,Security,Tampered ciphertext fails GCM auth and is logged,Agent has stored auth token,"1. Flip one byte in the auth token ciphertext at rest
+2. Restart agent",Decrypt fails with GCM tag mismatch; agent triggers re-auth; tampering logged at WARN,Security
+TC-SSMK-VAULT-003,uems_agent_utils,Negative,Wrong key id used (key UUID drift) returns decrypt error not crash,Agent has stored creds,"1. Manually edit vault to reference a non-existent key UUID
+2. Restart agent",Agent logs ""key not found <uuid>""; does NOT crash; module disabled or token re-requested,Negative
+TC-SSMK-VAULT-004,uems_agent_utils,Negative,Vault file deleted between processes,Agent running with cached keys,"1. With agent running, delete the vault file
+2. Trigger next status update",Agent recreates empty vault and re-requests keys from DS; no crash; service continues,Resource
+TC-SSMK-VAULT-005,uems_agent_utils,Security,Vault file permissions are restricted,Default install,"1. Inspect ACL of vault file/registry hive",Read/write restricted to SYSTEM/installer; not world-readable,Security
+TC-SSMK-PROXY-001,uems_agent_utils,Functional,Proxy credential is decrypted using AGENT_UTILS key,Proxy configured during install,"1. Install agent with proxy creds
+2. Verify outbound traffic via proxy
+3. Restart agent and verify creds still usable",Outbound calls authenticate; vault entry encrypted under AGENT_UTILS module,Happy path
+TC-SSMK-PROXY-002,uems_agent_utils,Migration,Pre-SSMK proxy creds migrated to per-module key on upgrade,Upgrade from pre-SSMK build with proxy set,"1. Install older build with proxy creds
+2. Upgrade to SSMK build
+3. Verify proxy still works",Old encrypted blob decrypted with master key; re-encrypted under AGENT_UTILS key; no manual reentry required,Upgrade
+TC-SSMK-PROXY-003,uems_agent_utils,Negative,Proxy creds with non-ASCII password survive migration,Pre-SSMK install with Unicode proxy password,"1. Upgrade
+2. Verify outbound works",Unicode bytes preserved; auth succeeds,Edge
+TC-SSMK-DMS-001,uems_agent_utils,Functional,DMS connection uses DMS-module key for payload sign,Agent registered with DMS,"1. Open DMS notification channel
+2. Trigger server-side notification",Notification delivered; signature validated using DMS module key,Integration
+TC-SSMK-DMS-002,uems_agent_utils,Negative,DMS key rotates while channel is open,DMS channel open,"1. Rotate DMS key on DS
+2. Send 3 notifications over the next 5 minutes",Channel reconnects with new key; messages delivered exactly once; no dup processing,Concurrency
+TC-SSMK-UPGRADE-001,uems_agent_framework,Migration,Upgrade from pre-SSMK to SSMK preserves all stored secrets,Pre-SSMK agent with cert + proxy + auth token,"1. Upgrade to SSMK build via QFix
+2. Verify registration intact
+3. Verify proxy works
+4. Verify auth tokens valid",All secrets accessible post-upgrade; no re-registration needed; logs show successful migration,Upgrade
+TC-SSMK-UPGRADE-002,uems_agent_framework,Migration,Upgrade with corrupted master key blob,Pre-SSMK agent; corrupt master key intentionally,"1. Run upgrader
+2. Observe behavior",Upgrader logs migration failure for affected blob; falls through to re-registration; does not roll back binary upgrade,Failure handling
+TC-SSMK-UPGRADE-003,uems_agent_framework,Edge,Upgrade interrupted (power loss) mid-migration,Pre-SSMK; ability to power-cycle test machine,"1. Begin upgrade
+2. Hard power off mid-migration
+3. Boot and let agent service start",On next start migration resumes / restarts from idempotent step; no permanent breakage,Rare
+TC-SSMK-UPGRADE-004,uems_agent_framework,Functional,Upgrade reports correct JSON status to DS,DS upgrade-status view,"1. Upgrade agent
+2. Inspect upgrade status on DS",Status shows ""SSMK migrated"" plus per-module migration count; no ""unknown"" fields,Reporting
+TC-SSMK-UPGRADE-005,uems_agent_framework,Functional,Cleanup removes old-master-key file after successful migration,Pre-SSMK install,"1. Upgrade
+2. Verify old key file deleted only after vault verified",Old file removed only after vault read-back verification; otherwise retained for rollback,BUG SCENARIO B5
+TC-SSMK-UPGRADE-006,uems_agent_framework,Negative,Upgrade with disk full,Fill disk to <100 MB,"1. Run upgrader
+2. Observe",Upgrader aborts cleanly before key file delete; original install left functional,Resource
+TC-SSMK-UPGRADE-007,uems_agent_framework,Functional,Re-upgrade on already SSMK build is no-op,SSMK build installed,"1. Re-run upgrader
+2. Observe",Detects already-migrated; logs ""no migration needed""; no key churn,Idempotent
+TC-SSMK-UPGRADE-008,uems_agent_framework,Negative,Per-module migration failure isolated,Pre-SSMK with PATCH token broken,"1. Upgrade
+2. Verify other modules complete",PATCH module logged as failed; AGENT_UTILS/FRAMEWORK/INVENTORY/DCP/ACP/DMS succeed; status reflects per-module result,BUG SCENARIO B12
+TC-SSMK-UPGRADE-009,uems_agent_framework,Integration,Upgrade across software config / metadata processing flow,SoftwareConfig pending,"1. Trigger software config push during upgrade window
+2. Verify ordering",Software config defers until upgrade complete; no double-apply,Integration
+TC-SSMK-DSREPL-001,uems_ds,Functional,DS replicates master metadata to peer DS,2 DS in same setup,"1. Rotate AGENT_UTILS key on DS-A
+2. Wait replication window
+3. Verify on DS-B",DS-B has same new key UUID with isActive; old key marked rotated,Integration
+TC-SSMK-DSREPL-002,uems_ds,Edge,Replication lag during agent registration,2 DS; introduce lag,"1. Register agent against DS-A
+2. Agent's next status hits DS-B before replication completes
+3. Observe",DS-B accepts with previous key; key reconciliation happens on next pull; no agent re-registration storm,Integration
+TC-SSMK-DSREPL-003,uems_ds,Concurrency,Two DS nodes rotate same module simultaneously,2 DS active,"1. Trigger rotation on DS-A and DS-B within 1 second
+2. Wait 5 minutes
+3. Compare final state",One winner deterministically chosen (newer timestamp or higher UUID); both DS converge; agents end with the winning key,BUG SCENARIO B10
+TC-SSMK-DSREPL-004,uems_ds,Negative,Replication when peer DS down,Peer DS offline,"1. Rotate key on DS-A
+2. Bring DS-B online after 30 min
+3. Observe sync",DS-B receives changes via replication queue; no data loss,Resilience
+TC-SSMK-DSREG-001,uems_ds,Functional,Agent registration creates per-module key entries server side,DS,"1. Register fresh agent
+2. Inspect dcmagent + master_key tables",Each active module has key row keyed by agent UUID,Happy
+TC-SSMK-DSREG-002,uems_ds,Negative,Duplicate registration retains existing keys,Agent already registered,"1. Re-trigger registration
+2. Inspect DS",Existing keys retained; new keys not minted unless requested,Idempotent
+TC-SSMK-SERVER-001,uems_server_native,Functional,Server-side SymNativeAesCipherUtils decrypts agent payload,DS receives encrypted payload,"1. Agent sends encrypted inventory under FRAMEWORK key
+2. Server processes",Decrypt succeeds; row inserted into AD handler tables,Integration
+TC-SSMK-SERVER-002,uems_server_native,Negative,Server fails decrypt when agent payload uses outdated key,Agent on old key; DS rotated,"1. Send payload with old key while DS has new key
+2. Observe server",Server returns 412/precondition failed or queues retry; logs key mismatch; does not crash,BUG SCENARIO B11
+TC-SSMK-SERVER-003,uems_server_native,Security,Tampered AAD on agent payload is detected,Crafted payload,"1. Modify AAD bytes
+2. Send to server",Auth tag verification fails; payload rejected; alert raised,Security
+TC-SSMK-SERVER-004,uems_server_native,Functional,WmiAccessProvider header used for new SSMK path,Windows DS,"1. Trigger WMI-backed AD enum
+2. Verify code path",New header included; AD enum completes without WMI errors,Integration
+TC-SSMK-LIN-VAULT-001,dc_native,Functional,Linux uemsdatavault stores per-module keys in SQLite,Fresh Linux agent registers,"1. Register Linux agent
+2. Open SQLite vault file
+3. Inspect tables",vault.db contains per-module key rows with isActive and modifiedTime; AES-GCM blobs non-empty,Happy
+TC-SSMK-LIN-VAULT-002,dc_native,Negative,SQLite ""database is locked"" handled with retry,Synthetic locker thread,"1. Hold SQLite write lock for 5 seconds
+2. Trigger key share write
+3. Inspect logs",Retry occurs (>=3 attempts); write succeeds after lock released; agent does not abort,BUG SCENARIO B4
+TC-SSMK-LIN-VAULT-003,dc_native,Security,vaultcrypto AES-GCM nonce uniqueness under heavy write,Soak harness,"1. Push 10000 vault writes within 60s
+2. Run nonce extractor on vault file",No nonce repeats observed for same key,BUG SCENARIO B3
+TC-SSMK-LIN-VAULT-004,dc_native,Negative,Vault SQLite file corruption recovery,Corrupt last 4KB of vault.db,"1. Stop agent
+2. Truncate vault.db
+3. Start agent",Agent detects corruption; rebuilds vault from DS via key share; logs RECOVER,Resilience
+TC-SSMK-LIN-VAULT-005,dc_native,Edge,Vault path uses correct AgentFilePaths value,Linux,"1. Inspect AgentFilePaths.go derived path
+2. Verify directory permissions",Path under agent install dir; mode 0700; owned by agent user,Security
+TC-SSMK-LIN-KEYSHARE-001,dc_native,Functional,Linux ServiceMasterKeys retrieves keys from DS,New Linux agent,"1. Run dcrds first launch
+2. Inspect ServiceMasterKeys.go path",HTTP call to /keyShareRequest returns 200; keys persisted; logger shows count,Happy
+TC-SSMK-LIN-KEYSHARE-002,dc_native,Negative,Linux key share fails with bad cert,Cert revoked,"1. Trigger key share
+2. Observe",HTTPS error logged; retries with backoff; agent stays operational using cached,Failure
+TC-SSMK-LIN-KEYSHARE-003,dc_native,Retry,Linux key share retries after transient DNS failure,Block DNS for 30s,"1. Trigger
+2. Restore DNS",Retry succeeds; no orphan goroutines,Retry
+TC-SSMK-LIN-UPGRADE-001,dc_native,Migration,Linux upgrader migrates pre-SSMK vault to new SQLite vault,Pre-SSMK Linux build,"1. Run DcUpgrader
+2. Verify old vault file removed only after new vault verified",Old file removed only after read-back; new SQLite vault contains all migrated keys,BUG SCENARIO B5
+TC-SSMK-LIN-UPGRADE-002,dc_native,Edge,Linux upgrade leaves correct ownership/SELinux context,SELinux enforcing,"1. Upgrade
+2. Run ls -Z on vault dir",SELinux labels preserved; no avc denials,Cross-environment
+TC-SSMK-LIN-UPGRADE-003,dc_native,Functional,Upgrade reports buildversion change,Upgrade,"1. Inspect upgrade status log",Build version reflects target; previous value recorded,Reporting
+TC-SSMK-LIN-DCP-001,dc_native,Functional,On-demand DcWss client uses DMS-module key,Linux agent + WSS server,"1. Trigger ondemand command via DcWssClient
+2. Observe",Signed/encrypted with DMS-module key; round-trip OK,Integration
+TC-SSMK-LIN-DCP-002,dc_native,Negative,DcWss reconnect after disconnect uses fresh key if rotated,Force disconnect,"1. Disconnect WSS
+2. Rotate DMS key on DS
+3. Allow reconnect",Reconnect picks new key; no decrypt errors,State transition
+TC-SSMK-LIN-DCP-003,dc_native,Functional,DcNsClient ondemand connect string includes approval token,Linux,"1. Trigger NS ondemand",Connect string contains approval token; NS server accepts,Integration
+TC-SSMK-LIN-TS-001,dc_native,Functional,TroubleShootingTool surfaces SSMK status,Run dcttroubleshooting,"1. Run tool
+2. Inspect output",Output shows per-module key UUIDs (masked) and last rotation time; no plaintext secrets,Functional
+TC-SSMK-LIN-REG-001,dc_native,Functional,Linux dcregister installer triggers initial key share,Fresh install,"1. Install Linux agent
+2. Confirm immediate /keyShareRequest call",Initial key share fires within first 30s; vault populated before first status upload,Happy
+TC-SSMK-LIN-PROXY-001,dc_native,Functional,Linux RemoteOfficeHandler uses AGENT_UTILS-encrypted proxy creds,Proxy set,"1. Install agent with proxy
+2. Trigger remote office sync",Creds decrypted; sync succeeds,Integration
+TC-SSMK-LIN-INV-001,dc_native,Functional,Inventory invdatacollector posts signed payload,Linux,"1. Trigger inventory scan
+2. Capture HTTP body",Body is AES-GCM blob; tag valid; server accepts,Integration
+TC-SSMK-LIN-HTTP-001,dc_native,Negative,HttpGetter handles SSMK 412 ""key mismatch"" gracefully,Force key mismatch,"1. Cause agent to send with old key
+2. Server returns 412
+3. Observe",Agent triggers key share refresh and retries once; user data not lost,Failure
+TC-SSMK-LIN-HTTP-002,dc_native,Security,HTTP layer does not log plaintext keys,DEBUG log enabled,"1. Trigger full registration with DEBUG
+2. Search log for raw key bytes",No raw key bytes / token bodies present; keys logged only as masked UUID,Security
+TC-SSMK-LIN-DB-001,dc_native,Functional,sqlite package opens vault with WAL mode,Linux,"1. Open vault under PRAGMA inspection",journal_mode=WAL; synchronous=NORMAL; foreign_keys ON,Config
+TC-SSMK-LIN-DB-002,dc_native,Edge,sqlite package handles UTF-8 keys in metadata,Insert non-ASCII metadata,"1. Insert through API
+2. Re-read",Round-trip equal; no encoding loss,Edge
+TC-SSMK-LIN-DB-003,dc_native,Negative,sqlite package errors on write to read-only filesystem,Mount RO,"1. Trigger write
+2. Observe",Error returned; agent logs and continues with cached state,Failure
+TC-SSMK-LIN-CRYPTO-001,dc_native,Functional,datavaultcrypto round-trip encrypt/decrypt,Unit-style on device,"1. Encrypt 100KB blob
+2. Decrypt
+3. Compare",Decrypt equals original; tag valid,Happy
+TC-SSMK-LIN-CRYPTO-002,dc_native,Negative,datavaultcrypto rejects bit-flipped ciphertext,Same as above,"1. Encrypt
+2. Flip 1 bit
+3. Decrypt",Returns auth-failure error; no panic,Security
+TC-SSMK-LIN-CRYPTO-003,dc_native,Edge,datavaultcrypto handles empty payload,Edge,"1. Encrypt 0-byte
+2. Decrypt",Round-trip empty; no out-of-bound,Edge
+TC-SSMK-LIN-ERR-001,dc_native,Functional,errors package wraps SSMK error chain,Trigger 412,"1. Inspect error",Wrapped with key-mismatch sentinel; unwrap correctly returns root,Functional
+TC-SSMK-MAC-KS-001,agent-utils,Functional,Mac KeyShare retrieves service keys via dynamic key,Mac agent registered,"1. Trigger key share
+2. Inspect /var/Mobile.../UEMS_MAC_AGENT vault",Each service module key persisted; signed with dynamic key,Happy
+TC-SSMK-MAC-KS-002,agent-utils,Negative,Mac KeyShare handles missing UUID timestamp,Vault rows without ts,"1. Force fetch
+2. Verify",Missing-ts treated as 0; not crash; key fetched fresh,BUG SCENARIO B6
+TC-SSMK-MAC-KS-003,agent-utils,Negative,Mac KeyShare handles isKeyAtAdaptionStage as String,DS returns ""true""/""false""/missing,"1. Iterate all three
+2. Observe",All variants parsed; adaption flag set correctly,BUG SCENARIO B6
+TC-SSMK-MAC-KS-004,agent-utils,Negative,Mac KeyShare handles duplicate auth reset request,Issue duplicate,"1. Send same auth reset twice
+2. Observe",Second is no-op; no inflight stuck; logs ""duplicate ignored"",BUG SCENARIO
+TC-SSMK-MAC-KS-005,agent-utils,Functional,Skip servlet call for UUIDs not mapped locally,Vault has stale UUID,"1. Trigger rotation
+2. Verify",Stale UUIDs filtered before HTTP call; only valid local modules in request,Functional
+TC-SSMK-MAC-MIG-001,agent-utils,Migration,AuthPropsMigration moves tokens to vault,Pre-SSMK Mac build,"1. Upgrade to SSMK
+2. Inspect AuthProps.plist + vault",Tokens removed from plist; present (encrypted) in vault,Upgrade
+TC-SSMK-MAC-MIG-002,agent-utils,Migration,Per-token failure does not abort migration of other tokens,Pre-SSMK with one corrupt token,"1. Upgrade
+2. Inspect migration log",Failed token logged; others migrated; migration marked partial success,BUG SCENARIO B7
+TC-SSMK-MAC-MIG-003,agent-utils,Functional,DynamicKey stored to vault at auth-token level,Mac upgrade,"1. Upgrade
+2. Inspect vault keys",DynamicKey row present; encrypted with FRAMEWORK key,Happy
+TC-SSMK-MAC-MIG-004,agent-utils,Negative,Migration retries on transient KeyChain failure,Force keychain busy,"1. Trigger migration
+2. Observe",Retry with backoff; success on next attempt; no duplicate entry,Retry
+TC-SSMK-MAC-PROXY-001,agent-utils,Migration,ProxyCredentialMigration moves proxy password to vault,Pre-SSMK with proxy set,"1. Upgrade
+2. Inspect plist + vault",Vault has proxy entry encrypted with AGENT_UTILS key; plist entry removed,Upgrade
+TC-SSMK-MAC-PROXY-002,agent-utils,Security,No plaintext proxy remnant in plist post-migration,Post upgrade,"1. grep plist file",No plaintext password remains; only opaque vault refs,BUG SCENARIO B8
+TC-SSMK-MAC-PROXY-003,agent-utils,Functional,Proxy decryption falls back when in adaption,DS rotating proxy key,"1. While AGENT_UTILS adaption, retrieve proxy
+2. Observe",Decrypts with either old or new key; outbound succeeds,State transition
+TC-SSMK-MAC-CRED-001,agent-utils,Functional,Credential Manager decrypts using FRAMEWORK key (shifted from SOM),Pre-SSMK creds in keychain,"1. Upgrade
+2. Trigger module needing cred",Decrypted under FRAMEWORK key; logs note SOM->FRAMEWORK shift,State transition
+TC-SSMK-MAC-CRED-002,agent-utils,Negative,DCCredentialMgr without master-key fallback (post-fix),Pre-SSMK creds,"1. Set vault entry only
+2. Remove master-key fallback path
+3. Decrypt",Succeeds using SSMK path only; old master-key path no longer attempted,Functional
+TC-SSMK-MAC-CRED-003,agent-utils,Edge,DCCredentialMgr master-key fallback retained for pre-migration creds,Mid-upgrade state,"1. Decrypt pre-migration entry
+2. Verify path",Falls back to master key for pre-migration; flagged for migration,Backward compat
+TC-SSMK-MAC-CSR-001,agent-utils,Functional,CSR signing uses approval key,Mac registration,"1. Register fresh
+2. Inspect CSR",CSR signed with approval key; DS accepts; cert issued,Security
+TC-SSMK-MAC-CSR-002,agent-utils,Negative,CSR signing fails gracefully when approval key absent,Remove key,"1. Register
+2. Observe",Registration fails with clear message; agent retries after key share,Failure
+TC-SSMK-MAC-AUTH-001,agent-utils,Functional,Approval token URL includes API version,Trigger token fetch,"1. Capture HTTP",URL has v2 (or current) path segment,Functional
+TC-SSMK-MAC-AUTH-002,agent-utils,Negative,Token decryption failure reports descriptive error,Corrupt token blob,"1. Trigger decrypt
+2. Inspect log",Error includes token id and module; no raw bytes,Failure
+TC-SSMK-MAC-XML-001,agent-utils,Functional,XML.Accessor children property returns only direct children,Unit-style on device,"1. Parse XML with nested children
+2. Use children property",Returns only direct children; not deep descendants,Functional
+TC-SSMK-MAC-RDS-001,framework-ops-suite,Functional,RDS actions use session signaling not console plist updates,Trigger RDS action,"1. Initiate RDS session
+2. Verify no console plist mutation",signalRDSSession invoked; plist unchanged; notification posted,Refactor verify
+TC-SSMK-MAC-PA-001,framework-ops-suite,Negative,PowerActions handles missing operation in shutdown task,Craft XML without operation,"1. Send action
+2. Observe",Default applied; agent logs and refuses unsafe action,BUG SCENARIO
+TC-SSMK-MAC-PA-002,framework-ops-suite,Edge,Reboot XML default values present when omitted,Send minimal XML,"1. Send",Defaults applied (e.g., delay 0); action executes safely,Edge
+TC-SSMK-MAC-DMS-001,framework-ops-suite,Functional,DMSClient connects via WebSocket and authenticates,Server reachable,"1. Bring up DMS
+2. Wait connect",WS handshake succeeds; auth frame accepted; client transitions to Ready,Happy
+TC-SSMK-MAC-DMS-002,framework-ops-suite,Negative,DMSClient reconnect strategy backoff increases exponentially,Drop WS,"1. Drop connection
+2. Capture reconnect intervals",Intervals 5s,10s,20s... capped; jitter applied; logs delay,Retry
+TC-SSMK-MAC-DMS-003,framework-ops-suite,Negative,DMSReconnectionStrategy logs computed delay,Drop WS,"1. Inspect logs",Delay value present in log; same value used for sleep,Reporting
+TC-SSMK-MAC-DMS-004,framework-ops-suite,Negative,WSTransport resets read deadline on pong reception,Idle channel >60s,"1. Wait
+2. Send periodic pings",Pong received resets deadline; channel survives 5 min idle,BUG SCENARIO B9
+TC-SSMK-MAC-DMS-005,framework-ops-suite,Functional,NS connect string includes approval token,Trigger NS connect,"1. Capture connect string",Includes approval token query param,Integration
+TC-SSMK-MAC-DMS-006,framework-ops-suite,Functional,NS config fetched from on_demand_connection_config.json,Place file,"1. Start agent",Reads file; honors host/port; logs source,Config
+TC-SSMK-MAC-DMS-007,framework-ops-suite,Functional,BSP WebMetering ondemand command (1104) executes,Server triggers 1104,"1. Receive
+2. Execute",Action routes to BSP handler; result reported,Integration
+TC-SSMK-MAC-DMS-008,framework-ops-suite,Functional,Sensitive payload not logged at INFO level,Trigger sensitive action,"1. Inspect log",Raw payload NOT logged at INFO; logged only at DEBUG if at all; non-sensitive logged raw,Security
+TC-SSMK-MAC-DMS-009,framework-ops-suite,Functional,PayloadExtractor handles XML child iteration without skipping,Multi-child XML,"1. Send
+2. Verify",All children processed; no off-by-one,BUG SCENARIO
+TC-SSMK-MAC-DCFG-001,framework-ops-suite,Functional,dcconfig syncs provisional token then issues client cert,Fresh registration,"1. Register fresh Mac agent",Provisional token synced; CSR signed; cert installed,Integration
+TC-SSMK-MAC-DCFG-002,framework-ops-suite,Edge,dcconfig path uses ""/"" not ""//"" in URL,Capture request,"1. Inspect URL",No double-slash; matches DS contract,BUG SCENARIO
+TC-SSMK-MAC-UPG-001,framework-ops-suite,Migration,Mac upgrader pre-upgrade handler validates vault writable,Disk near full,"1. Upgrade
+2. Observe",Pre-upgrade aborts if vault not writable; agent left functional,Upgrade
+TC-SSMK-MAC-UPG-002,framework-ops-suite,Functional,Mac upgrader post-upgrade handler reports SSMK status,Upgrade,"1. Upgrade
+2. Inspect post-upgrade log",SSMK migration result reported; DS receives status,Reporting
+TC-SSMK-INT-AGENTDS-001,cross-cutting,Integration,New agent + new DS happy path E2E,All SSMK build,"1. Install agent
+2. Register
+3. Rotate
+4. Send inventory
+5. Trigger ondemand command",All steps succeed; no key-mismatch errors,E2E
+TC-SSMK-INT-AGENTDS-002,cross-cutting,Compat,New agent + old DS (downgrade scenario),Old DS build,"1. Point new agent at old DS
+2. Register
+3. Send status",Either: agent falls back gracefully (if supported) OR fails fast with clear error; no silent data corruption,Compat
+TC-SSMK-INT-AGENTDS-003,cross-cutting,Compat,Old agent + new DS,Old agent,"1. Old agent registers with SSMK DS
+2. Status update
+3. Rotation triggered",Old agent ignores rotation; DS treats as legacy; communication preserved,Compat
+TC-SSMK-INT-AGENTDS-004,cross-cutting,Integration,Mixed Win+Mac+Linux fleet rotation,1 of each,"1. Rotate ALL modules simultaneously across fleet
+2. Verify each agent picks new keys",All 3 platforms converge to new keys within 10 minutes; no stragglers,E2E
+TC-SSMK-INT-AGENTDS-005,cross-cutting,Negative,Network outage during key share for entire fleet,Drop egress 5 min,"1. Trigger fleet-wide rotation
+2. Restore network",On restore, agents pull new keys and resume; no need for manual intervention,Resilience
+TC-SSMK-INT-AGENTDS-006,cross-cutting,Negative,DS DB unavailable mid-rotation,Stop DS DB,"1. Begin rotation
+2. Stop DB
+3. Restart DB",Rotation resumes / re-issues; agents not stranded with adaption key,Resilience
+TC-SSMK-INT-AGENTDS-007,cross-cutting,E2E,Software deployment using SSMK-encrypted package URL,DS,"1. Deploy software task to agent
+2. Verify pkg downloaded and installed",Pkg URL/credentials decrypted under correct module key; deployment succeeds,E2E
+TC-SSMK-INT-AGENTDS-008,cross-cutting,E2E,Patch deployment under SSMK,DS,"1. Trigger patch
+2. Agent downloads, installs, reports",Full lifecycle works; status uploaded under PATCH module key,E2E
+TC-SSMK-CLN-UNINST-001,cross-cutting,Cleanup,Uninstall removes vault + per-module keys,Installed agent,"1. Uninstall
+2. Scan filesystem + registry",No vault files, no key blobs, no stale registry SSMK entries,Cleanup
+TC-SSMK-CLN-UNINST-002,cross-cutting,Cleanup,Reinstall after uninstall creates clean vault,Post-uninstall machine,"1. Reinstall
+2. Inspect vault",Fresh vault; no leftover keys; registration succeeds,Cleanup
+TC-SSMK-CLN-UNINST-003,cross-cutting,Cleanup,Uninstall on Mac removes keychain entries,Mac install,"1. Uninstall
+2. security find-generic-password",No SSMK / UEMS items left in keychain,Cleanup
+TC-SSMK-CROSS-LOC-001,cross-cutting,Cross-Env,SSMK works under non-en_US locale (de_DE / ja_JP),Locale set,"1. Install
+2. Rotate
+3. Decrypt",No string-format/locale-related crashes; success identical to en_US,Cross-env
+TC-SSMK-CROSS-CLOCK-001,cross-cutting,Edge,Agent clock skew (+/- 1 hour) does not break key share,Set system clock +1h,"1. Trigger key share",Succeeds; timestamps reconciled; rotation works,Edge
+TC-SSMK-CROSS-OFFLINE-001,cross-cutting,Edge,Agent works offline for 24h with cached keys,Disconnect 24h,"1. Disconnect
+2. Reconnect after 24h",Cached keys still valid; reconnect refreshes; no data lost,Edge
+TC-SSMK-CROSS-RBT-001,cross-cutting,Functional,Endpoint reboot during adaption window completes rotation,Adaption ongoing,"1. Reboot mid-adaption
+2. After boot, observe",Rotation completes; agent uses new key; logs note resume,State transition
+TC-SSMK-PERF-001,cross-cutting,Performance,Key share latency under load <5s p95,Fleet of 1000 simulated agents,"1. Trigger fleet rotation
+2. Measure",p95 <=5s; no 5xx > 0.1%,Performance
+TC-SSMK-PERF-002,cross-cutting,Performance,Vault read latency <50ms p95,Soak,"1. 1M reads
+2. Measure",p95 <=50ms,Performance
+TC-SSMK-SEC-AUDIT-001,cross-cutting,Security,No plaintext key visible in memory dump,Agent running,"1. Trigger memory dump
+2. Strings on dump",No raw 32-byte keys observable in clear (best-effort; expected zeroized after use),Security
+TC-SSMK-SEC-AUDIT-002,cross-cutting,Security,No plaintext key in core dump or crash report,Force crash,"1. Trigger crash
+2. Inspect dump",No raw keys; only opaque blobs,Security
+TC-SSMK-SEC-AUDIT-003,cross-cutting,Security,Audit log records all key rotations,Rotate 3 keys,"1. Inspect audit log",3 rotation events with module id, timestamp, requester; no key bytes,Audit
+TC-SSMK-CFG-001,uems_agent_utils,Config,New build constants in CryptoUtilConfig.h compile and link,Build agent,"1. Build x86 and x64 sln
+2. Verify",Both builds succeed; new UEMSAesChiperUtils.lib linked; no symbol clash,Build
+TC-SSMK-CFG-002,uems_agent_utils,Config,ant.properties / UEMSBuild.py changes produce correct artifact list,Run build,"1. Build
+2. List output",Artifacts include UEMSAesChiperUtils dll/lib; signing applied,Build
+TC-SSMK-CFG-003,cross-cutting,Config,Setup installer carries SSMK dependencies,Run installer,"1. Inspect MSI/PKG",Required DLLs/dylibs present and signed,Packaging
+TC-SSMK-REG-001,regression,Regression,Existing fresh-install regression (TC_001 family) passes on SSMK build,Existing CSV,"1. Run existing TC_001..TC_020 from windows-and-ds CSV",All pass with no SSMK-related failure,Regression
+TC-SSMK-REG-002,regression,Regression,Existing proxy regression suite passes on SSMK build,Existing CSV,"1. Run proxy TCs from existing CSVs",All pass,Regression
+TC-SSMK-REG-003,regression,Regression,Existing patch-deployment regression passes,Existing CSV,"1. Run patch TCs",All pass,Regression
+TC-SSMK-REG-004,regression,Regression,Existing inventory regression passes,Existing CSV,"1. Run inventory TCs",All pass,Regression
+TC-SSMK-REG-005,regression,Regression,Existing remote-control / RDS regression passes,Existing CSV,"1. Run RDS TCs",All pass,Regression

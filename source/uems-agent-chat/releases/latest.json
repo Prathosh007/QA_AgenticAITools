@@ -1,0 +1,6 @@
+{
+  "version": "0.3.16",
+  "vsixFile": "uems-agent-chat.vsix",
+  "changelog": "## 0.3.16 — 2025-07-14\n\n### Changed\n- Consolidated testcase-generation skill: all naming conventions, CSV format rules, and quality standards embedded directly (no external reference files)\n- Consolidated testcase-json-converter skill: all GOAT conversion rules, component detection, validation, and gap report format embedded directly\n- Updated agent definition: removed dependency on testcase-standards folder, embedded report template\n- Removed redundant manual-test-generation skill\n- Skills now enforce MANDATORY order: read codebase first (repos.json layer architecture) → then KNOWLEDGE.md + existing TCs + support tickets\n- Agent version bumped to 1.1.0\n\n### Removed\n- manual-test-generation skill (redundant — covered by testcase-generation)\n- agents/testcase-generator/testcase-standards/ folder (content embedded in skills)",
+  "minVSCodeVersion": "1.108.0"
+}

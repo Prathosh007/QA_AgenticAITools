@@ -1,0 +1,44 @@
+"Automation 
+Status",TestCase Name in Qengine,Testcase ID,DRI,Functionality,Type,OS,Testcases,Steps to achieve,Remarks,Utils with name,Efforts and Days needed,Flow Digram
+,Agent_Preinstall (Cleanup),AI_MI_01,,Agent Installation - Push,Functional,Windows,Pre-cleanup of existing agent,"1. Check if agent is installed on the machine.
+2. If installed, uninstall the agent.
+3. Verify agent is removed from Control Panel.
+4. Verify agent service is not present or not running.
+5. Verify no agent process is running in Task Manager.
+6. Verify agent-related registry entries are removed.",Machine should be in clean state before install,"Control Panel, Services, Task Manager, Registry",1 Day,
+,Agent_PushINstall,AI_MI_02,,Agent Installation - Push,Functional,Windows,Adding target machine to SoM,"1. Configure Domain
+2. Adding machine to SoM from Domain / workgroup",Browser Automation through QEngine,Browser,1 Day,
+,Agent_PushINstall,AI_MI_03,,Agent Installation - Push,Functional,Windows,Adding target machine to Triggering Install,"1. Search Machine in SoM
+2. Trigger Agent Installation",Browser Automation through QEngine,Browser,,
+,Agent_PushInstall_PostValidation,AI_MI_04,,Agent Installation - Push,Functional,Windows,Post installation validation,"1. Verify agent is listed in SOM page with remark ""Agent Installed successfully"".
+2. Verify agent service is running.
+3. Verify agent entry exists in Control Panel.
+4. Verify agent process is running in Task Manager.",Agent should be active and healthy,"Browser, Services, Control Panel, Task Manager",1 Day,
+,Agent_Install_Win7,AI_MI_05,,Agent Installation - Push,OS Validation,Windows 10,Install on Windows 10,"1. Perform Push install on Win7.
+2. Validate agent works.",Must succeed,Browser,1 Day,
+,Agent_Install_Win11,AI_MI_06,,Agent Installation - Push,OS Validation,Windows 11,Install on Windows 11,"1. Perform Push install on Win11 or 10.
+2. Validate agent works.",Must succeed,Browser,1 Day,
+,Agent_Install_WinServer,AI_MI_07,,Agent Installation - Push,OS Validation,Windows Server,Install on Windows Server,"1. Perform Push install on Windows Server.
+2. Validate agent works.",Must succeed,Browser,1 Day,
+,Agent_Install_RemoteInstaller,AI_MI_08,,Agent Installation - Push,UEMSRemoteInstaller,Windows,Push installation via Remote Installer,"1. Rename remcom and stop wmi query
+2. Add target machine to SoM.
+3. Trigger Installation",Must succeed,"Browser, Services, File Folder Operations",1 Day,
+,Agent_Install_Remcom,AI_MI_09,,Agent Installation - Push,Remcom,Windows,Push installation via Remcom,"1. Rename UEMSRemoteInstaller and stop wmi query
+2. Add target machine to SoM.
+3. Trigger Installation",Must succeed,"Browser, Services, File Folder Operations",1 Day,
+,Agent_install_WMI,AI_MI_10,,Agent Installation - Push,WMI Query,Windows,Push installation via Remote Installer,"1. Rename remcom and UEMSRemoteInstaller
+2. Add target machine to SoM.
+3. Trigger Installation",Must succeed,"Browser, Services, File Folder Operations",1 Day,
+,Agent_Install_LegacyOS,AI_MI_11,,Agent Installation - Push,Negative,Below Windows 7,Install below windows 7,"1. Perform Push install on below Win7.
+2. Check agent installation fails",Must Fail,Browser,1 Day,
+,Agent_Install_WinServer,AI_MI_12,,Agent Installation - Push,Negative,Windows Server,Install on Windows Server below 2008r2,"1. Perform Push install on Windows Server less than 2008r2
+2. Check agent installation fails",Must Fail,Browser,1 Day,
+,Agent_Install_File&Printersharing,AI_MI_13,,Agent Installation - Push,Negative,Network reachability,Disable Network discovery,"1. Disable file and printer sharing 
+2. Triggger push installation
+3. Fails with network name not available error",Must Fail,"Browser, control panel",,
+,Agent_Install_InvalidCreds,AI_MI_14,,Agent Installation - Push,Negative,Invalid Credentials,Push installation with invalid credentials,"1. Disable file and printer sharing 
+2. Triggger push installation
+3. Fails with network name not available error",Must Fail,"Browser,",,
+,Agent_Install_Low_privilege,AI_MI_15,,Agent Installation - Push,Negative,low privilege user creds,Push installation with low privilege credentials,"1. Configure lower privilege user creds
+2. Triggger push installation
+3. Fails with network name not available error",Must Fail,Browser,,

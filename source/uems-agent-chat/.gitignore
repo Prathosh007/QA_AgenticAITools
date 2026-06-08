@@ -1,0 +1,8 @@
+node_modules/
+dist/
+out/
+assets/agents/
+assets/skills/
+assets/data/
+.agent-repo/
+.vscode-test/
