@@ -144,21 +144,41 @@ Start the server:
 
 ## Phase 1 — Collect Inputs
 
-Use `vscode_askQuestions` to ask the user all inputs in **one dialog**:
+Use `vscode_askQuestions` in **two rounds** to collect all required inputs:
 
-**Question 1 — Mode**
+### Round A — Always ask first (two questions together)
+
+**Question 1 — Functionality Name**
+> "What is the name of the functionality (and sub-functionalities, if any) you want test cases for?"
+
+Example: `Computer Rename`, `Agent Installation`, `Software Deployment > Patch Installation`
+
+**Question 2 — Mode**
 > "What type of test case generation do you need?"
-- Functionality-level — generate test cases for a feature or module
-- Diff comparison — generate test cases based on what changed between two branches
+- **Functionality-level** — Generate test cases for a feature or module from scratch (or extend existing). You will be asked which repository the code lives in.
+- **Diff comparison** — Generate test cases based on what changed between two branches. You will be asked for source branch, target branch, and repository.
 
-**Question 2 — Functionality Name**
-> "What functionality (and sub-functionalities, if any) should test cases be generated for?"
+### Round B — Mode-specific inputs (ask immediately after Round A)
 
-**Question 3 (Diff mode only) — Branches**
-> "Provide the source branch and target branch (in any format)."
+**If Functionality-level mode:**
 
-**Question 4 (Diff mode only) — Repository**
-> "Which repository contains this code?"
+**Question 3 — Repository** *(MANDATORY)*
+> "Which repository does this functionality code belong to?"
+> (e.g., uems_win_agent_setup, uems_agent_framework, dc_native, uems-mac-agent-setup)
+
+**Question 4 — Platform**
+> "Which platform? (windows / mac / linux)"
+
+---
+
+**If Diff comparison mode:**
+
+**Question 3 — Branches**
+> "Provide the source branch and target branch (in any format, e.g. feature_branch → main)."
+
+**Question 4 — Repository** *(MANDATORY)*
+> "Which repository contains the changed code?"
+> (e.g., uems_win_agent_setup, uems_agent_framework, dc_native)
 
 **Question 5 — Platform**
 > "Which platform? (windows / mac / linux)"
@@ -173,15 +193,16 @@ Follow the full **testcase-generation** skill procedure:
 
 2. **Gather context — Code Analysis FIRST (MANDATORY order):**
 
-   a. **Resolve repos from `repos.json` (MANDATORY):** Read `source/common/repos.json`. Match functionality keywords against repo descriptions. Select all relevant repos.
+   a. **Use the provided repository (MANDATORY — user supplied in Phase 1):** Start with the repo name given by the user. Read `source/common/repos.json` to resolve its full path and metadata. Then expand to related repos by checking `dependencies`.
    
    b. **Verify repos locally:** Use `uems_agent_list_workspace({ path: "Code base/<platform>/<repo_name>" })` to confirm availability. Print resolution summary:
       ```
-      🔍 Auto-resolved repos from repos.json:
+      🔍 Repository from user input + auto-resolved dependencies:
         • <repo_name> — <description> [available ✅ / not found ❌]
+        • <dependency_repo> — <description> [available ✅ / not found ❌]
       ```
    
-   c. **Search codebase:** Use `uems_agent_search_repos` with functionality keywords. Read all key source files — entry points, data flows, state transitions, error paths.
+   c. **Search codebase:** Use `uems_agent_search_repos` with functionality keywords. Target the user-provided repo first, then its dependencies. Read all key source files — entry points, data flows, state transitions, error paths.
    
    d. **Print `📂 REPO & CODE CONTEXT LOG`**
    

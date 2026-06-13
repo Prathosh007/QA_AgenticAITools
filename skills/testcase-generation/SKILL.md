@@ -19,23 +19,53 @@ Generates structured, product-level manual test cases. Supports functionality-fi
 
 ## Step 0: Collect Inputs (MANDATORY — ask before proceeding)
 
-Use `vscode_askQuestions` to ask the user all inputs in a **single dialog**. Do NOT infer or assume.
+Use `vscode_askQuestions` to collect inputs in **two rounds**. Do NOT infer or assume.
 
-### Question 1 — Generation Mode
+### Round A — Core inputs (always ask first)
+
+Ask two questions together:
+
+**Question 1 — Functionality Name**
+
+> "What is the name of the functionality (and sub-functionalities, if any) you want test cases for?"
+
+Example answer: `Computer Rename`, `Software Deployment > Patch Installation`, `Agent Communication`
+
+**Question 2 — Generation Mode**
 
 > "What type of test case generation do you need?"
 
 Options:
-- **Functionality-level** — Generate test cases for a feature or module from scratch (or extend existing)
-- **Diff comparison** — Generate test cases based on what changed between two branches
+- **Functionality-level** — Generate test cases for a feature or module from scratch (or extend existing). You will be asked which repository the functionality code lives in.
+- **Diff comparison** — Generate test cases based on what changed between two branches. You will be asked for the source branch, target branch, and repository name.
 
-### Question 2 — Functionality Name
+### Round B — Mode-specific inputs (ask immediately after Round A)
 
-> "What functionality (and sub-functionalities, if any) should test cases be generated for?"
+#### If **Functionality-level** mode was chosen:
 
-Example answer: `Computer Rename`, `Software Deployment > Patch Installation`, `Agent Communication`
+**Question 3 — Repository**
 
-### Question 3 (Diff mode only) — Branch Details
+> "Which repository does this functionality code belong to?"
+
+This is **MANDATORY**. The agent will search this repository to ground the generated test cases in real code.
+
+Example answer: `uems_win_agent_setup`, `uems_agent_framework`, `dc_native`, `uems-mac-agent-setup`
+
+If unsure, common choices by platform:
+- Windows delivery repo: `uems_win_agent_setup`
+- Windows framework: `uems_agent_framework`
+- Linux: `dc_native`
+- macOS delivery repo: `uems-mac-agent-setup`
+
+**Question 4 — Platform**
+
+> "Which platform? (windows / mac / linux)"
+
+---
+
+#### If **Diff comparison** mode was chosen:
+
+**Question 3 — Branch Details**
 
 > "Provide the source branch and target branch."
 
@@ -48,11 +78,15 @@ Accept any natural format:
 - `source: feature_win_agent_26.05, target: main`
 - `feature_win_agent_26.05 vs main`
 
-### Question 4 — Repository
+**Question 4 — Repository**
 
-> "Which repository contains the code? (Leave blank if not applicable for functionality-level)"
+> "Which repository contains the changed code?"
 
-### Question 5 — Platform
+This is **MANDATORY** for diff comparison. The agent needs to fetch the diff from this repository.
+
+Example answer: `uems_win_agent_setup`, `uems_agent_framework`, `dc_native`
+
+**Question 5 — Platform**
 
 > "Which platform? (windows / mac / linux)"
 
@@ -115,28 +149,27 @@ Code base/
 
 **2.1 Identify and prepare the repository:**
 
-**Step A — Check if a repo was provided in Step 0:**
-- If yes → proceed to Step C.
-- If no → proceed to Step B.
+**Step A — Use the repository provided by the user (MANDATORY):**
 
-**Step B — Auto-resolve from `repos.json`:**
+The user always provides a repository name in Step 0. Start there.
 
 1. Read `source/common/repos.json` using `uems_agent_read_workspace`.
-2. Structure: `{ "<platform>": { "<repo_name>": { "gitUrl": "...", "description": "..." } } }`.
-3. Match functionality name against each repo's `description` and `repo_name`. Select all relevant repos.
+2. Look up the provided repo name in the JSON. Retrieve its `description`, `dependencies`, and `platform`.
+3. Expand to include dependency repos where relevant (e.g., if testing agent installation, include `uems_agent_framework` dependencies).
 4. Verify locally: `uems_agent_list_workspace({ path: "Code base/<platform>/<repo_name>" })`
    - If exists → ready for search.
    - If not → try `uems_agent_setup_workspace({ repos: ["<repo_name>"], platform: "<platform>" })`.
 5. Print resolution summary:
    ```
-   🔍 Auto-resolved repos from repos.json:
+   🔍 Repository (user-provided) + resolved dependencies:
      • <repo_name> — <description> [available ✅ / not found ❌]
+     • <dependency> — <description> [available ✅ / not found ❌]
    ```
-6. If no repos matched → fall back to KNOWLEDGE.md and note the fallback.
+6. If the provided repo name does not match any entry → fall back to keyword matching against `description` fields and note the fallback.
 
-**Step C — Search the codebase:**
+**Step B — Search the codebase:**
 
-**Option 1 (preferred) — `uems_agent_search_repos`:** Search for functionality name, class names, command names, config key prefixes.
+**Option 1 (preferred) — `uems_agent_search_repos`:** Search for functionality name, class names, command names, config key prefixes. Target the user-provided repo first.
 
 **Option 2 — Direct file browsing:**
 1. `uems_agent_list_workspace({ path: "Code base/<platform>/<repo_name>" })` to discover structure.
@@ -190,8 +223,8 @@ Combining all sources:
 
 #### Layer 1 — Code Context (Primary)
 
-**2.1** Ensure repo is available locally (same as functionality mode Step B/C).
-**2.2** Call `uems_agent_diff_branches` to get the diff. Read each changed file.
+**2.1** Use the **user-provided repository name** to look up the repo in `source/common/repos.json`. Verify it is available locally.
+**2.2** Call `uems_agent_diff_branches({ repo: "<repoName>", sourceBranch: "<src>", targetBranch: "<tgt>" })` to get the diff. Read each changed file.
 **2.3** Identify module, functional area, log files, config files.
 **2.4** Read commit messages — extract issue descriptions, bug context, intent.
 

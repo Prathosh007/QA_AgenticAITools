@@ -75,7 +75,7 @@ function switchConversation(convId) {
     chatInput.value = prompt;
     chatInput.focus();
     dispatchSend();
-  });
+  }, chatInput);
   bindFollowUpChips(chatContainer);
   chatInput.focus();
 }
@@ -89,7 +89,7 @@ function startNewChat() {
     chatInput.value = prompt;
     chatInput.focus();
     dispatchSend();
-  });
+  }, chatInput);
   chatInput.focus();
 }
 
@@ -156,7 +156,7 @@ chatInput.addEventListener('keydown', (e) => {
 // Suggestion chip click (dispatched by suggestions.js)
 window.addEventListener('chat:send-prompt', dispatchSend);
 
-// Agent changed — refresh greeting prompts if chat is empty
+// Agent changed — refresh empty-state (wizard or suggestion chips) if chat is empty
 window.addEventListener('agent:changed', () => {
   const conv = store.get(app.currentConvId);
   if (!conv || conv.messages.length === 0) {
@@ -164,7 +164,7 @@ window.addEventListener('agent:changed', () => {
       chatInput.value = prompt;
       chatInput.focus();
       dispatchSend();
-    });
+    }, chatInput);
   }
 });
 

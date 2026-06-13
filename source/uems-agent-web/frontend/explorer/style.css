@@ -2012,3 +2012,271 @@ body {
 .feedback-submit .material-symbols-rounded {
   font-size: 18px;
 }
+
+/* ── Testcase Generator Wizard ───────────────────────────────────── */
+
+.tc-wizard {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 24px 40px;
+}
+
+.tc-wizard-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.tc-wizard-icon {
+  font-size: 36px;
+  color: var(--accent-blue);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tc-wizard-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.tc-wizard-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.tc-wizard-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.tc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tc-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 560px) {
+  .tc-field-row { grid-template-columns: 1fr; }
+}
+
+.tc-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tc-required {
+  color: #f85149;
+  margin-left: 2px;
+}
+
+.tc-input {
+  background: var(--bg-omnibox);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+
+.tc-input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.15);
+}
+
+.tc-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.tc-field-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Mode cards */
+.tc-mode-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 560px) {
+  .tc-mode-cards { grid-template-columns: 1fr; }
+}
+
+.tc-mode-card {
+  display: block;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: var(--bg-omnibox);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+}
+
+.tc-mode-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tc-mode-card.selected,
+.tc-mode-card:has(input:checked) {
+  border-color: var(--accent-blue);
+  background: rgba(66, 133, 244, 0.07);
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.12);
+}
+
+.tc-mode-card:hover:not(.selected) {
+  border-color: #555;
+  background: var(--bg-hover);
+}
+
+.tc-mode-card-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+}
+
+.tc-mode-icon {
+  font-size: 24px;
+  color: var(--accent-blue);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.tc-mode-card-body strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.tc-mode-card-body p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Conditional sections */
+.tc-mode-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.tc-mode-section.hidden {
+  display: none;
+}
+
+/* Platform pills */
+.tc-platform-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tc-platform-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 2px solid var(--border);
+  background: var(--bg-omnibox);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+
+.tc-platform-pill input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tc-platform-pill:has(input:checked) {
+  border-color: var(--accent-blue);
+  background: rgba(66, 133, 244, 0.1);
+  color: var(--accent-blue);
+}
+
+.tc-platform-pill:hover:not(:has(input:checked)) {
+  border-color: #555;
+  background: var(--bg-hover);
+}
+
+.tc-platform-pill .material-symbols-rounded {
+  font-size: 18px;
+}
+
+/* Error box */
+.tc-error {
+  background: rgba(248, 81, 73, 0.12);
+  border: 1px solid rgba(248, 81, 73, 0.4);
+  border-radius: 8px;
+  color: #f85149;
+  font-size: 13px;
+  padding: 10px 14px;
+}
+
+.tc-error.hidden { display: none; }
+
+/* Submit button */
+.tc-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--accent-blue);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  align-self: flex-start;
+  min-width: 200px;
+}
+
+.tc-submit-btn:hover {
+  background: #5a9cf5;
+}
+
+.tc-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.tc-submit-btn .material-symbols-rounded {
+  font-size: 20px;
+}

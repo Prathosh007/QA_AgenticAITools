@@ -613,39 +613,39 @@
       <div class="guide-step">
         <div class="guide-step-num">3</div>
         <div class="guide-step-content">
-          <h3>Type Your Request</h3>
-          <p>In the chat input box, describe what test cases you need. The AI understands natural language:</p>
+          <h3>Fill in the Input Wizard</h3>
+          <p>When the <strong>Testcase Generator</strong> agent is selected, a structured input form appears automatically — no need to type a free-text prompt. Fill in the fields:</p>
           <div class="feature-grid">
             <div class="feature-item">
-              <span class="fi-icon">📋</span>
+              <span class="fi-icon">✏️</span>
               <div class="fi-text">
-                <strong>Functionality-level generation</strong>
-                "Generate test cases for Agent Installation functionality"
+                <strong>Functionality Name</strong>
+                e.g. "Agent Installation", "Computer Rename", "Software Deployment"
               </div>
             </div>
             <div class="feature-item">
               <span class="fi-icon">🔀</span>
               <div class="fi-text">
-                <strong>Diff-based generation</strong>
-                "Generate diff test cases between feature_win_agent_26.05 and main"
+                <strong>Generation Mode</strong>
+                Choose <em>Functionality-level</em> (from scratch) or <em>Diff Comparison</em> (branch diff)
+              </div>
+            </div>
+            <div class="feature-item">
+              <span class="fi-icon">🌿</span>
+              <div class="fi-text">
+                <strong>Diff Comparison fields</strong>
+                Source branch, target branch, and repository name — AI fetches the diff automatically
               </div>
             </div>
             <div class="feature-item">
               <span class="fi-icon">📦</span>
               <div class="fi-text">
-                <strong>GOAT JSON conversion</strong>
-                "Convert test cases to GOAT JSON for AgentInstallation"
-              </div>
-            </div>
-            <div class="feature-item">
-              <span class="fi-icon">🔄</span>
-              <div class="fi-text">
-                <strong>Reconvert with updates</strong>
-                "Reconvert all GOAT JSON for AgentInstallation (re-read GOAT_Operations_Context.md)"
+                <strong>Functionality-level field</strong>
+                Repository name where the functionality code lives — AI reads it to ground test cases in real code
               </div>
             </div>
           </div>
-          <div class="tip"><strong>💡 Tip:</strong> You can also use the suggestion chips shown in an empty chat — they provide ready-made prompts you can click to start.</div>
+          <div class="tip"><strong>💡 Tip:</strong> The repository field is mandatory in both modes. Providing the exact repo name ensures the AI searches the right codebase and generates accurate, grounded test cases. Common choices: <code>uems_win_agent_setup</code> (Windows), <code>uems-mac-agent-setup</code> (macOS), <code>dc_native</code> (Linux).</div>
         </div>
       </div>
 
@@ -797,10 +797,10 @@ flowchart TD
         HEALTH -->|"✅ Pass"| DB_OK["✅ DB Online\nPrint existing TC count"]
     end
 
-    subgraph PHASE1["Phase 1 — Collect Inputs"]
-        DB_OK --> ASK["Ask user:\n1. Mode — Functionality or Diff\n2. Functionality name\n3. Platform"]
-        ASK -->|"Functionality"| FUNC_MODE["Functionality Mode"]
-        ASK -->|"Diff"| DIFF_MODE["Diff Mode\n+ Branches + Repo"]
+    subgraph PHASE1["Phase 1 — Collect Inputs (Wizard)"]
+        DB_OK --> WIZARD["Web UI Wizard\n1. Functionality name\n2. Mode selection"]
+        WIZARD -->|"Functionality-level"| FUNC_MODE["Functionality Mode\n+ Repository name\n+ Platform"]
+        WIZARD -->|"Diff comparison"| DIFF_MODE["Diff Mode\n+ Source branch\n+ Target branch\n+ Repository name\n+ Platform"]
     end
 
     subgraph PHASE2["Phase 2 — Generate Test Cases"]
@@ -866,12 +866,13 @@ flowchart TD
     </div>
 
     <div class="phase-card p1">
-      <h3><span class="phase-badge p1">Phase 1</span> Collect Inputs</h3>
+      <h3><span class="phase-badge p1">Phase 1</span> Collect Inputs (Wizard)</h3>
       <ul>
+        <li><strong>Functionality name:</strong> The feature or module to test</li>
         <li><strong>Mode:</strong> Functionality-level or Diff comparison</li>
-        <li><strong>Functionality:</strong> Feature name and sub-functionalities</li>
+        <li><strong>Repository (both modes):</strong> Where the functionality code lives — mandatory for accurate code grounding</li>
+        <li><strong>Diff mode:</strong> Source branch → target branch</li>
         <li><strong>Platform:</strong> Windows, macOS, or Linux</li>
-        <li><strong>Diff mode only:</strong> Source/target branches and repository name</li>
       </ul>
     </div>
 
@@ -879,8 +880,8 @@ flowchart TD
       <h3><span class="phase-badge p2">Phase 2</span> Generate Test Cases</h3>
       <ul>
         <li>Check DB for existing test cases — skip duplicates</li>
-        <li>Read <span class="tool-tag">repos.json</span> → resolve relevant repos by keywords</li>
-        <li>Search codebase for entry points, data flows, error paths</li>
+        <li>Start with the <strong>user-provided repository</strong> → expand to dependencies via <span class="tool-tag">repos.json</span></li>
+        <li>Search codebase for entry points, data flows, config keys, error paths</li>
         <li>Read <span class="tool-tag">KNOWLEDGE.md</span>, <span class="tool-tag">SUPPORT_TICKETS.md</span>, CSV files</li>
         <li>Generate exhaustive TCs across 18 scenario categories</li>
         <li>Run quality checklist → write CSV → POST to DB → save backup</li>
@@ -971,13 +972,25 @@ flowchart TD
 
   <!-- ── Example Prompts ──────────────────── -->
   <div class="examples">
-    <h2>Example Prompts</h2>
+    <h2>Example Prompts (auto-generated by the wizard)</h2>
     <ul class="example-list">
-      <li>Generate test cases for Computer Rename functionality</li>
-      <li>Generate test cases for Software Deployment &gt; Patch Installation</li>
-      <li>Generate diff comparison test cases between feature_win_agent_26.05 and main</li>
-      <li>Generate test cases for Agent Communication — source: feature_branch, target: main</li>
-      <li>Convert test cases to GOAT JSON for AgentInstallation</li>
+      <li>Generate test cases for the following:
+- Functionality: Agent Installation
+- Mode: Functionality-level
+- Repository: uems_win_agent_setup
+- Platform: windows</li>
+      <li>Generate test cases for the following:
+- Functionality: Computer Rename
+- Mode: Diff comparison
+- Source branch: feature_win_agent_26.05
+- Target branch: main
+- Repository: uems_agent_framework
+- Platform: windows</li>
+      <li>Generate test cases for the following:
+- Functionality: Software Deployment
+- Mode: Functionality-level
+- Repository: uems_ds
+- Platform: windows</li>
     </ul>
   </div>
 

@@ -6,12 +6,13 @@ import { app }                          from './state.js';
 import { escapeHtml, renderMarkdown, formatFileSize } from './utils.js';
 import { renderToolGroupStatic, bindToolCallToggles } from './tool-ui.js';
 import { SUGGESTION_PROMPTS, TESTCASE_PROMPTS } from './suggestions.js';
+import { renderTestcaseWizard } from './testcase-wizard.js';
 
 // ── Public API ────────────────────────────────────────────────
 
-export function renderMessages(chatContainer, conv, onSuggestionClick) {
+export function renderMessages(chatContainer, conv, onSuggestionClick, chatInput) {
   if (!conv.messages || conv.messages.length === 0) {
-    renderEmptyState(chatContainer, onSuggestionClick);
+    renderEmptyState(chatContainer, onSuggestionClick, chatInput);
     return;
   }
 
@@ -212,22 +213,25 @@ export function appendUserMessageToDOM(chatContainer, content) {
 
 // ── Private helpers ───────────────────────────────────────────
 
-function renderEmptyState(chatContainer, onSuggestionClick) {
-  chatContainer.className = 'chat-container is-empty';
+function renderEmptyState(chatContainer, onSuggestionClick, chatInput) {
   const name = app.user?.login || 'there'; //No I18N
   const isTestcaseAgent = app.selectedAgent === 'uems-agent-testcase-generator';
-  const prompts = isTestcaseAgent ? TESTCASE_PROMPTS : SUGGESTION_PROMPTS;
-  const chipsHtml = prompts
+
+  if (isTestcaseAgent) {
+    // Render the structured wizard form for test case inputs
+    const inputEl = chatInput || document.getElementById('chat-input');
+    renderTestcaseWizard(chatContainer, name, inputEl);
+    return;
+  }
+
+  chatContainer.className = 'chat-container is-empty';
+  const chipsHtml = SUGGESTION_PROMPTS
     .map((s) => `<button class="suggestion-chip" data-prompt="${escapeHtml(s.prompt)}"><span class="material-symbols-rounded suggestion-icon">${s.icon}</span><span class="suggestion-text">${escapeHtml(s.prompt)}</span></button>`) //No I18N
     .join('');
 
-  const greeting = isTestcaseAgent
-    ? `Hello, ${escapeHtml(name)}. What would you like to test today?`
-    : `Hello, ${escapeHtml(name)}. How can I help you today?`;
-
   chatContainer.innerHTML = `
     <div class="greeting-container">
-      <h1 class="greeting-text">${greeting}</h1>
+      <h1 class="greeting-text">Hello, ${escapeHtml(name)}. How can I help you today?</h1>
       <div class="suggestions-container">${chipsHtml}</div>
     </div>`;
 
