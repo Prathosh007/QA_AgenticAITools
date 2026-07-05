@@ -1,0 +1,25 @@
+# QEngine Report Generator — example config  (python main.py --config config.example.yaml)
+# Auth is via OAuth using credentials in .env (CLIENT_ID/CLIENT_SECRET/REFRESH_TOKEN).
+
+# --- Identify the run (official v1 API is keyed on executedenvironment_id) ---
+project_id: "4443000000022861"
+env_id: "4443000074661122"            # executedenvironment_id — the run to report on
+# testplan_id: "4443000049583943"     # optional — adds Topic / suites / users
+# result_url: "https://qengine.zoho.in/uems/projects/<pid>/results/<envId>"  # alt to ids above
+
+host: "https://qengine.zoho.in"
+output: "./output"
+verbose: false
+
+# Network tuning
+timeout: 30
+retries: 3
+backoff: 1.5
+page_size: 100
+
+# Output toggles
+make_html: true
+make_pdf: true
+make_json: true
+make_csv: true
+make_xlsx: true

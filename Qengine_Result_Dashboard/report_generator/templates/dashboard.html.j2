@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QEngine Dashboard — {{ s.topic_name or s.test_run_id }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <script>document.documentElement.classList.add('js');</script>
+  {% if plotlyjs %}<script>{{ plotlyjs|safe }}</script>{% else %}<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>{% endif %}
+  <style>{{ css }}</style>
+</head>
+<body>
+<nav class="navbar navbar-dark hero-nav sticky-top">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1"><i class="bi bi-clipboard2-data-fill"></i> QEngine Test Execution Dashboard</span>
+    <span class="navbar-text text-light">
+      <span class="badge status-pill {{ 'bg-success' if s.failed == 0 else 'bg-danger' }}">{{ s.execution_status|title or 'Completed' }}</span>
+      <span class="ms-2 small opacity-75">Source: {{ report.source|upper }}</span>
+    </span>
+  </div>
+</nav>
+
+<div class="container-fluid py-4 px-4">
+
+  <!-- Hero / conclusion -->
+  <div class="hero-banner reveal {{ 'hero-ok' if s.failed == 0 else 'hero-warn' }}">
+    <div class="hero-ring" style="--pct: {{ s.pass_percentage }}">
+      <div class="hero-ring-inner"><span class="counter" data-target="{{ s.pass_percentage }}" data-suffix="%">0</span></div>
+    </div>
+    <div class="hero-text">
+      <div class="hero-title"><i class="bi {{ 'bi-trophy-fill' if s.failed == 0 else 'bi-exclamation-triangle-fill' }}"></i>
+        {{ 'All tests passed!' if s.failed == 0 else 'Execution completed with failures' }}</div>
+      <div class="hero-sub">{{ report.conclusion() }}</div>
+    </div>
+  </div>
+
+  <!-- Meta summary cards -->
+  <div class="row g-3 mb-2">
+    {% set meta = [
+      ('Topic', s.topic_name, 'bi-tag'),
+      ('Project', s.project_name, 'bi-folder'),
+      ('Test Plan', s.test_plan_name, 'bi-journal-text'),
+      ('Test Suite', s.test_suite_name, 'bi-collection'),
+      ('Test Run ID', s.test_run_id, 'bi-hash'),
+      ('Build', s.build_number, 'bi-box'),
+      ('Environment', s.environment, 'bi-display'),
+      ('Executed By', s.executed_by, 'bi-person'),
+      ('Started', s.started_time, 'bi-play-circle'),
+      ('Ended', s.end_time, 'bi-stop-circle'),
+      ('Duration', s.total_duration, 'bi-stopwatch'),
+    ] %}
+    {% for label, value, icon in meta %}
+    <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+      <div class="card meta-card h-100 reveal" style="--d: {{ loop.index0 * 0.04 }}s">
+        <div class="card-body py-2 px-3">
+          <div class="meta-label"><i class="bi {{ icon }}"></i> {{ label }}</div>
+          <div class="fw-semibold meta-value">{{ value or '—' }}</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- KPI stat cards (animated count-up) -->
+  <div class="row g-3 my-2">
+    {% set kpis = [
+      ('Total', s.total_cases, '', 'kpi-total', 'bi-list-ol'),
+      ('Passed', s.passed, '', 'kpi-pass', 'bi-check-circle'),
+      ('Failed', s.failed, '', 'kpi-fail', 'bi-x-circle'),
+      ('Skipped', s.skipped, '', 'kpi-skip', 'bi-skip-forward'),
+      ('Pass %', s.pass_percentage, '%', 'kpi-rate', 'bi-graph-up-arrow'),
+      ('Fail %', s.fail_percentage, '%', 'kpi-frate', 'bi-graph-down-arrow'),
+    ] %}
+    {% for label, value, suffix, cls, icon in kpis %}
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="card kpi-card {{ cls }} h-100 reveal" style="--d: {{ loop.index0 * 0.07 }}s">
+        <div class="card-body text-center">
+          <div class="kpi-icon"><i class="bi {{ icon }}"></i></div>
+          <div class="kpi-value"><span class="counter" data-target="{{ value }}" data-suffix="{{ suffix }}">0</span></div>
+          <div class="kpi-label">{{ label }}</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Charts -->
+  <div class="row g-3 my-2">
+    <div class="col-lg-4"><div class="card chart-card h-100 reveal"><div class="card-body">{{ charts.pass_fail_pie.html|safe }}</div></div></div>
+    <div class="col-lg-4"><div class="card chart-card h-100 reveal" style="--d:.08s"><div class="card-body">{{ charts.status_bar.html|safe }}</div></div></div>
+    <div class="col-lg-12"><div class="card chart-card h-100 reveal" style="--d:.16s"><div class="card-body">{{ charts.timeline.html|safe }}</div></div></div>
+  </div>
+
+  {% if s.reruns %}
+  <!-- Rerun breakdown -->
+  <div class="card my-3 reveal">
+    <div class="card-header fw-semibold"><i class="bi bi-arrow-repeat"></i> Run / Re-Run Breakdown</div>
+    <div class="table-responsive"><table class="table table-sm mb-0 align-middle">
+      <thead><tr><th>Iteration</th><th>Started</th><th>Ended</th><th>Total</th><th>Passed</th><th>Failed</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for r in s.reruns %}
+        <tr>
+          <td>{{ 'Run' if r.iteration <= 1 else 'Re-Run ' ~ (r.iteration - 1) }}</td>
+          <td>{{ r.started_time }}</td><td>{{ r.terminated_time }}</td>
+          <td>{{ r.total_cases }}</td>
+          <td class="text-success">{{ r.passed_cases }}</td>
+          <td class="text-danger">{{ r.failed_cases }}</td>
+          <td><span class="badge {{ 'bg-success' if r.failed_cases == 0 else 'bg-danger' }}">{{ r.status|title }}</span></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div>
+  {% endif %}
+
+  <!-- Failure analysis -->
+  {% if report.failed_cases %}
+  <div class="card my-3 border-danger reveal failure-card">
+    <div class="card-header bg-danger text-white fw-semibold"><i class="bi bi-bug-fill"></i> Failure Analysis ({{ report.failed_cases|length }})</div>
+    <div class="card-body">
+      {% for c in report.failed_cases %}
+      <div class="failure-block mb-3 pb-3 border-bottom">
+        <h6 class="text-danger"><i class="bi bi-x-octagon"></i> {{ c.s_no }}. {{ c.name }}
+          <span class="badge bg-light text-dark ms-2">{{ c.suite }}</span></h6>
+        <div class="row small">
+          <div class="col-md-6"><strong>Failure Reason:</strong> {{ c.failure_reason or '—' }}</div>
+          <div class="col-md-3"><strong>Exception:</strong> {{ c.failure.exception_type or '—' }}</div>
+          <div class="col-md-3"><strong>Duration:</strong> {{ c.duration_human }}</div>
+        </div>
+        {% if c.failure.suggested_root_cause %}
+        <div class="alert alert-info py-1 px-2 my-2 small mb-1"><i class="bi bi-lightbulb"></i> <strong>Suggested root cause:</strong> {{ c.failure.suggested_root_cause }}</div>
+        {% endif %}
+        {% if c.failure.stack_trace %}
+        <details class="mt-2"><summary class="small text-muted">Error trace / stack</summary>
+          <pre class="bg-dark text-light p-2 rounded small mb-0">{{ c.failure.stack_trace }}</pre></details>
+        {% endif %}
+        {% if c.local_screenshots %}
+        <div class="mt-2 d-flex flex-wrap gap-2">
+          {% for uri in c.local_screenshots[:6] %}
+            <a href="{{ uri }}" target="_blank"><img src="{{ uri }}" class="failure-shot border rounded" alt="failure screenshot {{ loop.index }}"></a>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if c.failure.screenshots %}
+        <div class="mt-2">
+          {% for shot in c.failure.screenshots[:6] %}
+            <a href="{{ shot }}" target="_blank" class="btn btn-sm btn-outline-secondary mb-1"><i class="bi bi-image"></i> Screenshot {{ loop.index }}</a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if report.log_artifacts or report.screenshot_artifacts %}
+  <!-- Logs & Artifacts -->
+  <div class="card shadow-sm my-3 reveal">
+    <div class="card-header fw-semibold"><i class="bi bi-archive-fill"></i> Logs &amp; Artifacts</div>
+    <div class="card-body">
+      {% if report.log_artifacts %}
+      <div class="table-responsive mb-3">
+        <table class="table table-hover align-middle logs-table mb-0">
+          <thead>
+            <tr><th><i class="bi bi-pc-display"></i> Machine</th><th>Protocol</th>
+                <th><i class="bi bi-file-earmark-zip"></i> Agent Logs</th>
+                <th><i class="bi bi-hdd-network"></i> DS Logs</th></tr>
+          </thead>
+          <tbody>
+            {% for r in report.logs_by_machine() %}
+            <tr>
+              <td class="fw-semibold">{{ r.machine }}</td>
+              <td>{% if r.protocol %}<span class="proto-chip">{{ r.protocol }}</span>{% else %}—{% endif %}</td>
+              <td>
+                {% if r.agent %}
+                  <a href="{{ r.agent.download_url or ('file:///' ~ r.agent.local_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-download"></i> Download <span class="text-muted">({{ r.agent.size_human }})</span></a>
+                {% else %}<span class="text-muted small">—</span>{% endif %}
+              </td>
+              <td>
+                {% if r.ds %}
+                  <a href="{{ r.ds.download_url or ('file:///' ~ r.ds.local_path) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                    <i class="bi bi-download"></i> Download <span class="text-muted">({{ r.ds.size_human }})</span></a>
+                {% else %}<span class="text-muted small">No DS logs</span>{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+      {% if report.screenshot_artifacts %}
+      <h6 class="artifact-group"><i class="bi bi-images"></i> Failure Screenshots <span class="badge bg-secondary">{{ report.screenshot_artifacts|length }}</span></h6>
+      <div class="d-flex flex-wrap gap-2">
+        {% for sh in report.screenshot_artifacts[:24] %}
+          {% set src = sh.data_uri or sh.download_url or ('file:///' ~ sh.local_path) %}
+          <a href="{{ src }}" target="_blank" title="{{ sh.name }}">
+            <img src="{{ src }}" class="artifact-thumb" alt="{{ sh.name }}">
+          </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Detailed table -->
+  <div class="card my-3 reveal">
+    <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+      <span><i class="bi bi-table"></i> Detailed Test Case Results</span>
+      <input id="tcFilter" class="form-control form-control-sm w-auto" placeholder="Filter…" onkeyup="filterTable()">
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle mb-0" id="tcTable">
+        <thead class="table-light">
+          <tr>
+            <th>#</th><th>Test Case</th><th>Module</th><th>Suite</th><th>Status</th>
+            <th>Duration</th><th>Started</th><th>Ended</th><th>Failure Reason</th>
+            <th>Exception</th><th>Screenshot</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in report.cases %}
+          <tr class="status-row" data-status="{{ c.status.value }}">
+            <td>{{ c.s_no }}</td>
+            <td class="fw-semibold">{{ c.name }}{% if c.is_data_driven %} <span class="badge bg-info text-dark" title="Data-driven">DD {{ c.datadriven_passed }}/{{ c.datadriven_total }}</span>{% endif %}{% if c.is_self_healed %} <span class="badge bg-secondary" title="Self healed"><i class="bi bi-bandaid"></i></span>{% endif %}</td>
+            <td>{{ c.module or '—' }}</td>
+            <td>{{ c.suite or '—' }}</td>
+            <td><span class="badge {{ c.status.badge }}">{{ c.status.value }}</span></td>
+            <td>{{ c.duration_human }}</td>
+            <td class="small">{{ c.started_time or '—' }}</td>
+            <td class="small">{{ c.end_time or '—' }}</td>
+            <td class="small text-danger">{{ c.failure_reason or '—' }}</td>
+            <td class="small">{{ (c.failure.exception_type if c.failure else '') or '—' }}</td>
+            <td>{% if c.screenshot %}<a href="{{ c.screenshot }}" target="_blank"><i class="bi bi-image"></i></a>{% else %}—{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="text-center text-muted small py-3">
+    Generated {{ report.generated_at }} · QEngine Report Generator v{{ version }} · Data source: {{ report.source|upper }}
+  </footer>
+</div>
+
+<script>
+function filterTable() {
+  const q = document.getElementById('tcFilter').value.toLowerCase();
+  document.querySelectorAll('#tcTable tbody tr').forEach(function (row) {
+    row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+// Animated count-up for KPIs and the pass-rate ring, with a guaranteed
+// final value (so the number is always correct even if rAF is throttled).
+function runCounters() {
+  var noAnim = new URLSearchParams(location.search).get('anim') === '0';
+  document.querySelectorAll('.counter').forEach(function (el) {
+    var target = parseFloat(el.getAttribute('data-target')) || 0;
+    var suffix = el.getAttribute('data-suffix') || '';
+    var isFloat = target % 1 !== 0;
+    var finalText = (isFloat ? target.toFixed(2) : target) + suffix;
+    if (noAnim) { el.textContent = finalText; return; }  // static (preview/print)
+    var start = null, dur = 900;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var val = target * (1 - Math.pow(1 - p, 3));  // easeOutCubic
+      el.textContent = (isFloat ? val.toFixed(2) : Math.round(val)) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = finalText;
+    }
+    requestAnimationFrame(step);
+    setTimeout(function () { el.textContent = finalText; }, dur + 200);  // guarantee
+  });
+}
+
+document.addEventListener('DOMContentLoaded', runCounters);
+</script>
+</body>
+</html>

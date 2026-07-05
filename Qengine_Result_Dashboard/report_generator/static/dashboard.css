@@ -1,0 +1,148 @@
+/* ============================================================
+   QEngine Dashboard — modern animated theme
+   ============================================================ */
+:root {
+  --pass: #16a34a;
+  --fail: #e11d48;
+  --skip: #f59e0b;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --bg: #eef2f7;
+  --card: #ffffff;
+  --brand1: #4f46e5;
+  --brand2: #06b6d4;
+  --radius: 16px;
+  --shadow: 0 10px 30px -12px rgba(15, 23, 42, .25);
+}
+
+* { scroll-behavior: smooth; }
+body {
+  background:
+    radial-gradient(1200px 600px at 100% -10%, #dbeafe 0, transparent 55%),
+    radial-gradient(1000px 500px at -10% 0, #e0e7ff 0, transparent 50%),
+    var(--bg);
+  color: var(--ink);
+  font-family: "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ---- Navbar ---- */
+.hero-nav {
+  background: linear-gradient(100deg, #0b1220, #1e293b 45%, #312e81);
+  background-size: 200% 200%;
+  animation: shift 14s ease infinite;
+  box-shadow: 0 6px 24px -10px rgba(0, 0, 0, .5);
+}
+.hero-nav .navbar-brand { font-weight: 700; letter-spacing: .3px; }
+@keyframes shift { 0%,100%{background-position:0 50%} 50%{background-position:100% 50%} }
+.status-pill { animation: pulse 2.4s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.0)} 50%{box-shadow:0 0 0 6px rgba(255,255,255,.08)} }
+
+/* ---- Hero banner + pass ring ---- */
+.hero-banner {
+  display: flex; align-items: center; gap: 26px;
+  border-radius: var(--radius); padding: 22px 28px; margin: 6px 0 18px;
+  color: #fff; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.hero-ok   { background: linear-gradient(120deg, #059669, #10b981 60%, #34d399); }
+.hero-warn { background: linear-gradient(120deg, #b45309, #dc2626 60%, #f43f5e); }
+.hero-banner::after {
+  content:""; position:absolute; inset:0;
+  background: radial-gradient(600px 200px at 90% -40%, rgba(255,255,255,.25), transparent 60%);
+}
+.hero-title { font-size: 1.5rem; font-weight: 800; }
+.hero-sub { opacity: .95; margin-top: 4px; max-width: 90ch; }
+.hero-ring {
+  --pct: 0;
+  flex: 0 0 auto; width: 108px; height: 108px; border-radius: 50%;
+  background: conic-gradient(#ffffff calc(var(--pct) * 1%), rgba(255,255,255,.25) 0);
+  display: grid; place-items: center; position: relative; z-index: 1;
+  animation: ringIn 1s ease both;
+}
+@keyframes ringIn { from { transform: scale(.7); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+.hero-ring-inner {
+  width: 82px; height: 82px; border-radius: 50%; background: rgba(0,0,0,.18);
+  display: grid; place-items: center; font-size: 1.35rem; font-weight: 800;
+  backdrop-filter: blur(2px);
+}
+
+/* ---- Cards (generic) ---- */
+.card {
+  border: none; border-radius: var(--radius);
+  background: var(--card); box-shadow: var(--shadow);
+}
+.card-header {
+  background: linear-gradient(90deg, #f8fafc, #eef2ff);
+  border-bottom: 1px solid #e2e8f0; border-radius: var(--radius) var(--radius) 0 0 !important;
+  font-size: .98rem;
+}
+.failure-card .card-header { background: linear-gradient(90deg, #e11d48, #b91c1c); }
+
+/* ---- Meta cards ---- */
+.meta-card {
+  border-left: 4px solid transparent;
+  border-image: linear-gradient(180deg, var(--brand1), var(--brand2)) 1;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.meta-card:hover { transform: translateY(-4px); box-shadow: 0 16px 34px -14px rgba(79,70,229,.5); }
+.meta-label { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; }
+.meta-value { font-size: .95rem; word-break: break-word; }
+
+/* ---- KPI cards ---- */
+.kpi-card {
+  color: #fff; border-radius: var(--radius); overflow: hidden; position: relative;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.kpi-card:hover { transform: translateY(-6px) scale(1.02); }
+.kpi-card .card-body { position: relative; z-index: 1; padding: 18px 10px; }
+.kpi-icon { font-size: 1.4rem; opacity: .85; }
+.kpi-value { font-size: 2.1rem; font-weight: 800; line-height: 1.05; }
+.kpi-label { text-transform: uppercase; letter-spacing: .06em; font-size: .74rem; opacity: .95; }
+.kpi-total { background: linear-gradient(135deg,#4f46e5,#7c3aed); }
+.kpi-pass  { background: linear-gradient(135deg,#059669,#22c55e); }
+.kpi-fail  { background: linear-gradient(135deg,#e11d48,#fb7185); }
+.kpi-skip  { background: linear-gradient(135deg,#d97706,#fbbf24); color:#1f2937; }
+.kpi-rate  { background: linear-gradient(135deg,#0e7490,#22d3ee); }
+.kpi-frate { background: linear-gradient(135deg,#9f1239,#f43f5e); }
+
+/* ---- Entrance animation (pure CSS, fill-mode both = always ends visible) ----
+   Gated on html.js so no-JS / print always shows content immediately. */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.js .reveal { animation: fadeUp .55s cubic-bezier(.2,.7,.2,1) both; animation-delay: var(--d, 0s); }
+@media print { .js .reveal { animation: none !important; opacity: 1 !important; transform: none !important; } }
+
+/* ---- Logs & Artifacts tiles ---- */
+.artifact-group { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; margin: 10px 0 6px; }
+.log-tile {
+  display: flex; align-items: center; gap: 12px; text-decoration: none;
+  background: linear-gradient(180deg,#ffffff,#f8fafc); border: 1px solid #e2e8f0;
+  border-radius: 12px; padding: 10px 12px; color: var(--ink);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.log-tile:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -14px rgba(2,132,199,.6); border-color: #38bdf8; }
+.log-tile-icon { font-size: 1.5rem; color: #0ea5e9; }
+.log-tile-body { display: flex; flex-direction: column; line-height: 1.2; flex: 1; }
+.log-tile-machine { font-weight: 700; font-size: .92rem; }
+.log-tile-meta { color: var(--muted); font-size: .76rem; }
+.log-tile-dl { color: #94a3b8; }
+.proto-chip { background: #e0f2fe; color: #075985; border-radius: 6px; padding: 0 6px; font-size: .7rem; font-weight: 600; }
+
+.artifact-thumb {
+  width: 132px; height: 92px; object-fit: cover; border-radius: 10px; border: 1px solid #e2e8f0;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.artifact-thumb:hover { transform: scale(1.08); box-shadow: 0 14px 28px -12px rgba(15,23,42,.5); }
+.failure-shot { max-width: 300px; max-height: 210px; object-fit: contain; background: #0b1220; border-radius: 10px; }
+
+/* ---- Failure blocks ---- */
+.failure-block:last-child { border-bottom: none !important; }
+pre { white-space: pre-wrap; word-break: break-word; max-height: 320px; overflow: auto; border-radius: 10px; }
+
+/* ---- Table ---- */
+#tcTable td { vertical-align: middle; }
+#tcTable tbody tr { transition: background .12s ease; }
+#tcTable tbody tr:hover { background: #eff6ff; }
+.badge { font-weight: 600; }
+
+/* ---- Status badges (from Status.badge) ---- */
+.bg-success { background: var(--pass) !important; }
+.bg-danger  { background: var(--fail) !important; }

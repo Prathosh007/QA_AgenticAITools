@@ -1,0 +1,22 @@
+# Secrets
+report_generator/.env
+.env
+
+# Generated output (dashboards, reports, logs)
+Reports/
+logs/
+report_generator/output/
+output/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
+
+# Temp / editor
+*.tmp
+.vscode/settings.json

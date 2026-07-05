@@ -1,0 +1,30 @@
+# QEngine + GOAT integration config — `python main.py --config config.goat.example.yaml`
+
+# --- QEngine run (OAuth auth comes from .env: CLIENT_ID/CLIENT_SECRET/REFRESH_TOKEN) ---
+project_id: "4443000000022861"
+env_id: "4443000074661122"          # executedenvironment_id — the run
+# testplan_id: "4443000049583943"   # optional — adds Topic / suites / users
+
+# --- GOAT enrichment (remarks/errors + artifact collection) ---
+goat_home: "D:\\GOAT"          # presence of this enables GOAT integration
+goat_url: "http://localhost:9295/api"
+# test_id: "24-Jun-20262144"   # pin a GOAT test_status run; blank = most recent
+# test_status_root: ""         # explicit override of <goat_home>/product_package/test_status
+# upload_dir: ""               # central UploadFiles; blank = <goat_home>/UploadFiles
+publish_via_api: false         # also POST artifacts to GOAT /files/upload (cross-machine)
+embed_screenshots: true
+
+# Optional explicit artifact locations (otherwise sensible defaults are derived):
+# log_globs:
+#   - "C:\\temp\\upload_staging\\**\\*.zip"
+#   - "D:\\GOAT\\UploadFiles\\*.zip"
+# screenshot_dirs:
+#   - "D:\\GOAT\\product_package\\bin\\AgentBinaries\\Screenshot"
+
+# --- output ---
+output: "D:\\GOAT\\logs\\dashboards\\latest"
+make_html: true
+make_pdf: true
+make_json: true
+make_csv: true
+make_xlsx: true

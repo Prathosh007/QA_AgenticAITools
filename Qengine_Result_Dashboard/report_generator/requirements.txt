@@ -1,0 +1,19 @@
+# Core (required)
+requests>=2.31.0
+pandas>=2.1.0
+plotly>=5.18.0
+jinja2>=3.1.2
+PyYAML>=6.0.1
+openpyxl>=3.1.2
+python-dotenv>=1.0.0
+
+# Execute-URL HTTP service
+flask>=3.0.0
+waitress>=3.0.0      # production WSGI server (always-on, multi-threaded)
+
+# Static chart images embedded in the PDF (recommended)
+kaleido>=0.2.1
+
+# Optional pure-Python PDF engine (needs native GTK libs; the tool falls back
+# to headless Chrome/Edge automatically, so this is OPTIONAL).
+weasyprint>=60.0

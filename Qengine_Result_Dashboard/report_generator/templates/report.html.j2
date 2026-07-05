@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Automation Test Execution Report — {{ s.topic_name or s.test_run_id }}</title>
+<style>
+  @page {
+    size: A4; margin: 1.6cm 1.4cm;
+    @bottom-center { content: "Page " counter(page) " of " counter(pages); font-size: 8pt; color: #888; }
+    @top-right { content: "QEngine Automation Report"; font-size: 8pt; color: #aaa; }
+  }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Helvetica, Arial, sans-serif; color: #222; font-size: 10.5pt; line-height: 1.45; }
+  h1 { font-size: 22pt; color: #0d3b66; margin: 0 0 2px; }
+  h2 { font-size: 14pt; color: #0d3b66; border-bottom: 2px solid #0d6efd; padding-bottom: 4px; margin-top: 22px; }
+  h3 { font-size: 12pt; color: #b02a37; margin: 14px 0 4px; }
+  .subtitle { color: #666; font-size: 10pt; margin-bottom: 14px; }
+  .cover { text-align: center; padding-top: 30px; border-bottom: 3px solid #0d3b66; padding-bottom: 18px; margin-bottom: 18px; }
+  .verdict { display: inline-block; padding: 6px 18px; border-radius: 20px; color: #fff; font-weight: 600; font-size: 12pt; margin-top: 10px; }
+  .verdict.pass { background: #198754; } .verdict.fail { background: #dc3545; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+  th, td { border: 1px solid #d0d7de; padding: 5px 7px; text-align: left; vertical-align: top; }
+  th { background: #0d3b66; color: #fff; font-size: 9pt; }
+  td { font-size: 9pt; }
+  tr:nth-child(even) td { background: #f6f8fa; }
+  .kpi-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .kpi { flex: 1 1 28%; border-radius: 8px; padding: 10px; color: #fff; text-align: center; }
+  .kpi .v { font-size: 18pt; font-weight: 700; } .kpi .l { font-size: 8.5pt; text-transform: uppercase; }
+  .bg-total{background:#0d6efd}.bg-pass{background:#198754}.bg-fail{background:#dc3545}.bg-skip{background:#d39e00}.bg-rate{background:#6f42c1}
+  .badge { padding: 2px 7px; border-radius: 4px; color: #fff; font-size: 8pt; font-weight: 600; }
+  .b-pass{background:#198754}.b-fail{background:#dc3545}.b-skip{background:#d39e00;color:#000}.b-unknown{background:#6c757d}
+  .chart-img { width: 48%; margin: 1%; vertical-align: top; border: 1px solid #eee; border-radius: 6px; }
+  .chart-wide { width: 98%; }
+  pre { background: #1e1e1e; color: #eee; padding: 7px; border-radius: 5px; font-size: 7.5pt; white-space: pre-wrap; word-break: break-word; }
+  .meta-table td:first-child { width: 32%; font-weight: 600; background: #eef2f7; }
+  .rootcause { background: #e7f1ff; border-left: 3px solid #0d6efd; padding: 5px 8px; font-size: 8.5pt; margin: 4px 0; }
+  .muted { color: #888; }
+  .avoid-break { page-break-inside: avoid; }
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>Automation Test Execution Report</h1>
+  <div class="subtitle">{{ s.topic_name }} &middot; {{ s.project_name }}</div>
+  <div class="verdict {{ 'pass' if s.failed == 0 else 'fail' }}">
+    {{ s.pass_percentage }}% Pass Rate &middot; {{ s.execution_status|title or 'Completed' }}
+  </div>
+  <div class="subtitle" style="margin-top:10px;">Generated {{ report.generated_at }} &middot; Source: {{ report.source|upper }}</div>
+</div>
+
+<h2>1. Executive Summary</h2>
+<table class="meta-table">
+  <tr><td>Topic</td><td>{{ s.topic_name or '—' }}</td></tr>
+  <tr><td>Project</td><td>{{ s.project_name or '—' }}</td></tr>
+  <tr><td>Test Plan</td><td>{{ s.test_plan_name or '—' }}</td></tr>
+  <tr><td>Test Suite(s)</td><td>{{ s.test_suite_name or '—' }}</td></tr>
+  <tr><td>Test Run ID</td><td>{{ s.test_run_id or '—' }}</td></tr>
+  <tr><td>Build</td><td>{{ s.build_number or '—' }}</td></tr>
+  <tr><td>Environment</td><td>{{ s.environment or '—' }}</td></tr>
+  <tr><td>Executed By</td><td>{{ s.executed_by or '—' }}</td></tr>
+  <tr><td>Execution Time</td><td>{{ s.started_time }} &rarr; {{ s.end_time }} ({{ s.total_duration }})</td></tr>
+</table>
+
+<div class="kpi-grid">
+  <div class="kpi bg-total"><div class="v">{{ s.total_cases }}</div><div class="l">Total</div></div>
+  <div class="kpi bg-pass"><div class="v">{{ s.passed }}</div><div class="l">Passed</div></div>
+  <div class="kpi bg-fail"><div class="v">{{ s.failed }}</div><div class="l">Failed</div></div>
+  <div class="kpi bg-skip"><div class="v">{{ s.skipped }}</div><div class="l">Skipped</div></div>
+  <div class="kpi bg-rate"><div class="v">{{ s.pass_percentage }}%</div><div class="l">Pass Rate</div></div>
+</div>
+
+<h2>2. Charts</h2>
+<div class="avoid-break">
+{% set imgs = [charts.pass_fail_pie, charts.status_bar] %}
+{% set any_img = imgs|selectattr('img')|list %}
+{% if any_img %}
+  {% for ch in imgs %}{% if ch.img %}<img class="chart-img" src="{{ ch.img }}" alt="{{ ch.title }}">{% endif %}{% endfor %}
+  {% if charts.timeline.img %}<img class="chart-wide" src="{{ charts.timeline.img }}" alt="Timeline">{% endif %}
+{% else %}
+  <p class="muted">Static chart images are unavailable in this environment (the optional
+  <code>kaleido</code> package is not installed). The full interactive charts are available
+  in <code>dashboard.html</code>.</p>
+  <table>
+    <tr><th>Metric</th><th>Value</th></tr>
+    <tr><td>Passed</td><td>{{ s.passed }} ({{ s.pass_percentage }}%)</td></tr>
+    <tr><td>Failed</td><td>{{ s.failed }} ({{ s.fail_percentage }}%)</td></tr>
+    <tr><td>Skipped</td><td>{{ s.skipped }}</td></tr>
+  </table>
+{% endif %}
+</div>
+
+<h2>3. Test Execution Summary</h2>
+<table>
+  <thead><tr><th style="width:6%">#</th><th style="width:40%">Test Case</th><th style="width:14%">Status</th><th style="width:16%">Duration</th><th style="width:24%">Remarks</th></tr></thead>
+  <tbody>
+  {% for c in report.cases %}
+    <tr>
+      <td>{{ c.s_no }}</td>
+      <td>{{ c.name }}{% if c.suite %} <span class="muted">({{ c.suite }})</span>{% endif %}</td>
+      <td><span class="badge b-{{ c.status.value|lower }}">{{ c.status.value }}</span></td>
+      <td>{{ c.duration_human }}</td>
+      <td>{{ c.failure_reason or (c.failure.suggested_root_cause if c.failure else '') or 'OK' }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% if report.failed_cases %}
+<h2 class="page-break">4. Failed Test Cases</h2>
+{% for c in report.failed_cases %}
+<div class="avoid-break">
+  <h3>{{ c.s_no }}. {{ c.name }}</h3>
+  <table class="meta-table">
+    <tr><td>Suite</td><td>{{ c.suite or '—' }}</td></tr>
+    <tr><td>Failure Reason</td><td>{{ c.failure_reason or '—' }}</td></tr>
+    <tr><td>Error Remarks</td><td>{{ c.failure.assertion_failure or '—' }}</td></tr>
+    <tr><td>Exception Type</td><td>{{ c.failure.exception_type or '—' }}</td></tr>
+    <tr><td>Duration</td><td>{{ c.duration_human }}</td></tr>
+  </table>
+  {% if c.failure.suggested_root_cause %}
+  <div class="rootcause"><strong>Suggested Root Cause:</strong> {{ c.failure.suggested_root_cause }}</div>
+  {% endif %}
+  {% if c.failure.stack_trace %}
+  <div><strong style="font-size:9pt;">Error Trace</strong><pre>{{ c.failure.stack_trace }}</pre></div>
+  {% endif %}
+  {% if c.local_screenshots %}
+  <div>{% for uri in c.local_screenshots[:3] %}<img src="{{ uri }}" style="max-width:46%; margin:1%; border:1px solid #ccc; border-radius:4px;" alt="failure screenshot">{% endfor %}</div>
+  {% endif %}
+  {% if c.failure.screenshots %}
+  <div style="font-size:8.5pt;"><strong>Screenshots:</strong>
+    {% for shot in c.failure.screenshots[:5] %}<a href="{{ shot }}">[{{ loop.index }}]</a> {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endfor %}
+{% endif %}
+
+{% if report.log_artifacts %}
+<h2>{{ '5' if report.failed_cases else '4' }}. Logs &amp; Artifacts</h2>
+<table>
+  <thead><tr><th>Archive</th><th>Machine</th><th>Size</th><th>Link</th></tr></thead>
+  <tbody>
+  {% for a in report.log_artifacts %}
+    <tr>
+      <td>{{ a.name }}</td><td>{{ a.machine or '—' }}</td><td>{{ a.size_human }}</td>
+      <td style="font-size:7.5pt;">{{ a.download_url or a.local_path }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% set concl_no = (6 if report.failed_cases else 5) if report.log_artifacts else (5 if report.failed_cases else 4) %}
+<h2 class="page-break">{{ concl_no }}. Conclusion</h2>
+<p>{{ report.conclusion() }}</p>
+{% if s.reruns %}
+<table>
+  <thead><tr><th>Iteration</th><th>Started</th><th>Ended</th><th>Total</th><th>Passed</th><th>Failed</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for r in s.reruns %}
+    <tr><td>{{ 'Run' if r.iteration <= 1 else 'Re-Run ' ~ (r.iteration - 1) }}</td>
+    <td>{{ r.started_time }}</td><td>{{ r.terminated_time }}</td>
+    <td>{{ r.total_cases }}</td><td>{{ r.passed_cases }}</td><td>{{ r.failed_cases }}</td>
+    <td>{{ r.status|title }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+</body>
+</html>
