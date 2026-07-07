@@ -21,17 +21,21 @@ from .models import ExecutionReport, Status, format_duration_ms
 log = logging.getLogger("report_generator.charts")
 
 _COLORS = {
-    Status.PASSED: "#198754",
-    Status.FAILED: "#dc3545",
-    Status.SKIPPED: "#ffc107",
-    Status.UNKNOWN: "#6c757d",
+    Status.PASSED: "#10b981",
+    Status.FAILED: "#ef4444",
+    Status.SKIPPED: "#f59e0b",
+    Status.UNKNOWN: "#94a3b8",
 }
 _LAYOUT = dict(
     template="plotly_white",
-    margin=dict(l=40, r=20, t=50, b=40),
-    font=dict(family="Segoe UI, Helvetica, Arial, sans-serif", size=13),
+    margin=dict(l=40, r=24, t=54, b=44),
+    font=dict(family="Segoe UI, Helvetica, Arial, sans-serif", size=13, color="#475569"),
+    title_font=dict(size=16, color="#0f2b4a"),
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
+    hoverlabel=dict(
+        bgcolor="#0f2b4a", font=dict(color="#ffffff", size=12), bordercolor="#0f2b4a"
+    ),
 )
 
 
@@ -189,6 +193,15 @@ class ChartFactory:
 
     # -- rendering ----------------------------------------------------------
     def _render(self, fig: go.Figure, title: str) -> Chart:
+        # Centralised polish applied to every chart: rounded, borderless bars
+        # and soft, low-contrast gridlines that match the light-blue theme.
+        fig.update_traces(
+            selector=dict(type="bar"),
+            marker_cornerradius=7,
+            marker_line_width=0,
+        )
+        fig.update_xaxes(gridcolor="#eef2f7", zerolinecolor="#e6edf7", linecolor="#e6edf7")
+        fig.update_yaxes(gridcolor="#eef2f7", zerolinecolor="#e6edf7", linecolor="#e6edf7")
         html = fig.to_html(
             full_html=False,
             include_plotlyjs=False,

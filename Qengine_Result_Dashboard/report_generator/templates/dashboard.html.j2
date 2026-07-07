@@ -288,5 +288,6 @@ function runCounters() {
 
 document.addEventListener('DOMContentLoaded', runCounters);
 </script>
+{% if chart_js %}<script>{{ chart_js|safe }}</script>{% endif %}
 </body>
 </html>

@@ -38,6 +38,10 @@ class DashboardBuilder:
         css_path = _STATIC_DIR / "dashboard.css"
         if css_path.is_file():
             css = css_path.read_text(encoding="utf-8")
+        chart_js = ""
+        chart_js_path = _STATIC_DIR / "dashboard-charts.js"
+        if chart_js_path.is_file():
+            chart_js = chart_js_path.read_text(encoding="utf-8")
         # Inline Plotly so the charts render from any link / copied file.
         plotlyjs = ""
         if self.self_contained:
@@ -53,6 +57,7 @@ class DashboardBuilder:
             s=self.report.summary,
             charts=self.charts,
             css=css,
+            chart_js=chart_js,
             plotlyjs=plotlyjs,
             version=__version__,
         )
