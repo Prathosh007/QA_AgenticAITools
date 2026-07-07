@@ -167,34 +167,96 @@ def run(config: Config, fetch_all: bool, log) -> int:
 def _attach_uploaded_logs(config: Config, report, log) -> None:
     """Add log zips uploaded to the service (for this topic) as artifacts.
 
-    The topic folder is resolved from the *resolved* topic (config.topic if
-    given, else the run's environmentvariables_name) so it works for the
-    webhook flow where the topic isn't known until the run id is resolved.
+    Tries multiple candidate folder names so that the webhook always finds the
+    right logs regardless of whether it was called with the Topic variable name,
+    the test plan name, or no topic at all:
+
+      1. safe_name(config.topic)              – what the webhook URL passed
+      2. safe_name(report.summary.topic_name) – $Topic variable resolved from API
+      3. safe_name(report.summary.test_plan_name) – test plan / schedule name
+      4. Fuzzy: any sub-folder whose zips start with any of the above prefixes
     """
     from urllib.parse import quote
 
     from .artifacts import LogArtifact, parse_log_name
     from .config import safe_name
 
-    topic = (config.topic or report.summary.topic_name or "").strip()
-    base_url = config.uploads_base_url
     if config.uploaded_logs_dir:
-        d = Path(config.uploaded_logs_dir)
-    elif config.uploads_root and topic:
-        d = Path(config.uploads_root) / safe_name(topic)
-        base_url = config.uploads_base_url_root.rstrip("/") + "/" + safe_name(topic)
-    else:
+        # Explicit single directory — use it directly (original behaviour).
+        _attach_from_dir(
+            Path(config.uploaded_logs_dir),
+            config.uploads_base_url,
+            config,
+            report,
+            log,
+        )
         return
-    if not d.is_dir():
-        log.info("No uploaded logs found for topic '%s' at %s", topic, d)
+
+    if not config.uploads_root:
         return
-    config.uploads_base_url = base_url
+
+    log_root = Path(config.uploads_root)
+    if not log_root.is_dir():
+        return
+
+    # Build an ordered list of candidate folder names (deduplicated, non-empty).
+    candidates: list[str] = []
+    for raw in (
+        config.topic,
+        report.summary.topic_name,
+        report.summary.test_plan_name,
+    ):
+        key = safe_name((raw or "").strip())
+        if key and key not in candidates:
+            candidates.append(key)
+
+    # Extend with any subdirectory whose zips begin with one of the candidate prefixes
+    # (case-insensitive). This handles partial-name mismatches like
+    # "Prathosh_Test" webhook topic vs "prathosh_test" upload folder.
+    found_dirs: list[Path] = []
+    for sub in sorted(log_root.iterdir()):
+        if not sub.is_dir():
+            continue
+        sub_key = sub.name.lower()
+        # Direct name match (case-insensitive).
+        if any(sub_key == c.lower() for c in candidates):
+            if sub not in found_dirs:
+                found_dirs.append(sub)
+            continue
+        # Zip prefix match: any zip in this folder starts with a candidate name.
+        for p in list(sub.glob("*.zip")) + list(sub.glob("*.7z")):
+            fname_l = p.name.lower()
+            if any(fname_l.startswith(c.lower() + "_") or fname_l.startswith(c.lower() + ".") for c in candidates):
+                if sub not in found_dirs:
+                    found_dirs.append(sub)
+                break
+
+    if not found_dirs:
+        log.info(
+            "No uploaded logs found for topic candidates %s under %s",
+            candidates, log_root,
+        )
+        return
+
+    for d in found_dirs:
+        base_url = config.uploads_base_url_root.rstrip("/") + "/" + d.name
+        added = _attach_from_dir(d, base_url, config, report, log)
+        log.info(
+            "Attached %d uploaded log archive(s) from folder '%s'.", added, d.name
+        )
+
+
+def _attach_from_dir(d: Path, base_url: str, config, report, log) -> int:
+    """Attach all zips in directory *d* to *report.log_artifacts*. Returns count added."""
+    from urllib.parse import quote
+    from .artifacts import LogArtifact, parse_log_name
+
     existing = {a.name.lower() for a in report.log_artifacts}
     added = 0
     for p in sorted(d.glob("*.zip")) + sorted(d.glob("*.7z")):
         if p.name.lower() in existing:
             continue
-        url = (config.uploads_base_url.rstrip("/") + "/" + quote(p.name)) if config.uploads_base_url else ""
+        url = (base_url.rstrip("/") + "/" + quote(p.name)) if base_url else ""
         kind, machine, protocol = parse_log_name(p.name)
         report.log_artifacts.append(
             LogArtifact(
@@ -208,7 +270,7 @@ def _attach_uploaded_logs(config: Config, report, log) -> None:
             )
         )
         added += 1
-    log.info("Attached %d uploaded log archive(s) for topic '%s'.", added, config.topic)
+    return added
 
 
 def _run_window(report):

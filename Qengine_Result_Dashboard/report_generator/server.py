@@ -145,10 +145,16 @@ def index():
         "th{background:#0d3b66;color:#fff}tr:nth-child(even){background:#f6f8fa}"
         "a{color:#0d6efd;text-decoration:none}"
         ".admin-link{font-size:13px;font-weight:normal;color:#6c757d;border:1px solid #ccc;"
-        "padding:4px 12px;border-radius:4px;text-decoration:none}"
-        ".admin-link:hover{background:#f0f4f8;color:#0d3b66}</style>"
+        "padding:4px 12px;border-radius:4px;text-decoration:none;margin-left:6px}"
+        ".admin-link:hover{background:#f0f4f8;color:#0d3b66}"
+        ".logs-link{font-size:13px;font-weight:normal;color:#0d6efd;border:1px solid #b6d4fe;"
+        "padding:4px 12px;border-radius:4px;text-decoration:none;margin-left:6px}"
+        ".logs-link:hover{background:#e8f4fd;color:#0a58ca}</style>"
         "<h2><span>QEngine Test Execution Dashboards</span>"
-        "<a class='admin-link' href='/admin'>&#9881; Admin</a></h2>"
+        "<span>"
+        "<a class='logs-link' href='/logs'>&#128230; Uploaded Logs</a>"
+        "<a class='admin-link' href='/admin'>&#9881; Admin</a>"
+        "</span></h2>"
         "<table><thead><tr><th>Topic</th><th>Run ID</th><th>Result</th>"
         "<th>Generated</th><th></th></tr></thead><tbody>" + body + "</tbody></table>"
     )
@@ -261,7 +267,10 @@ def admin_console():
             f"  &nbsp;&middot;&nbsp;"
             f"  <a href='{base}/dashboards/{r['run']}/report.json' target='_blank'>JSON</a>"
             f"</td>"
-            f"<td><button onclick=\"deleteRun('{r['run']}', this)\" class='btn-del'>Delete</button></td>"
+            f"<td>"
+            f"  <button onclick=\"deleteRun('{r['run']}', this)\" class='btn-del'>Delete</button>"
+            f"  <button onclick=\"patchLogs('{r['run']}', this)\" class='btn-patch ms-1'>Re-attach Logs</button>"
+            f"</td>"
             f"</tr>"
         )
     body = "".join(rows) or "<tr><td colspan='6' style='text-align:center;color:#888;padding:20px'>No runs yet.</td></tr>"
@@ -300,6 +309,10 @@ def admin_console():
         "  border-radius:3px;cursor:pointer;font-size:12px;margin-left:4px}"
         ".btn-cancel{background:#6c757d;color:#fff;border:none;padding:3px 9px;"
         "  border-radius:3px;cursor:pointer;font-size:12px;margin-left:3px}"
+        ".btn-patch{background:#0d6efd;color:#fff;border:none;padding:4px 10px;"
+        "  border-radius:4px;cursor:pointer;font-size:12px}"
+        ".btn-patch:hover{background:#0a58ca}"
+        ".ms-1{margin-left:4px}"
         "</style>"
         "<div class='topbar'>"
         "<h1>&#9881;&#65039; Admin Console</h1>"
@@ -351,6 +364,20 @@ def admin_console():
         "    if(d.status==='ok'){document.getElementById('row-'+runId).remove();}"
         "    else{alert('Error: '+(d.message||'unknown'));btn.disabled=false;btn.textContent='Delete';}"
         "  }).catch(()=>{alert('Request failed');btn.disabled=false;btn.textContent='Delete';});"
+        "}"
+        "function patchLogs(runId,btn){"
+        "  btn.disabled=true; btn.textContent='Attaching\u2026';"
+        "  fetch('/admin/patch-logs/'+runId,{method:'POST'})"
+        "  .then(r=>r.json()).then(d=>{"
+        "    if(d.status==='ok'){"
+        "      btn.textContent='Done ('+d.total_logs+' logs)';"
+        "      btn.style.background='#198754';"
+        "      setTimeout(()=>location.reload(),1200);"
+        "    } else {"
+        "      alert('Error: '+(d.message||'unknown'));"
+        "      btn.disabled=false; btn.textContent='Re-attach Logs';"
+        "    }"
+        "  }).catch(()=>{alert('Request failed');btn.disabled=false;btn.textContent='Re-attach Logs';});"
         "}"
         "</script>"
     )
@@ -404,6 +431,191 @@ def admin_rename_run(run_id: str):
 
     log.info("Admin renamed run %s topic \u2192 '%s'", run_id, new_topic)
     return jsonify(status="ok", run_id=run_id, topic=new_topic)
+
+
+def _rebuild_report_from_json(data: dict):
+    """Reconstruct a minimal ExecutionReport from a saved report.json dict.
+    Enough to re-render the dashboard (charts + logs section) without an API call.
+    """
+    from .models import (
+        ExecutionReport, ExecutionSummary, TestCaseResult,
+        Status, FailureDetail, RerunInfo,
+    )
+    s = data.get("summary", {})
+    reruns = [
+        RerunInfo(
+            iteration=r.get("iteration", 1),
+            started_time=r.get("started_time", ""),
+            terminated_time=r.get("terminated_time", ""),
+            total_cases=r.get("total_cases", 0),
+            passed_cases=r.get("passed_cases", 0),
+            failed_cases=r.get("failed_cases", 0),
+            status=r.get("status", ""),
+        )
+        for r in s.get("reruns", [])
+    ]
+    summary = ExecutionSummary(
+        topic_name=s.get("topic_name", ""),
+        project_name=s.get("project_name", ""),
+        test_plan_name=s.get("test_plan_name", ""),
+        test_suite_name=s.get("test_suite_name", ""),
+        test_run_id=s.get("test_run_id", ""),
+        build_number=s.get("build_number", ""),
+        started_time=s.get("started_time", ""),
+        end_time=s.get("end_time", ""),
+        total_duration=s.get("total_duration", ""),
+        environment=s.get("environment", ""),
+        executed_by=s.get("executed_by", ""),
+        execution_status=s.get("execution_status", ""),
+        total_cases=s.get("total_cases", 0),
+        passed=s.get("passed", 0),
+        failed=s.get("failed", 0),
+        skipped=s.get("skipped", 0),
+        reruns=reruns,
+    )
+    cases = []
+    for i, c in enumerate(data.get("cases", []), 1):
+        fd = None
+        if c.get("failure"):
+            f = c["failure"]
+            fd = FailureDetail(
+                error_message=f.get("error_message", ""),
+                exception_type=f.get("exception_type", ""),
+                stack_trace=f.get("stack_trace", ""),
+                assertion_failure=f.get("assertion_failure", ""),
+                screenshots=f.get("screenshots") or [],
+            )
+        cases.append(TestCaseResult(
+            s_no=c.get("s_no", i),
+            name=c.get("name", ""),
+            status=Status.from_raw(c.get("status")),
+            duration_ms=c.get("duration_ms", 0),
+            suite=c.get("suite", ""),
+            module=c.get("module", ""),
+            started_time=c.get("started_time", ""),
+            end_time=c.get("end_time", ""),
+            failure=fd,
+            local_screenshots=c.get("local_screenshots") or [],
+        ))
+    return ExecutionReport(
+        summary=summary,
+        cases=cases,
+        source=data.get("source", "cached"),
+        generated_at=data.get("generated_at", ""),
+    )
+
+
+@app.post("/admin/patch-logs/<run_id>")
+@_admin_required
+def admin_patch_logs(run_id: str):
+    """Re-attach uploaded log zips to an existing dashboard (no API call).
+
+    Scans LOG_ROOT for folders matching this run's topic / plan name,
+    appends the log artifacts, re-renders dashboard.html and updates report.json.
+    """
+    import json as _json
+    import re
+    from urllib.parse import quote
+
+    from .artifacts import LogArtifact, parse_log_name
+    from .charts import ChartFactory
+    from .config import safe_name
+    from .dashboard import DashboardBuilder
+
+    if not re.fullmatch(r"[A-Za-z0-9_\-]+", run_id):
+        return jsonify(status="error", message="Invalid run id."), 400
+    run_dir = OUTPUT_ROOT / run_id
+    if not run_dir.resolve().is_relative_to(OUTPUT_ROOT.resolve()):
+        return jsonify(status="error", message="Invalid run id."), 400
+    rj = run_dir / "report.json"
+    if not rj.is_file():
+        return jsonify(status="error", message="report.json not found for this run."), 404
+
+    data = _json.loads(rj.read_text(encoding="utf-8"))
+    report = _rebuild_report_from_json(data)
+
+    # Candidate folder names: topic_name + test_plan_name (fuzzy, case-insensitive).
+    candidates: list[str] = []
+    for raw in (report.summary.topic_name, report.summary.test_plan_name):
+        key = safe_name((raw or "").strip())
+        if key and key not in candidates:
+            candidates.append(key)
+
+    if not candidates:
+        return jsonify(status="error", message="No topic or plan name in report.json to match logs against."), 400
+
+    added = 0
+    matched_folders: list[str] = []
+    if LOG_ROOT.is_dir():
+        for sub in sorted(LOG_ROOT.iterdir()):
+            if not sub.is_dir():
+                continue
+            sub_key = sub.name.lower()
+            matched = any(sub_key == c.lower() for c in candidates)
+            if not matched:
+                for p in list(sub.glob("*.zip")) + list(sub.glob("*.7z")):
+                    fname_l = p.name.lower()
+                    if any(
+                        fname_l.startswith(c.lower() + "_") or fname_l.startswith(c.lower() + ".")
+                        for c in candidates
+                    ):
+                        matched = True
+                        break
+            if not matched:
+                continue
+            matched_folders.append(sub.name)
+            base_url = f"{request.host_url.rstrip('/')}/uploads/{sub.name}"
+            existing = {a.name.lower() for a in report.log_artifacts}
+            for p in sorted(sub.glob("*.zip")) + sorted(sub.glob("*.7z")):
+                if p.name.lower() in existing:
+                    continue
+                url = base_url.rstrip("/") + "/" + quote(p.name)
+                kind, machine, protocol = parse_log_name(p.name)
+                report.log_artifacts.append(
+                    LogArtifact(
+                        name=p.name,
+                        size_bytes=p.stat().st_size,
+                        machine=machine,
+                        protocol=protocol,
+                        kind=kind,
+                        download_url=url,
+                        local_path=str(p),
+                    )
+                )
+                added += 1
+
+    if not report.log_artifacts:
+        return jsonify(
+            status="error",
+            message=f"No log folders matched candidates {candidates} in {LOG_ROOT}",
+        ), 404
+
+    # Re-render dashboard.html with the now-populated log artifacts.
+    charts = ChartFactory(report, with_images=False).build_all()
+    DashboardBuilder(report, charts, self_contained=True).save(run_dir)
+
+    # Persist log artifacts back into report.json so future re-opens still show them.
+    data.setdefault("artifacts", {})["logs"] = [
+        {
+            "name": a.name, "size_bytes": a.size_bytes,
+            "machine": a.machine, "protocol": a.protocol,
+            "kind": a.kind, "download_url": a.download_url,
+        }
+        for a in report.log_artifacts
+    ]
+    rj.write_text(_json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    log.info(
+        "Patched logs for run %s: added %d archive(s) from %s.",
+        run_id, added, matched_folders,
+    )
+    return jsonify(
+        status="ok",
+        run_id=run_id,
+        matched_folders=matched_folders,
+        added=added,
+        total_logs=len(report.log_artifacts),
+    )
 
 
 @app.route("/execute", methods=["GET", "POST"])
@@ -660,6 +872,166 @@ def _spawn_background_pdf(cfg) -> None:
             log.warning("Background PDF generation failed: %s", exc)
 
     threading.Thread(target=_run, daemon=True).start()
+
+
+# ---------------------------------------------------------------------------
+# Logs browser — shows all uploaded zips grouped by topic / machine
+# ---------------------------------------------------------------------------
+
+def _fmt_size(num: int) -> str:
+    """Human-readable file size."""
+    size = float(num)
+    for unit in ("B", "KB", "MB", "GB"):
+        if size < 1024 or unit == "GB":
+            return f"{size:.1f} {unit}" if unit != "B" else f"{int(size)} B"
+        size /= 1024
+    return f"{size:.1f} GB"
+
+
+@app.get("/logs")
+def logs_index():
+    """Uploaded-logs browser: all topics → machines → Agent / DS zips."""
+    from .artifacts import parse_log_name
+
+    base = request.host_url.rstrip("/")
+    topic_blocks = []
+    if LOG_ROOT.is_dir():
+        for topic_dir in sorted(LOG_ROOT.iterdir()):
+            if not topic_dir.is_dir():
+                continue
+            topic_name = topic_dir.name
+            zips = sorted(list(topic_dir.glob("*.zip")) + list(topic_dir.glob("*.7z")))
+            if not zips:
+                continue
+            # Group by (machine, protocol)
+            rows: dict[tuple, dict] = {}
+            for p in zips:
+                kind, machine, protocol = parse_log_name(p.name)
+                key = (machine or "unknown", protocol or "")
+                row = rows.setdefault(
+                    key,
+                    {"machine": machine or "unknown", "protocol": protocol, "agent": None, "ds": None},
+                )
+                info = {
+                    "name": p.name,
+                    "size": _fmt_size(p.stat().st_size),
+                    "url": f"{base}/uploads/{topic_name}/{p.name}",
+                }
+                if kind == "DS":
+                    row["ds"] = info
+                else:
+                    row["agent"] = info
+            sorted_rows = sorted(rows.values(), key=lambda r: (r["machine"], r["protocol"]))
+            topic_blocks.append(
+                {"name": topic_name, "rows": sorted_rows, "total": len(zips)}
+            )
+
+    # ── render ──────────────────────────────────────────────────────────────
+    topic_html_parts = []
+    for tb in topic_blocks:
+        trs = []
+        for r in tb["rows"]:
+            a = r["agent"]
+            d = r["ds"]
+            agent_td = (
+                f"<a href='{a['url']}' class='log-btn agent-btn' download>"
+                f"<i class='bi bi-download'></i> {a['name']}"
+                f"<span class='log-size'>({a['size']})</span></a>"
+                if a else "<span class='no-log'>—</span>"
+            )
+            ds_td = (
+                f"<a href='{d['url']}' class='log-btn ds-btn' download>"
+                f"<i class='bi bi-download'></i> {d['name']}"
+                f"<span class='log-size'>({d['size']})</span></a>"
+                if d else "<span class='no-log'>No DS logs</span>"
+            )
+            proto_td = (
+                f"<span class='proto-chip'>{r['protocol']}</span>"
+                if r["protocol"] else "—"
+            )
+            trs.append(
+                f"<tr><td class='machine-cell'>{r['machine']}</td>"
+                f"<td>{proto_td}</td>"
+                f"<td>{agent_td}</td>"
+                f"<td>{ds_td}</td></tr>"
+            )
+        tbody = "".join(trs) or "<tr><td colspan='4' class='empty-row'>No log files found.</td></tr>"
+        topic_html_parts.append(
+            f"<div class='topic-block'>"
+            f"<div class='topic-header'>"
+            f"<i class='bi bi-folder2-open'></i> {tb['name']}"
+            f"<span class='topic-count'>{tb['total']} file{'s' if tb['total'] != 1 else ''}</span>"
+            f"</div>"
+            f"<div class='table-wrap'>"
+            f"<table><thead><tr>"
+            f"<th><i class='bi bi-pc-display'></i> Machine</th>"
+            f"<th>Protocol</th>"
+            f"<th><i class='bi bi-file-earmark-zip'></i> Agent Logs</th>"
+            f"<th><i class='bi bi-hdd-network'></i> DS Logs</th>"
+            f"</tr></thead><tbody>{tbody}</tbody></table>"
+            f"</div></div>"
+        )
+
+    body_html = "".join(topic_html_parts) if topic_html_parts else (
+        "<div class='empty-state'><i class='bi bi-inbox' style='font-size:3rem;color:#ccc'></i>"
+        "<p>No log archives uploaded yet.</p>"
+        "<p class='text-muted'>Upload logs via <code>POST /upload?topic=&lt;TopicName&gt;</code></p></div>"
+    )
+
+    html = (
+        "<!doctype html><meta charset='utf-8'>"
+        "<title>Uploaded Logs — QEngine</title>"
+        "<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css' rel='stylesheet'>"
+        "<style>"
+        "*{box-sizing:border-box}"
+        "body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#f0f4f8}"
+        ".topbar{background:#0d3b66;color:#fff;padding:12px 28px;"
+        "  display:flex;align-items:center;justify-content:space-between}"
+        ".topbar h1{margin:0;font-size:19px;font-weight:600}"
+        ".topbar a{color:#aed6f1;text-decoration:none;font-size:13px}"
+        ".topbar a:hover{color:#fff}"
+        ".content{padding:24px 28px;max-width:1200px}"
+        ".topic-block{background:#fff;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.08);"
+        "  margin-bottom:20px;overflow:hidden}"
+        ".topic-header{background:#0d3b66;color:#fff;padding:10px 16px;font-size:15px;"
+        "  font-weight:600;display:flex;align-items:center;justify-content:space-between}"
+        ".topic-header i{margin-right:8px}"
+        ".topic-count{font-size:12px;font-weight:400;opacity:.8;background:rgba(255,255,255,.15);"
+        "  padding:2px 10px;border-radius:10px}"
+        ".table-wrap{overflow-x:auto}"
+        "table{border-collapse:collapse;width:100%}"
+        "th,td{border-bottom:1px solid #eaecf0;padding:9px 14px;text-align:left;font-size:13px}"
+        "th{background:#f6f8fa;color:#444;font-weight:600;font-size:12px;"
+        "  text-transform:uppercase;letter-spacing:.4px}"
+        "tr:last-child td{border-bottom:none}"
+        "tr:hover td{background:#f8f9fb}"
+        ".machine-cell{font-weight:600;font-family:monospace;font-size:12px;color:#0d3b66}"
+        ".proto-chip{display:inline-block;background:#e8f4fd;color:#0d6efd;padding:2px 8px;"
+        "  border-radius:10px;font-size:11px;font-weight:600}"
+        ".log-btn{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;"
+        "  border-radius:5px;font-size:12px;font-weight:500;text-decoration:none;"
+        "  border:1px solid;white-space:nowrap}"
+        ".agent-btn{background:#eaf4ee;color:#198754;border-color:#b8dfc8}"
+        ".agent-btn:hover{background:#d1ead9}"
+        ".ds-btn{background:#e8f4fd;color:#0d6efd;border-color:#b6d4fe}"
+        ".ds-btn:hover{background:#d0e8fb}"
+        ".log-size{color:#888;font-weight:400;margin-left:2px}"
+        ".no-log{color:#aaa;font-size:12px}"
+        ".empty-row{text-align:center;color:#888;padding:16px}"
+        ".empty-state{text-align:center;padding:60px 20px;color:#888}"
+        ".empty-state p{margin:8px 0}"
+        "</style>"
+        "<div class='topbar'>"
+        "<h1><i class='bi bi-archive-fill'></i>&nbsp; Uploaded Logs</h1>"
+        "<div>"
+        "<a href='/'>&#8592; Dashboards</a>"
+        "&nbsp;&nbsp;<a href='/admin'>Admin</a>"
+        "</div></div>"
+        "<div class='content'>"
+        + body_html +
+        "</div>"
+    )
+    return html
 
 
 

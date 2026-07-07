@@ -234,15 +234,18 @@ class ExecutionReport:
         return [c for c in self.cases if c.status is Status.SKIPPED]
 
     def logs_by_machine(self) -> list[dict[str, Any]]:
-        """Group log artifacts into rows: machine · protocol · agent · ds."""
+        """Group log artifacts into rows: machine · protocol · agent · ds · server."""
         rows: dict[tuple, dict[str, Any]] = {}
         for a in self.log_artifacts:
             key = (a.machine or "unknown", getattr(a, "protocol", "") or "")
             row = rows.setdefault(
-                key, {"machine": key[0], "protocol": key[1], "agent": None, "ds": None}
+                key, {"machine": key[0], "protocol": key[1], "agent": None, "ds": None, "server": None}
             )
-            if getattr(a, "kind", "Agent") == "DS":
+            kind = (getattr(a, "kind", "Agent") or "Agent").strip()
+            if kind == "DS":
                 row["ds"] = a
+            elif kind == "Server":
+                row["server"] = a
             else:
                 row["agent"] = a
         return sorted(rows.values(), key=lambda r: (r["machine"], r["protocol"]))

@@ -138,7 +138,7 @@
         {% if c.local_screenshots %}
         <div class="mt-2 d-flex flex-wrap gap-2">
           {% for uri in c.local_screenshots[:6] %}
-            <a href="{{ uri }}" target="_blank"><img src="{{ uri }}" class="failure-shot border rounded" alt="failure screenshot {{ loop.index }}"></a>
+            <a href="{{ uri }}" target="_blank"><img src="{{ uri }}" class="failure-shot border rounded" alt="failure screenshot {{ loop.index }}" onerror="this.closest('a').style.display='none'"></a>
           {% endfor %}
         </div>
         {% endif %}
@@ -166,7 +166,8 @@
           <thead>
             <tr><th><i class="bi bi-pc-display"></i> Machine</th><th>Protocol</th>
                 <th><i class="bi bi-file-earmark-zip"></i> Agent Logs</th>
-                <th><i class="bi bi-hdd-network"></i> DS Logs</th></tr>
+                <th><i class="bi bi-hdd-network"></i> DS Logs</th>
+                <th><i class="bi bi-server"></i> Server Logs</th></tr>
           </thead>
           <tbody>
             {% for r in report.logs_by_machine() %}
@@ -183,7 +184,13 @@
                 {% if r.ds %}
                   <a href="{{ r.ds.download_url or ('file:///' ~ r.ds.local_path) }}" target="_blank" class="btn btn-sm btn-outline-info">
                     <i class="bi bi-download"></i> Download <span class="text-muted">({{ r.ds.size_human }})</span></a>
-                {% else %}<span class="text-muted small">No DS logs</span>{% endif %}
+                {% else %}<span class="text-muted small">—</span>{% endif %}
+              </td>
+              <td>
+                {% if r.server %}
+                  <a href="{{ r.server.download_url or ('file:///' ~ r.server.local_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-download"></i> Download <span class="text-muted">({{ r.server.size_human }})</span></a>
+                {% else %}<span class="text-muted small">—</span>{% endif %}
               </td>
             </tr>
             {% endfor %}
@@ -197,7 +204,7 @@
         {% for sh in report.screenshot_artifacts[:24] %}
           {% set src = sh.data_uri or sh.download_url or ('file:///' ~ sh.local_path) %}
           <a href="{{ src }}" target="_blank" title="{{ sh.name }}">
-            <img src="{{ src }}" class="artifact-thumb" alt="{{ sh.name }}">
+            <img src="{{ src }}" class="artifact-thumb" alt="{{ sh.name }}" onerror="this.closest('a').style.display='none'">
           </a>
         {% endfor %}
       </div>
