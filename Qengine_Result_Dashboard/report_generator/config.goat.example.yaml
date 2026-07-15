@@ -25,7 +25,7 @@ embed_screenshots: true
 # Agent machines participating in the test run.
 # GOAT server listens on port 9295 on each machine.
 goat_machines:
-  - name: "prathosh-14802-t"
+  - name: "UEMS-Agent-QA"
     url: "http://10.71.29.174:9295/api"
   - name: "prathosh-w22-11"
     url: "http://172.24.148.221:9295/api"

@@ -4,7 +4,7 @@ Keeps `python -m report_generator.server` running on `:8089` — **starts
 automatically on machine reboot** and **restarts if it crashes**. Uses the
 production **waitress** server (multi-threaded).
 
-## One-time prerequisites (on the host = `prathosh-14802-t`)
+## One-time prerequisites (on the host = `UEMS-Agent-QA`)
 ```powershell
 cd D:\Qengine_Result_Dashboard
 python -m pip install -r report_generator\requirements.txt   # includes waitress
@@ -43,7 +43,7 @@ powershell -ExecutionPolicy Bypass -File .\install_nssm.ps1 -Nssm "C:\tools\nssm
 ## Verify it's reachable from the agent machine
 On the box where GOAT runs the test case:
 ```powershell
-Invoke-RestMethod "http://prathosh-14802-t:8089/health"
+Invoke-RestMethod "http://UEMS-Agent-QA:8089/health"
 ```
 If this fails, open **port 8089** in Windows Firewall on the host:
 ```powershell

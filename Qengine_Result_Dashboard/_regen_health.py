@@ -106,7 +106,7 @@ cfg = Config(
     goat_enabled=True,
     goat_home=r"D:\GOAT",
     goat_machines=[
-        {"name": "prathosh-14802-t", "url": "http://10.71.29.174:9295/api"},
+        {"name": "UEMS-Agent-QA",      "url": "http://10.71.29.174:9295/api"},
         {"name": "prathosh-w22-11",  "url": "http://172.24.148.221:9295/api"},
         {"name": "Prathosh-2k19",    "url": "http://10.71.28.79:9295/api"},
         {"name": "epfqa10-w25-1",    "url": "http://10.63.26.117:9295/api"},
@@ -152,4 +152,4 @@ print("Writing dashboard.pdf ...")
 rb.save_pdf(OUT)
 
 print(f"\nDone -> {OUT / 'dashboard.html'}")
-print(f"Live  -> http://prathosh-14802-t:8089/dashboards/{RUN_ID}/dashboard.html")
+print(f"Live  -> http://UEMS-Agent-QA:8089/dashboards/{RUN_ID}/dashboard.html")

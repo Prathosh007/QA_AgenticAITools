@@ -642,7 +642,7 @@ def _run_execute(
 
     # Agent machines for crash/CPU health collection (env var or hard-coded).
     _agent_machines_env = os.environ.get("GOAT_AGENT_MACHINES", "")
-    # Format: "name1=url1,name2=url2" e.g. "prathosh-14802-t=http://10.71.29.174:9295/api,..."
+    # Format: "name1=url1,name2=url2" e.g. "UEMS-Agent-QA=http://10.71.29.174:9295/api,..."
     if _agent_machines_env:
         goat_machines = [
             {"name": pair.split("=", 1)[0].strip(), "url": pair.split("=", 1)[1].strip()}
@@ -652,7 +652,7 @@ def _run_execute(
     else:
         # Default to the 4 known agent machines.
         goat_machines = [
-            {"name": "prathosh-14802-t",  "url": "http://10.71.29.174:9295/api"},
+            {"name": "UEMS-Agent-QA",       "url": "http://10.71.29.174:9295/api"},
             {"name": "prathosh-w22-11",   "url": "http://172.24.148.221:9295/api"},
             {"name": "Prathosh-2k19",     "url": "http://10.71.28.79:9295/api"},
             {"name": "epfqa10-w25-1",     "url": "http://10.63.26.117:9295/api"},

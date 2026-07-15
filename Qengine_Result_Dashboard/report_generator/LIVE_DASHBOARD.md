@@ -59,7 +59,7 @@ and QEngine fills in the execution context.
 
 **Settings → Webhooks → Create Webhook:**
 - **Method:** GET
-- **URL to Notify:** `http://prathosh-14802-t:8089/webhook`   ← base only
+- **URL to Notify:** `http://UEMS-Agent-QA:8089/webhook`   ← base only
 - **URL Parameters:** just one row —
   - `Result` = `<RESULT>`
 - Fire **on completion** (success/failed), not "running".
@@ -74,7 +74,7 @@ uploaded logs by the resolved Topic. **Do NOT add `run_id`/`topic` rows with
 > includes a `received` / `_seen_keys` list of the exact fields QEngine sent.
 
 The dashboard then appears at
-`http://prathosh-14802-t:8089/dashboards/<run_id>/dashboard.html`.
+`http://UEMS-Agent-QA:8089/dashboards/<run_id>/dashboard.html`.
 
 ---
 
@@ -139,7 +139,7 @@ POSTs the staged zip straight to the dashboard service; the next
   "operation_type": "run_command",
   "parameters": {
     "command_type": "powershell",
-    "command_to_run": "$f = '" + zipFilePath + "'; $n = [IO.Path]::GetFileName($f); $u = 'http://prathosh-14802-t:8089/upload?topic=' + [uri]::EscapeDataString('" + $Topicname + "') + '&filename=' + [uri]::EscapeDataString($n); try { $r = Invoke-RestMethod -Uri $u -Method Post -InFile $f -ContentType 'application/octet-stream' -TimeoutSec 600; Write-Output ('Uploaded: ' + $r.url) } catch { Write-Output ('Upload failed: ' + $_.Exception.Message); exit 1 }",
+    "command_to_run": "$f = '" + zipFilePath + "'; $n = [IO.Path]::GetFileName($f); $u = 'http://UEMS-Agent-QA:8089/upload?topic=' + [uri]::EscapeDataString('" + $Topicname + "') + '&filename=' + [uri]::EscapeDataString($n); try { $r = Invoke-RestMethod -Uri $u -Method Post -InFile $f -ContentType 'application/octet-stream' -TimeoutSec 600; Write-Output ('Uploaded: ' + $r.url) } catch { Write-Output ('Upload failed: ' + $_.Exception.Message); exit 1 }",
     "exact_value": "Uploaded"
   }
 }
@@ -147,7 +147,7 @@ POSTs the staged zip straight to the dashboard service; the next
 
 - Do the same in the DS branch with `DS_zipFilePath`.
 - The dashboard service stores them under `output\uploaded_logs\<Topic>\` and
-  serves each at `http://prathosh-14802-t:8089/uploads/<Topic>/<file>`.
+  serves each at `http://UEMS-Agent-QA:8089/uploads/<Topic>/<file>`.
 - Order: run Upload-Logs (all machines) **before** the final `Generate_Dashboard`
   case so the logs are present when the dashboard is built.
 

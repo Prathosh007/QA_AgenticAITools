@@ -21,7 +21,7 @@ from report_generator.dashboard import DashboardBuilder
 
 OUTPUT_ROOT = ROOT / "report_generator" / "output" / "runs"
 LOG_ROOT = ROOT / "report_generator" / "output" / "uploaded_logs"
-BASE_URL = "http://prathosh-14802-t:8089/uploads"
+BASE_URL = "http://UEMS-Agent-QA:8089/uploads"
 
 
 def rebuild_report(data: dict):

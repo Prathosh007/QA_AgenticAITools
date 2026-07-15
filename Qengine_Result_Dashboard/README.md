@@ -111,7 +111,7 @@ Default port: **8089**
 Override: set `DASHBOARD_PORT` environment variable.
 
 The server URL will be: `http://<hostname>:8089`  
-Example: `http://prathosh-14802-t:8089`
+Example: `http://UEMS-Agent-QA:8089`
 
 To run it persistently, install it as a Windows Scheduled Task (see [section 13](#13-running-as-a-windows-service)).
 

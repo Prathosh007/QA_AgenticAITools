@@ -18,7 +18,7 @@
 // ============================================================
 
 // ---- Inputs ----
-dashHost  = "prathosh-14802-t";        // <-- the box running the dashboard service
+dashHost  = "UEMS-Agent-QA";        // <-- the box running the dashboard service
 runId     = $scheduleexecutions_id;    // current run id (from execution context)
 topicName = $Topicname;                // scopes which GOAT log zips are collected
 

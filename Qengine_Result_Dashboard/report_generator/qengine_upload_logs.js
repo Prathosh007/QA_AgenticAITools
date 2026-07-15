@@ -5,7 +5,7 @@
 // Keep every string on ONE line (the engine is line-oriented).
 // ============================================================
 
-dashHost = "prathosh-14802-t";   // <-- the box running the dashboard service (:8089)
+dashHost = "UEMS-Agent-QA";   // <-- the box running the dashboard service (:8089)
 
 // ============================================================
 // STEP 1 — Agent paths
