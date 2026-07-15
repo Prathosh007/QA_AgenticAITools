@@ -153,6 +153,94 @@
 {% endif %}
 
 {% set concl_no = (6 if report.failed_cases else 5) if report.log_artifacts else (5 if report.failed_cases else 4) %}
+
+{# ── Machine Health: Crash & High-CPU Analysis ────────────────────────────── #}
+{% if report.machine_health %}
+{% set health_no = concl_no %}
+{% set concl_no = concl_no + 1 %}
+<h2 class="page-break">{{ health_no }}. Agent Machine Health Analysis</h2>
+<p style="font-size:9pt;color:#555;">Crash events from the Windows Application Event Log (Event ID 1000) and processes
+from the Agent installation directory with elevated CPU usage, collected at report generation time.</p>
+
+{% for mh in report.machine_health %}
+<div class="avoid-break" style="margin-bottom:18px;border:1px solid #d0d7de;border-radius:6px;padding:10px;">
+  <h3 style="margin-top:0;font-size:11pt;color:#0d3b66;">
+    Machine: {{ mh.machine }}
+    {% if not mh.reachable %}<span class="badge" style="background:#6c757d;font-size:8pt;">Unreachable</span>{% endif %}
+    {% if mh.crash_count > 0 %}<span class="badge b-fail" style="font-size:8pt;">{{ mh.crash_count }} Crash(es)</span>{% endif %}
+    {% if mh.high_cpu_count > 0 %}<span class="badge b-skip" style="font-size:8pt;">{{ mh.high_cpu_count }} High-CPU Process(es)</span>{% endif %}
+    {% if mh.reachable and not mh.has_issues %}<span class="badge" style="background:#198754;font-size:8pt;">&#10003; No Issues</span>{% endif %}
+  </h3>
+  <div style="font-size:8pt;color:#888;">Collected: {{ mh.collected_at }} | GOAT: {{ mh.goat_url }}</div>
+  {% if mh.error %}<div style="color:#dc3545;font-size:8.5pt;margin-top:4px;">&#9888; {{ mh.error }}</div>{% endif %}
+
+  {% if mh.crash_events %}
+  <div style="margin-top:10px;">
+    <strong style="font-size:9.5pt;">Application Crash Events</strong>
+    <table style="margin-top:4px;">
+      <thead>
+        <tr>
+          <th style="width:16%">Time</th>
+          <th style="width:22%">Process</th>
+          <th style="width:20%">Faulting Module</th>
+          <th style="width:12%">Exception Code</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for ev in mh.crash_events %}
+        <tr>
+          <td>{{ ev.time_created }}</td>
+          <td style="word-break:break-all;">{{ ev.process_name }}</td>
+          <td style="word-break:break-all;">{{ ev.faulting_module or '—' }}</td>
+          <td><code>{{ ev.exception_code }}</code></td>
+          <td style="font-size:8pt;">{{ ev.message[:200] }}{% if ev.message|length > 200 %}…{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {% if mh.high_cpu_processes %}
+  <div style="margin-top:10px;">
+    <strong style="font-size:9.5pt;">High-CPU Agent Processes</strong>
+    <table style="margin-top:4px;">
+      <thead>
+        <tr>
+          <th style="width:22%">Process</th>
+          <th style="width:10%">PID</th>
+          <th style="width:14%">CPU %</th>
+          <th style="width:16%">Memory (MB)</th>
+          <th>Path</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for proc in mh.high_cpu_processes %}
+        <tr>
+          <td>{{ proc.process_name }}</td>
+          <td>{{ proc.pid }}</td>
+          <td>
+            <span class="badge {{ proc.severity_badge }}" style="font-size:8pt;">
+              {{ proc.cpu_percent }}%
+            </span>
+          </td>
+          <td>{{ proc.working_set_mb }}</td>
+          <td style="font-size:8pt;word-break:break-all;">{{ proc.process_path }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {% if not mh.crash_events and not mh.high_cpu_processes and mh.reachable %}
+  <p style="color:#198754;font-size:9pt;margin-top:8px;">&#10003; No crashes or high-CPU processes detected in the Agent directory.</p>
+  {% endif %}
+</div>
+{% endfor %}
+{% endif %}
+
 <h2 class="page-break">{{ concl_no }}. Conclusion</h2>
 <p>{{ report.conclusion() }}</p>
 {% if s.reruns %}

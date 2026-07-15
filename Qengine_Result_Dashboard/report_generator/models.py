@@ -209,6 +209,95 @@ class ExecutionSummary:
 
 
 @dataclass
+class CrashEvent:
+    """A single application crash recorded in the Windows Event Log."""
+
+    machine: str
+    time_created: str
+    process_name: str
+    process_path: str
+    exception_code: str
+    event_id: int
+    message: str = ""
+    faulting_module: str = ""
+
+    @property
+    def severity_badge(self) -> str:
+        return "b-fail"
+
+
+@dataclass
+class HighCpuProcess:
+    """A process from the Agent directory with elevated CPU usage."""
+
+    machine: str
+    process_name: str
+    process_path: str
+    cpu_percent: float
+    pid: int
+    working_set_mb: float = 0.0
+
+    @property
+    def is_critical(self) -> bool:
+        return self.cpu_percent >= 80.0
+
+    @property
+    def severity_badge(self) -> str:
+        return "b-fail" if self.is_critical else "b-skip"
+
+
+@dataclass
+class AppHangEvent:
+    """An application hang (Event ID 1002) recorded during the run window."""
+
+    machine: str
+    time_created: str
+    process_name: str
+    process_path: str
+    hang_type: str = ""
+    wait_time_ms: str = ""
+    event_id: int = 1002
+    message: str = ""
+
+    @property
+    def severity_badge(self) -> str:
+        return "b-fail"
+
+
+@dataclass
+class MachineHealthReport:
+    """Aggregated crash and CPU health data for a single agent machine."""
+
+    machine: str
+    goat_url: str = ""
+    collected_at: str = ""
+    reachable: bool = True
+    crash_events: list[CrashEvent] = field(default_factory=list)
+    high_cpu_processes: list[HighCpuProcess] = field(default_factory=list)
+    hang_events: list[AppHangEvent] = field(default_factory=list)
+    # Time window this health report covers (from the automation run)
+    run_start: str = ""
+    run_end: str = ""
+    error: str = ""
+
+    @property
+    def has_issues(self) -> bool:
+        return bool(self.crash_events or self.high_cpu_processes or self.hang_events)
+
+    @property
+    def crash_count(self) -> int:
+        return len(self.crash_events)
+
+    @property
+    def high_cpu_count(self) -> int:
+        return len(self.high_cpu_processes)
+
+    @property
+    def hang_count(self) -> int:
+        return len(self.hang_events)
+
+
+@dataclass
 class ExecutionReport:
     """The complete normalised report passed to all output generators."""
 
@@ -220,6 +309,8 @@ class ExecutionReport:
     log_artifacts: list[Any] = field(default_factory=list)
     screenshot_artifacts: list[Any] = field(default_factory=list)
     goat_unmatched: list[Any] = field(default_factory=list)
+    # Machine health: crash events + high-CPU processes from agent machines.
+    machine_health: list[MachineHealthReport] = field(default_factory=list)
 
     @property
     def failed_cases(self) -> list[TestCaseResult]:
@@ -286,6 +377,7 @@ class ExecutionReport:
                     for a in self.screenshot_artifacts
                 ],
             },
+            "machine_health": [asdict(mh) for mh in self.machine_health],
             "cases": [
                 {
                     **{k: v for k, v in asdict(c).items() if k not in {"status", "failure"}},

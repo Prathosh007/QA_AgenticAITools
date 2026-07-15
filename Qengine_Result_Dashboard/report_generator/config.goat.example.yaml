@@ -21,6 +21,31 @@ embed_screenshots: true
 # screenshot_dirs:
 #   - "D:\\GOAT\\product_package\\bin\\AgentBinaries\\Screenshot"
 
+# --- Crash & CPU Health Analysis -----------------------------------------
+# Agent machines participating in the test run.
+# GOAT server listens on port 9295 on each machine.
+goat_machines:
+  - name: "prathosh-14802-t"
+    url: "http://10.71.29.174:9295/api"
+  - name: "prathosh-w22-11"
+    url: "http://172.24.148.221:9295/api"
+  - name: "Prathosh-2k19"
+    url: "http://10.71.28.79:9295/api"
+  - name: "epfqa10-w25-1"
+    url: "http://10.63.26.117:9295/api"
+
+# Root of the Agent installation on the machines under test.
+agent_install_dir: "C:\\Program Files (x86)\\ManageEngine\\UEMS_Agent"
+
+# Flag processes from the Agent directory whose CPU % exceeds this value.
+cpu_threshold: 50.0
+
+# How many hours of crash history to retrieve from the Windows Event Log.
+crash_hours: 24
+
+# Set to false to skip crash/CPU collection entirely.
+collect_machine_health: true
+
 # --- output ---
 output: "D:\\GOAT\\logs\\dashboards\\latest"
 make_html: true

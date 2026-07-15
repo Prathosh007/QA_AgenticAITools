@@ -31,6 +31,7 @@ from .api import QEngineService
 from .charts import ChartFactory
 from .clients import AuthError, QEngineError
 from .config import Config, ConfigError
+from .crash_analyzer import CrashAnalyzer
 from .dashboard import DashboardBuilder
 from .logging_setup import configure_logging
 from .parser import ResultParser
@@ -114,6 +115,25 @@ def generate(config: Config, fetch_all: bool = False, log=None):
 
     if config.goat_enabled:
         _enrich_with_goat(config, report, log)
+
+    # Crash & CPU health collection (requires GOAT server on each machine).
+    if config.goat_enabled and getattr(config, "collect_machine_health", True):
+        try:
+            log.info("Collecting crash/CPU health data from agent machine(s) …")
+            report.machine_health = CrashAnalyzer(config).collect(
+                run_start=report.summary.started_time,
+                run_end=report.summary.end_time,
+            )
+            total_crashes = sum(len(mh.crash_events) for mh in report.machine_health)
+            total_cpu = sum(len(mh.high_cpu_processes) for mh in report.machine_health)
+            log.info(
+                "Machine health: %d machine(s), %d crash event(s), %d high-CPU process(es).",
+                len(report.machine_health),
+                total_crashes,
+                total_cpu,
+            )
+        except Exception as exc:
+            log.warning("Machine health collection failed (non-fatal): %s", exc)
 
     if report.summary.total_cases == 0 and not report.cases:
         raise QEngineError("The test run appears to be empty — nothing to report.")

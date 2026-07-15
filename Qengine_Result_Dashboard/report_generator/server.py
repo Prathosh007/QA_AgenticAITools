@@ -640,6 +640,24 @@ def _run_execute(
     run_key = run_id or env_id or topic or "latest"
     out_dir = OUTPUT_ROOT / _safe(run_key)
 
+    # Agent machines for crash/CPU health collection (env var or hard-coded).
+    _agent_machines_env = os.environ.get("GOAT_AGENT_MACHINES", "")
+    # Format: "name1=url1,name2=url2" e.g. "prathosh-14802-t=http://10.71.29.174:9295/api,..."
+    if _agent_machines_env:
+        goat_machines = [
+            {"name": pair.split("=", 1)[0].strip(), "url": pair.split("=", 1)[1].strip()}
+            for pair in _agent_machines_env.split(",")
+            if "=" in pair
+        ]
+    else:
+        # Default to the 4 known agent machines.
+        goat_machines = [
+            {"name": "prathosh-14802-t",  "url": "http://10.71.29.174:9295/api"},
+            {"name": "prathosh-w22-11",   "url": "http://172.24.148.221:9295/api"},
+            {"name": "Prathosh-2k19",     "url": "http://10.71.28.79:9295/api"},
+            {"name": "epfqa10-w25-1",     "url": "http://10.63.26.117:9295/api"},
+        ]
+
     cfg = Config(
         result_url=result_url,
         project_id=project_id or DEFAULT_PROJECT_ID,
@@ -650,6 +668,14 @@ def _run_execute(
         goat_home=goat_home,
         output=str(out_dir),
         self_contained=True,  # served links must render even without the Plotly CDN
+        goat_machines=goat_machines,
+        agent_install_dir=os.environ.get(
+            "AGENT_INSTALL_DIR",
+            r"C:\Program Files (x86)\ManageEngine\UEMS_Agent",
+        ),
+        cpu_threshold=float(os.environ.get("AGENT_CPU_THRESHOLD", "50")),
+        crash_hours=int(os.environ.get("AGENT_CRASH_HOURS", "24")),
+        collect_machine_health=os.environ.get("COLLECT_MACHINE_HEALTH", "1") != "0",
     )
     # Link uploaded logs by the RESOLVED topic (handles the webhook case where
     # the topic isn't passed — generate() fills it from the run, then matches).

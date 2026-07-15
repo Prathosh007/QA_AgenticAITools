@@ -213,6 +213,138 @@
   </div>
   {% endif %}
 
+  <!-- Machine Health: Crash & CPU Analysis -->
+  {% if report.machine_health %}
+  <div class="card my-3 reveal">
+    <div class="card-header fw-semibold">
+      <i class="bi bi-activity"></i> Agent Machine Health Analysis
+      {% set total_crashes = report.machine_health | sum(attribute='crash_count') %}
+      {% set total_cpu = report.machine_health | sum(attribute='high_cpu_count') %}
+      {% set total_hangs = report.machine_health | sum(attribute='hang_count') %}
+      {% if total_crashes > 0 %}
+        <span class="badge bg-danger ms-2">{{ total_crashes }} Crash(es)</span>
+      {% endif %}
+      {% if total_hangs > 0 %}
+        <span class="badge bg-danger ms-2">{{ total_hangs }} Hang(s)</span>
+      {% endif %}
+      {% if total_cpu > 0 %}
+        <span class="badge bg-warning text-dark ms-2">{{ total_cpu }} High-CPU</span>
+      {% endif %}
+      {% if total_crashes == 0 and total_cpu == 0 and total_hangs == 0 %}
+        <span class="badge bg-success ms-2">&#10003; All Clean</span>
+      {% endif %}
+    </div>
+    <div class="card-body p-2">
+      {% set mh0 = report.machine_health[0] %}
+      {% if mh0.run_start and mh0.run_end %}
+      <p class="text-muted small mb-2">
+        <i class="bi bi-clock-history"></i>
+        Events scoped to the automation run window:
+        <strong>{{ mh0.run_start }}</strong> &rarr; <strong>{{ mh0.run_end }}</strong>.
+        Crash (Event ID 1000), Hang/CPU-freeze (Event ID 1002) events from Windows Application
+        Event Log filtered to that window. High-CPU shows processes currently exceeding
+        threshold at collection time.
+      </p>
+      {% else %}
+      <p class="text-muted small mb-2">
+        Windows Application Event Log crash events (Event ID 1000) and Agent-directory processes
+        with elevated CPU usage, collected from GOAT at report generation time.
+      </p>
+      {% endif %}
+      {% for mh in report.machine_health %}
+      <div class="border rounded p-3 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <strong><i class="bi bi-pc-display"></i> {{ mh.machine }}</strong>
+          {% if not mh.reachable %}<span class="badge bg-secondary">Unreachable</span>{% endif %}
+          {% if mh.crash_count > 0 %}<span class="badge bg-danger">{{ mh.crash_count }} Crash(es)</span>{% endif %}
+          {% if mh.hang_count > 0 %}<span class="badge bg-danger">{{ mh.hang_count }} Hang(s)</span>{% endif %}
+          {% if mh.high_cpu_count > 0 %}<span class="badge bg-warning text-dark">{{ mh.high_cpu_count }} High-CPU</span>{% endif %}
+          {% if mh.reachable and not mh.has_issues %}<span class="badge bg-success">&#10003; No Issues</span>{% endif %}
+          <small class="text-muted ms-auto">Collected: {{ mh.collected_at }} | GOAT: {{ mh.goat_url }}</small>
+        </div>
+        {% if mh.error %}
+        <div class="alert alert-warning py-1 px-2 small mb-2">&#9888; {{ mh.error }}</div>
+        {% endif %}
+
+        {% if mh.crash_events %}
+        <h6 class="mt-2"><i class="bi bi-bug-fill text-danger"></i> Application Crash Events (Event ID 1000)</h6>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered align-middle mb-2">
+            <thead class="table-danger">
+              <tr><th>Time</th><th>Process</th><th>Faulting Module</th><th>Exception Code</th><th>Message</th></tr>
+            </thead>
+            <tbody>
+            {% for ev in mh.crash_events %}
+              <tr>
+                <td class="small text-nowrap">{{ ev.time_created }}</td>
+                <td class="small fw-semibold">{{ ev.process_name }}</td>
+                <td class="small">{{ ev.faulting_module or '—' }}</td>
+                <td><code class="small">{{ ev.exception_code }}</code></td>
+                <td class="small" style="max-width:320px;word-break:break-word;">{{ ev.message[:250] }}{% if ev.message|length > 250 %}…{% endif %}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+
+        {% if mh.hang_events %}
+        <h6 class="mt-2"><i class="bi bi-exclamation-triangle-fill text-danger"></i> Application Hang / CPU-Freeze Events (Event ID 1002)</h6>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered align-middle mb-2">
+            <thead class="table-danger">
+              <tr><th>Time</th><th>Process</th><th>Hang Type</th><th>Wait Time (ms)</th><th>Path</th></tr>
+            </thead>
+            <tbody>
+            {% for ev in mh.hang_events %}
+              <tr>
+                <td class="small text-nowrap">{{ ev.time_created }}</td>
+                <td class="small fw-semibold">{{ ev.process_name }}</td>
+                <td class="small">{{ ev.hang_type or '—' }}</td>
+                <td class="small">{{ ev.wait_time_ms }}</td>
+                <td class="small text-muted" style="max-width:280px;word-break:break-all;">{{ ev.process_path }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+
+        {% if mh.high_cpu_processes %}
+        <h6 class="mt-2"><i class="bi bi-cpu-fill text-warning"></i> High-CPU Agent Processes <small class="text-muted fw-normal">(snapshot at collection time)</small></h6>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered align-middle mb-2">
+            <thead class="table-warning">
+              <tr><th>Process</th><th>PID</th><th>CPU %</th><th>Memory (MB)</th><th>Path</th></tr>
+            </thead>
+            <tbody>
+            {% for proc in mh.high_cpu_processes %}
+              <tr>
+                <td class="fw-semibold small">{{ proc.process_name }}</td>
+                <td class="small">{{ proc.pid }}</td>
+                <td>
+                  <span class="badge {{ 'bg-danger' if proc.is_critical else 'bg-warning text-dark' }}">
+                    {{ proc.cpu_percent }}%
+                  </span>
+                </td>
+                <td class="small">{{ proc.working_set_mb }}</td>
+                <td class="small text-muted" style="max-width:280px;word-break:break-all;">{{ proc.process_path }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+
+        {% if not mh.crash_events and not mh.hang_events and not mh.high_cpu_processes and mh.reachable %}
+        <p class="text-success small mb-0"><i class="bi bi-check-circle-fill"></i> No crashes, hangs, or high-CPU processes detected in the Agent directory during the run window.</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
   <!-- Detailed table -->
   <div class="card my-3 reveal">
     <div class="card-header fw-semibold d-flex justify-content-between align-items-center">

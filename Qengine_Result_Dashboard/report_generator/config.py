@@ -80,6 +80,20 @@ class Config:
     log_globs: list = field(default_factory=list)
     screenshot_dirs: list = field(default_factory=list)
 
+    # -- Crash & CPU analysis -----------------------------------------------
+    # List of agent machines to analyse.  Each entry is a dict:
+    #   {"name": "AGENT-PC-01", "url": "http://192.168.1.10:9295/api"}
+    # When empty, the single goat_url machine is used.
+    goat_machines: list = field(default_factory=list)
+    # Root directory of the Agent installation on the machine being tested.
+    agent_install_dir: str = r"C:\Program Files (x86)\ManageEngine\UEMS_Agent"
+    # Minimum CPU % to flag a process as high-CPU.
+    cpu_threshold: float = 50.0
+    # How many hours of crash history to retrieve from the Event Log.
+    crash_hours: int = 24
+    # Set to False to skip crash/CPU collection entirely.
+    collect_machine_health: bool = True
+
     extra: dict[str, Any] = field(default_factory=dict)
 
     # -- result URL parsing -------------------------------------------------
